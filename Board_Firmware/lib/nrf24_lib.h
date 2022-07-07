@@ -6,7 +6,7 @@
 
 #ifndef NRF24_LIB_H
 #define	NRF24_LIB_H
-
+#include <xc.h>
 #include "../18f26K22-rev0.01.X/nRF24.h"
 
 // NRF24L01 Operation Modes
@@ -27,6 +27,8 @@ typedef enum {
 #define FLUSH_TX            0xE1  
 #define FLUSH_RX            0xE2  
 #define REUSE_TX_PL         0xE3  
+#define R_RX_PL_WID         0x60
+#define W_TX_PAYLOAD_NOACK  0xB0
 
 #define NRF24_MEM_CONFIG              0x00  
 #define NRF24_MEM_EN_AA               0x01  
@@ -175,6 +177,11 @@ void nrf24_standby_I(void);
  */
 void nrf24_flush_tx_rx(void);
 
+/**
+ * @brief read dynamic payload length of the received packet. 
+ *
+ */
+uint8_t nrf24_read_dynamic_payload_length(void) ;
 
 #endif	/* NRF24_LIB_H */
 

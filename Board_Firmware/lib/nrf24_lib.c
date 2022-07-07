@@ -33,6 +33,15 @@ unsigned char nrf24_read_register(unsigned char mnemonic_addr) {
     return byte0;
 }
 
+uint8_t nrf24_read_dynamic_payload_length(void) {
+    uint8_t byte0;
+    NRF24L01_CSN_L();
+    SPI_WRITE_BYTE(R_RX_PL_WID);
+    byte0 = SPI_READ_BYTE(NRF24_MEM_CMD_NOP);
+    NRF24L01_CSN_H();
+    return byte0;
+}
+
 void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes) {
     unsigned char i;
     NRF24L01_CSN_L();
