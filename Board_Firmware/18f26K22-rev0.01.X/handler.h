@@ -51,15 +51,16 @@ extern "C" {
 #define ADDR_LEN 3
 
 #define PING_INT 1 // Default ping interval.
+
 unsigned char DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
 
 void TimerInterruptHandler(void);
-
 void InitRadio(void);
 unsigned char MakePingPkt(unsigned char *buffer);
-void ProcessAckPayload(unsigned char * buffer) ;
-// Config stores the configuration of the board.
+void ProcessAckPayload(unsigned char * buffer,uint8_t sz) ;
 
+
+// Config stores the configuration of the board.
 struct Config {
     bool IsConfigured; // True if board is configured.
     unsigned char Address[3]; // Address of the board.

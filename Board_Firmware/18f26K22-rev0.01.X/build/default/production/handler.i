@@ -9461,13 +9461,13 @@ typedef enum {
     RX_MODE = 1,
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
-# 72 "./../lib/nrf24_lib.h"
+# 74 "./../lib/nrf24_lib.h"
 void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
-# 82 "./../lib/nrf24_lib.h"
+# 84 "./../lib/nrf24_lib.h"
 unsigned char nrf24_read_register(unsigned char mnemonic_addr);
-# 92 "./../lib/nrf24_lib.h"
+# 94 "./../lib/nrf24_lib.h"
 void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
-# 102 "./../lib/nrf24_lib.h"
+# 104 "./../lib/nrf24_lib.h"
 void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
 
 
@@ -9484,15 +9484,15 @@ void nrf24_rf_init();
 
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
-# 126 "./../lib/nrf24_lib.h"
+# 128 "./../lib/nrf24_lib.h"
 void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
-# 135 "./../lib/nrf24_lib.h"
+# 137 "./../lib/nrf24_lib.h"
 unsigned char nrf24_is_rf_data_available(void);
-# 144 "./../lib/nrf24_lib.h"
+# 146 "./../lib/nrf24_lib.h"
 void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
-# 154 "./../lib/nrf24_lib.h"
+# 156 "./../lib/nrf24_lib.h"
 void nrf24_set_channel_frq(unsigned char rf_channel);
-# 164 "./../lib/nrf24_lib.h"
+# 166 "./../lib/nrf24_lib.h"
 unsigned char nrf24_get_channel_frq(void);
 
 
@@ -9506,6 +9506,12 @@ void nrf24_standby_I(void);
 
 
 void nrf24_flush_tx_rx(void);
+
+
+
+
+
+uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 11 "handler.c" 2
 # 1 "./../lib/dht11_lib.h" 1
 
@@ -9518,14 +9524,14 @@ uint8_t GetmockHumidity(void);
 # 12 "handler.c" 2
 
 # 1 "./handler.h" 1
-# 54 "./handler.h"
+# 55 "./handler.h"
 unsigned char DEFAULT_PIPE_ADDR[] = "hello";
 
 void TimerInterruptHandler(void);
-
 void InitRadio(void);
 unsigned char MakePingPkt(unsigned char *buffer);
-void ProcessAckPayload(unsigned char * buffer) ;
+void ProcessAckPayload(unsigned char * buffer,uint8_t sz) ;
+
 
 
 struct Config {
@@ -9539,8 +9545,8 @@ struct Config {
 uint32_t Ticks = 0;
 struct Config config;
 
-unsigned char bufferTX[32];
-unsigned char bufferRX[32];
+uint8_t bufferTX[32];
+uint8_t bufferRX[32];
 
 void InitRadio(void) {
     nrf24_rf_init();
@@ -9583,8 +9589,6 @@ void TimerInterruptHandler(void) {
     nrf24_send_rf_data(bufferTX, sz);
 
 
-
-
     unsigned char status = 0;
     while (1) {
         status = nrf24_read_register(0x07);
@@ -9597,20 +9601,20 @@ void TimerInterruptHandler(void) {
 
 
     if (status & 0x10) {
-        do { LATAbits.LATA1 = 1; } while(0);
         return;
 
     }
 
 
     if (status & 0x40) {
-        nrf24_read_rf_data(bufferRX, sizeof (bufferRX));
-        ProcessAckPayload(bufferRX);
+        uint8_t sz = nrf24_read_dynamic_payload_length();
+        nrf24_read_rf_data(bufferRX, sz);
+        ProcessAckPayload(bufferRX, sz);
     }
 
 }
 
-void ProcessAckPayload(unsigned char * buffer) {
+void ProcessAckPayload(unsigned char * buffer, uint8_t sz) {
     do { LATAbits.LATA1 = ~LATAbits.LATA1; } while(0);
 }
 

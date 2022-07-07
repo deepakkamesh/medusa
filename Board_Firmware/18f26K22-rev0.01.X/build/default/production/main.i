@@ -9448,14 +9448,14 @@ void OSCILLATOR_Initialize(void);
 # 5 "main.c" 2
 
 # 1 "./handler.h" 1
-# 54 "./handler.h"
+# 55 "./handler.h"
 unsigned char DEFAULT_PIPE_ADDR[] = "hello";
 
 void TimerInterruptHandler(void);
-
 void InitRadio(void);
 unsigned char MakePingPkt(unsigned char *buffer);
-void ProcessAckPayload(unsigned char * buffer) ;
+void ProcessAckPayload(unsigned char * buffer,uint8_t sz) ;
+
 
 
 struct Config {
@@ -9476,13 +9476,13 @@ typedef enum {
     RX_MODE = 1,
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
-# 72 "./../lib/nrf24_lib.h"
+# 74 "./../lib/nrf24_lib.h"
 void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
-# 82 "./../lib/nrf24_lib.h"
+# 84 "./../lib/nrf24_lib.h"
 unsigned char nrf24_read_register(unsigned char mnemonic_addr);
-# 92 "./../lib/nrf24_lib.h"
+# 94 "./../lib/nrf24_lib.h"
 void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
-# 102 "./../lib/nrf24_lib.h"
+# 104 "./../lib/nrf24_lib.h"
 void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
 
 
@@ -9499,15 +9499,15 @@ void nrf24_rf_init();
 
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
-# 126 "./../lib/nrf24_lib.h"
+# 128 "./../lib/nrf24_lib.h"
 void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
-# 135 "./../lib/nrf24_lib.h"
+# 137 "./../lib/nrf24_lib.h"
 unsigned char nrf24_is_rf_data_available(void);
-# 144 "./../lib/nrf24_lib.h"
+# 146 "./../lib/nrf24_lib.h"
 void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
-# 154 "./../lib/nrf24_lib.h"
+# 156 "./../lib/nrf24_lib.h"
 void nrf24_set_channel_frq(unsigned char rf_channel);
-# 164 "./../lib/nrf24_lib.h"
+# 166 "./../lib/nrf24_lib.h"
 unsigned char nrf24_get_channel_frq(void);
 
 
@@ -9521,6 +9521,12 @@ void nrf24_standby_I(void);
 
 
 void nrf24_flush_tx_rx(void);
+
+
+
+
+
+uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 7 "main.c" 2
 
 
@@ -9550,7 +9556,6 @@ void main(void) {
     InitRadio();
 
     while (1) {
-# 48 "main.c"
         __nop();
     }
 }

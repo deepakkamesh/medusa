@@ -1,16 +1,16 @@
 Version 4.0 HI-TECH Software Intermediate Code
-"63 ./handler.h
-[; ;./handler.h: 63: struct Config {
+"64 ./handler.h
+[; ;./handler.h: 64: struct Config {
 [s S831 `a 1 `uc -> 3 `i `ui 1 ]
 [n S831 Config IsConfigured Address PingInterval ]
-"109 ./../lib/nrf24_lib.h
-[; ;./../lib/nrf24_lib.h: 109: void nrf24_rf_init();
+"111 ./../lib/nrf24_lib.h
+[; ;./../lib/nrf24_lib.h: 111: void nrf24_rf_init();
 [v _nrf24_rf_init `(v ~T0 @X0 0 e? ]
-"92
-[; ;./../lib/nrf24_lib.h: 92: void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+"94
+[; ;./../lib/nrf24_lib.h: 94: void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
 [v _nrf24_write_buff `(v ~T0 @X0 0 ef3`uc`*uc`uc ]
-"72
-[; ;./../lib/nrf24_lib.h: 72: void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
+"74
+[; ;./../lib/nrf24_lib.h: 74: void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
 [v _nrf24_write_register `(v ~T0 @X0 0 ef2`uc`uc ]
 [v F192 `(v ~T0 @X0 1 tf1`ul ]
 "12 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/builtins.h
@@ -19,12 +19,21 @@ Version 4.0 HI-TECH Software Intermediate Code
 "59 ./handler.h
 [; ;./handler.h: 59: unsigned char MakePingPkt(unsigned char *buffer);
 [v _MakePingPkt `(uc ~T0 @X0 0 ef1`*uc ]
-"126 ./../lib/nrf24_lib.h
-[; ;./../lib/nrf24_lib.h: 126: void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
+"128 ./../lib/nrf24_lib.h
+[; ;./../lib/nrf24_lib.h: 128: void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
 [v _nrf24_send_rf_data `(v ~T0 @X0 0 ef2`*uc`uc ]
-"82
-[; ;./../lib/nrf24_lib.h: 82: unsigned char nrf24_read_register(unsigned char mnemonic_addr);
+"84
+[; ;./../lib/nrf24_lib.h: 84: unsigned char nrf24_read_register(unsigned char mnemonic_addr);
 [v _nrf24_read_register `(uc ~T0 @X0 0 ef1`uc ]
+"184
+[; ;./../lib/nrf24_lib.h: 184: uint8_t nrf24_read_dynamic_payload_length(void) ;
+[v _nrf24_read_dynamic_payload_length `(uc ~T0 @X0 0 ef ]
+"146
+[; ;./../lib/nrf24_lib.h: 146: void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
+[v _nrf24_read_rf_data `(v ~T0 @X0 0 ef2`*uc`uc ]
+"60 ./handler.h
+[; ;./handler.h: 60: void ProcessAckPayload(unsigned char * buffer,uint8_t sz) ;
+[v _ProcessAckPayload `(v ~T0 @X0 0 ef2`*uc`uc ]
 "7251 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7251:     struct {
 [s S371 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -40,12 +49,6 @@ Version 4.0 HI-TECH Software Intermediate Code
 "7272
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7272: extern volatile LATAbits_t LATAbits __attribute__((address(0xF89)));
 [v _LATAbits `VS370 ~T0 @X0 0 e@3977 ]
-"144 ./../lib/nrf24_lib.h
-[; ;./../lib/nrf24_lib.h: 144: void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
-[v _nrf24_read_rf_data `(v ~T0 @X0 0 ef2`*uc`uc ]
-"60 ./handler.h
-[; ;./handler.h: 60: void ProcessAckPayload(unsigned char * buffer) ;
-[v _ProcessAckPayload `(v ~T0 @X0 0 ef1`*uc ]
 "55 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 55: __asm("ANSELA equ 0F38h");
 [; <" ANSELA equ 0F38h ;# ">
@@ -781,8 +784,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 "16610
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 16610: __asm("TOSU equ 0FFFh");
 [; <" TOSU equ 0FFFh ;# ">
-"54 ./handler.h
-[; ;./handler.h: 54: unsigned char DEFAULT_PIPE_ADDR[] = "hello";
+"55 ./handler.h
+[; ;./handler.h: 55: unsigned char DEFAULT_PIPE_ADDR[] = "hello";
 [v _DEFAULT_PIPE_ADDR `uc ~T0 @X0 -> 6 `i e ]
 [i _DEFAULT_PIPE_ADDR
 :U ..
@@ -804,10 +807,10 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;handler.c: 17: struct Config config;
 [v _config `S831 ~T0 @X0 1 e ]
 "19
-[; ;handler.c: 19: unsigned char bufferTX[32];
+[; ;handler.c: 19: uint8_t bufferTX[32];
 [v _bufferTX `uc ~T0 @X0 -> 32 `i e ]
 "20
-[; ;handler.c: 20: unsigned char bufferRX[32];
+[; ;handler.c: 20: uint8_t bufferRX[32];
 [v _bufferRX `uc ~T0 @X0 -> 32 `i e ]
 "22
 [; ;handler.c: 22: void InitRadio(void) {
@@ -891,125 +894,123 @@ Version 4.0 HI-TECH Software Intermediate Code
 "60
 [; ;handler.c: 60:     nrf24_send_rf_data(bufferTX, sz);
 [e ( _nrf24_send_rf_data (2 , &U _bufferTX _sz ]
-"65
-[; ;handler.c: 65:     unsigned char status = 0;
+"63
+[; ;handler.c: 63:     unsigned char status = 0;
 [v _status `uc ~T0 @X0 1 a ]
 [e = _status -> -> 0 `i `uc ]
-"66
-[; ;handler.c: 66:     while (1) {
+"64
+[; ;handler.c: 64:     while (1) {
 [e :U 836 ]
 {
-"67
-[; ;handler.c: 67:         status = nrf24_read_register(0x07);
+"65
+[; ;handler.c: 65:         status = nrf24_read_register(0x07);
 [e = _status ( _nrf24_read_register (1 -> -> 7 `i `uc ]
-"68
-[; ;handler.c: 68:         if ((status & 0x20) || (status & 0x10)) {
+"66
+[; ;handler.c: 66:         if ((status & 0x20) || (status & 0x10)) {
 [e $ ! || != & -> _status `i -> 32 `i -> 0 `i != & -> _status `i -> 16 `i -> 0 `i 838  ]
 {
-"69
-[; ;handler.c: 69:             break;
+"67
+[; ;handler.c: 67:             break;
 [e $U 837  ]
-"70
-[; ;handler.c: 70:         }
+"68
+[; ;handler.c: 68:         }
 }
 [e :U 838 ]
-"71
-[; ;handler.c: 71:     }
+"69
+[; ;handler.c: 69:     }
 }
 [e :U 835 ]
 [e $U 836  ]
 [e :U 837 ]
-"73
-[; ;handler.c: 73:     nrf24_write_register(0x07, 0x70);
+"71
+[; ;handler.c: 71:     nrf24_write_register(0x07, 0x70);
 [e ( _nrf24_write_register (2 , -> -> 7 `i `uc -> -> 112 `i `uc ]
-"76
-[; ;handler.c: 76:     if (status & 0x10) {
+"74
+[; ;handler.c: 74:     if (status & 0x10) {
 [e $ ! != & -> _status `i -> 16 `i -> 0 `i 839  ]
 {
-"77
-[; ;handler.c: 77:         do { LATAbits.LATA1 = 1; } while(0);
-[e :U 842 ]
-{
-[e = . . _LATAbits 0 1 -> -> 1 `i `uc ]
-}
-[e :U 841 ]
-"78
-[; ;handler.c: 78:         return;
+"75
+[; ;handler.c: 75:         return;
 [e $UE 833  ]
-"80
-[; ;handler.c: 80:     }
+"77
+[; ;handler.c: 77:     }
 }
 [e :U 839 ]
-"83
-[; ;handler.c: 83:     if (status & 0x40) {
-[e $ ! != & -> _status `i -> 64 `i -> 0 `i 843  ]
+"80
+[; ;handler.c: 80:     if (status & 0x40) {
+[e $ ! != & -> _status `i -> 64 `i -> 0 `i 840  ]
 {
+"81
+[; ;handler.c: 81:         uint8_t sz = nrf24_read_dynamic_payload_length();
+[v _sz `uc ~T0 @X0 1 a ]
+[e = _sz ( _nrf24_read_dynamic_payload_length ..  ]
+"82
+[; ;handler.c: 82:         nrf24_read_rf_data(bufferRX, sz);
+[e ( _nrf24_read_rf_data (2 , &U _bufferRX _sz ]
+"83
+[; ;handler.c: 83:         ProcessAckPayload(bufferRX, sz);
+[e ( _ProcessAckPayload (2 , &U _bufferRX _sz ]
 "84
-[; ;handler.c: 84:         nrf24_read_rf_data(bufferRX, sizeof (bufferRX));
-[e ( _nrf24_read_rf_data (2 , &U _bufferRX -> -> # _bufferRX `ui `uc ]
-"85
-[; ;handler.c: 85:         ProcessAckPayload(bufferRX);
-[e ( _ProcessAckPayload (1 &U _bufferRX ]
-"86
-[; ;handler.c: 86:     }
+[; ;handler.c: 84:     }
 }
-[e :U 843 ]
-"88
-[; ;handler.c: 88: }
+[e :U 840 ]
+"86
+[; ;handler.c: 86: }
 [e :UE 833 ]
 }
-"90
-[; ;handler.c: 90: void ProcessAckPayload(unsigned char * buffer) {
-[v _ProcessAckPayload `(v ~T0 @X0 1 ef1`*uc ]
+"88
+[; ;handler.c: 88: void ProcessAckPayload(unsigned char * buffer, uint8_t sz) {
+[v _ProcessAckPayload `(v ~T0 @X0 1 ef2`*uc`uc ]
 {
 [e :U _ProcessAckPayload ]
 [v _buffer `*uc ~T0 @X0 1 r1 ]
+[v _sz `uc ~T0 @X0 1 r2 ]
 [f ]
-"91
-[; ;handler.c: 91:     do { LATAbits.LATA1 = ~LATAbits.LATA1; } while(0);
-[e :U 847 ]
+"89
+[; ;handler.c: 89:     do { LATAbits.LATA1 = ~LATAbits.LATA1; } while(0);
+[e :U 844 ]
 {
 [e = . . _LATAbits 0 1 -> ~ -> . . _LATAbits 0 1 `i `uc ]
 }
-[e :U 846 ]
-"92
-[; ;handler.c: 92: }
-[e :UE 844 ]
+[e :U 843 ]
+"90
+[; ;handler.c: 90: }
+[e :UE 841 ]
 }
-"94
-[; ;handler.c: 94: unsigned char MakePingPkt(unsigned char *buffer) {
+"92
+[; ;handler.c: 92: unsigned char MakePingPkt(unsigned char *buffer) {
 [v _MakePingPkt `(uc ~T0 @X0 1 ef1`*uc ]
 {
 [e :U _MakePingPkt ]
 [v _buffer `*uc ~T0 @X0 1 r1 ]
 [f ]
-"95
-[; ;handler.c: 95:     buffer[0] = 0x02;
+"93
+[; ;handler.c: 93:     buffer[0] = 0x02;
 [e = *U + _buffer * -> -> 0 `i `x -> -> # *U _buffer `i `x -> -> 2 `i `uc ]
-"96
-[; ;handler.c: 96:     for (char i = 0; i < 3; i++) {
+"94
+[; ;handler.c: 94:     for (char i = 0; i < 3; i++) {
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-[e $ < -> _i `i -> 3 `i 849  ]
-[e $U 850  ]
-[e :U 849 ]
+[e $ < -> _i `i -> 3 `i 846  ]
+[e $U 847  ]
+[e :U 846 ]
 {
-"97
-[; ;handler.c: 97:         buffer[i + 1] = config.Address[i];
+"95
+[; ;handler.c: 95:         buffer[i + 1] = config.Address[i];
 [e = *U + _buffer * -> + -> _i `i -> 1 `i `x -> -> # *U _buffer `i `x *U + &U . _config 1 * -> _i `ux -> -> # *U &U . _config 1 `ui `ux ]
-"98
-[; ;handler.c: 98:     }
+"96
+[; ;handler.c: 96:     }
 }
 [e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 3 `i 849  ]
-[e :U 850 ]
+[e $ < -> _i `i -> 3 `i 846  ]
+[e :U 847 ]
 }
-"99
-[; ;handler.c: 99:     return 3 + 1;
+"97
+[; ;handler.c: 97:     return 3 + 1;
 [e ) -> + -> 3 `i -> 1 `i `uc ]
-[e $UE 848  ]
-"100
-[; ;handler.c: 100: }
-[e :UE 848 ]
+[e $UE 845  ]
+"98
+[; ;handler.c: 98: }
+[e :UE 845 ]
 }

@@ -16,8 +16,8 @@
 uint32_t Ticks = 0; // Ticks of timer.
 struct Config config; // Board config.
 
-unsigned char bufferTX[32];
-unsigned char bufferRX[32];
+uint8_t bufferTX[32];
+uint8_t bufferRX[32];
 
 void InitRadio(void) {
     nrf24_rf_init();
@@ -72,20 +72,20 @@ void TimerInterruptHandler(void) {
 
     // MAX_RT exceeded.
     if (status & 0x10) {
-        LED_SetHigh();
         return;
         // TODO: Update primary address to another pipe address.
     }
 
     // Check for ack payload. 
     if (status & 0x40) {
-        nrf24_read_rf_data(bufferRX, sizeof (bufferRX));
-        ProcessAckPayload(bufferRX);
+        uint8_t sz = nrf24_read_dynamic_payload_length();
+        nrf24_read_rf_data(bufferRX, sz);
+        ProcessAckPayload(bufferRX, sz);
     }
 
 }
 
-void ProcessAckPayload(unsigned char * buffer) {
+void ProcessAckPayload(unsigned char * buffer, uint8_t sz) {
     LED_Toggle();
 }
 
@@ -96,14 +96,3 @@ unsigned char MakePingPkt(unsigned char *buffer) {
     }
     return ADDR_LEN + 1;
 }
-
-/*
-nrf24_send_rf_data(bufferTX, sizeof (bufferTX));
-        // Check for transmit and ack payload.
-        while ((nrf24_read_register(NRF24_MEM_STATUSS) & 0x60) != 0x60) {
-        }
-        nrf24_read_rf_data(bufferRX, sizeof (bufferRX));
-        LED_Toggle();
-        sprintf((char*) bufferTX, "%s", bufferRX);
-        val++;
-        __delay_ms(500); // LED_Toggle();*/

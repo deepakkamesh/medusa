@@ -32,19 +32,6 @@ void main(void) {
     InitRadio();
 
     while (1) {
-      /*  // Add your application code
-        static char val = 0;
-        // sprintf((char*) bufferTX, "Hello Arduino", val);
-        nrf24_send_rf_data(bufferTX, sizeof (bufferTX));
-
-        // Check for transmit and ack payload.
-        while ((nrf24_read_register(NRF24_MEM_STATUSS) & 0x60) != 0x60) {
-        }
-        nrf24_read_rf_data(bufferRX, sizeof (bufferRX));
-        LED_Toggle();
-        sprintf((char*) bufferTX, "%s", bufferRX);
-        val++;
-        __delay_ms(500); // LED_Toggle();*/
         NOP();
     }
 }

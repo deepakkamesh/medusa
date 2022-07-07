@@ -13,9 +13,14 @@
 
 
 # 1 "../lib/nrf24_lib.h" 1
-# 10 "../lib/nrf24_lib.h"
-# 1 "../lib/../18f26K22-rev0.01.X/nRF24.h" 1
-# 34 "../lib/../18f26K22-rev0.01.X/nRF24.h"
+
+
+
+
+
+
+
+
 # 1 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 1 3
 # 18 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 3
 extern const char __xc8_OPTIM_SPEED;
@@ -9226,7 +9231,10 @@ __attribute__((__unsupported__("The " "Write_b_eep" " routine is no longer suppo
 unsigned char __t1rd16on(void);
 unsigned char __t3rd16on(void);
 # 34 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 2 3
-# 35 "../lib/../18f26K22-rev0.01.X/nRF24.h" 2
+# 9 "../lib/nrf24_lib.h" 2
+
+# 1 "../lib/../18f26K22-rev0.01.X/nRF24.h" 1
+# 35 "../lib/../18f26K22-rev0.01.X/nRF24.h"
 # 1 "./mcc_generated_files/mcc.h" 1
 # 50 "./mcc_generated_files/mcc.h"
 # 1 "./mcc_generated_files/device_config.h" 1
@@ -9458,13 +9466,13 @@ typedef enum {
     RX_MODE = 1,
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
-# 72 "../lib/nrf24_lib.h"
+# 74 "../lib/nrf24_lib.h"
 void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
-# 82 "../lib/nrf24_lib.h"
+# 84 "../lib/nrf24_lib.h"
 unsigned char nrf24_read_register(unsigned char mnemonic_addr);
-# 92 "../lib/nrf24_lib.h"
+# 94 "../lib/nrf24_lib.h"
 void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
-# 102 "../lib/nrf24_lib.h"
+# 104 "../lib/nrf24_lib.h"
 void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
 
 
@@ -9481,15 +9489,15 @@ void nrf24_rf_init();
 
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
-# 126 "../lib/nrf24_lib.h"
+# 128 "../lib/nrf24_lib.h"
 void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
-# 135 "../lib/nrf24_lib.h"
+# 137 "../lib/nrf24_lib.h"
 unsigned char nrf24_is_rf_data_available(void);
-# 144 "../lib/nrf24_lib.h"
+# 146 "../lib/nrf24_lib.h"
 void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
-# 154 "../lib/nrf24_lib.h"
+# 156 "../lib/nrf24_lib.h"
 void nrf24_set_channel_frq(unsigned char rf_channel);
-# 164 "../lib/nrf24_lib.h"
+# 166 "../lib/nrf24_lib.h"
 unsigned char nrf24_get_channel_frq(void);
 
 
@@ -9503,6 +9511,12 @@ void nrf24_standby_I(void);
 
 
 void nrf24_flush_tx_rx(void);
+
+
+
+
+
+uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 6 "../lib/nrf24_lib.c" 2
 
 
@@ -9529,6 +9543,15 @@ unsigned char nrf24_read_register(unsigned char mnemonic_addr) {
     unsigned char byte0;
     do { LATCbits.LATC1 = 0; } while(0);
     SPI1_ExchangeByte(0x00 | (mnemonic_addr & 0x1F));
+    byte0 = SPI1_ExchangeByte(0xFF);
+    do { LATCbits.LATC1 = 1; } while(0);
+    return byte0;
+}
+
+uint8_t nrf24_read_dynamic_payload_length(void) {
+    uint8_t byte0;
+    do { LATCbits.LATC1 = 0; } while(0);
+    SPI1_ExchangeByte(0x60);
     byte0 = SPI1_ExchangeByte(0xFF);
     do { LATCbits.LATC1 = 1; } while(0);
     return byte0;

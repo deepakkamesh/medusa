@@ -7,7 +7,7 @@
 [e E355 . `uc
 SPI1_DEFAULT 0
 ]
-"61 /Users/dkg/Projects/Medusa/Board_Firmware/lib/nrf24_lib.c
+"70 /Users/dkg/Projects/Medusa/Board_Firmware/lib/nrf24_lib.c
 [e E6078 . `uc
 SPI1_DEFAULT 0
 ]
@@ -17,17 +17,19 @@ SPI1_DEFAULT 0
 "27
 [v _nrf24_read_register nrf24_read_register `(uc  1 e 1 0 ]
 "36
+[v _nrf24_read_dynamic_payload_length nrf24_read_dynamic_payload_length `(uc  1 e 1 0 ]
+"45
 [v _nrf24_write_buff nrf24_write_buff `(v  1 e 1 0 ]
 [v i2_nrf24_write_buff nrf24_write_buff `(v  1 e 1 0 ]
-"48
+"57
 [v _nrf24_read_buff nrf24_read_buff `(v  1 e 1 0 ]
-"60
-[v _nrf24_rf_init nrf24_rf_init `(v  1 e 1 0 ]
 "69
+[v _nrf24_rf_init nrf24_rf_init `(v  1 e 1 0 ]
+"78
 [v _nrf24_send_rf_data nrf24_send_rf_data `(v  1 e 1 0 ]
-"83
+"92
 [v _nrf24_read_rf_data nrf24_read_rf_data `(v  1 e 1 0 ]
-"89
+"98
 [v _nrf24_flush_tx_rx nrf24_flush_tx_rx `(v  1 e 1 0 ]
 "4 /Applications/microchip/xc8/v2.36/pic/sources/c99/common/fleq.c
 [v ___fleq __fleq `(b  1 e 0 0 ]
@@ -59,9 +61,9 @@ SPI1_DEFAULT 0
 [v _InitRadio InitRadio `(v  1 e 1 0 ]
 "52
 [v _TimerInterruptHandler TimerInterruptHandler `(v  1 e 1 0 ]
-"90
+"88
 [v _ProcessAckPayload ProcessAckPayload `(v  1 e 1 0 ]
-"94
+"92
 [v _MakePingPkt MakePingPkt `(uc  1 e 1 0 ]
 "11 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/main.c
 [v _main main `(v  1 e 1 0 ]
@@ -92,7 +94,7 @@ SPI1_DEFAULT 0
 [v _TMR1_SetInterruptHandler TMR1_SetInterruptHandler `(v  1 e 1 0 ]
 "176
 [v _TMR1_DefaultInterruptHandler TMR1_DefaultInterruptHandler `(v  1 e 1 0 ]
-"54 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/handler.h
+"55 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/handler.h
 [v _DEFAULT_PIPE_ADDR DEFAULT_PIPE_ADDR `[6]uc  1 e 6 0 ]
 "53 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [v _ANSELA ANSELA `VEuc  1 e 1 @3896 ]
@@ -104,7 +106,7 @@ SPI1_DEFAULT 0
 [v _WPUB WPUB `VEuc  1 e 1 @3937 ]
 "7245
 [v _LATA LATA `VEuc  1 e 1 @3977 ]
-[s S789 . 1 `uc 1 LATA0 1 0 :1:0 
+[s S805 . 1 `uc 1 LATA0 1 0 :1:0 
 `uc 1 LATA1 1 0 :1:1 
 `uc 1 LATA2 1 0 :1:2 
 `uc 1 LATA3 1 0 :1:3 
@@ -114,7 +116,7 @@ SPI1_DEFAULT 0
 `uc 1 LATA7 1 0 :1:7 
 ]
 "7272
-[s S798 . 1 `uc 1 LA0 1 0 :1:0 
+[s S814 . 1 `uc 1 LA0 1 0 :1:0 
 `uc 1 LA1 1 0 :1:1 
 `uc 1 LA2 1 0 :1:2 
 `uc 1 LA3 1 0 :1:3 
@@ -123,13 +125,13 @@ SPI1_DEFAULT 0
 `uc 1 LA6 1 0 :1:6 
 `uc 1 LA7 1 0 :1:7 
 ]
-[u S807 . 1 `S789 1 . 1 0 `S798 1 . 1 0 ]
-[v _LATAbits LATAbits `VES807  1 e 1 @3977 ]
+[u S823 . 1 `S805 1 . 1 0 `S814 1 . 1 0 ]
+[v _LATAbits LATAbits `VES823  1 e 1 @3977 ]
 "7357
 [v _LATB LATB `VEuc  1 e 1 @3978 ]
 "7469
 [v _LATC LATC `VEuc  1 e 1 @3979 ]
-[s S865 . 1 `uc 1 LATC0 1 0 :1:0 
+[s S872 . 1 `uc 1 LATC0 1 0 :1:0 
 `uc 1 LATC1 1 0 :1:1 
 `uc 1 LATC2 1 0 :1:2 
 `uc 1 LATC3 1 0 :1:3 
@@ -139,7 +141,7 @@ SPI1_DEFAULT 0
 `uc 1 LATC7 1 0 :1:7 
 ]
 "7496
-[s S874 . 1 `uc 1 LC0 1 0 :1:0 
+[s S881 . 1 `uc 1 LC0 1 0 :1:0 
 `uc 1 LC1 1 0 :1:1 
 `uc 1 LC2 1 0 :1:2 
 `uc 1 LC3 1 0 :1:3 
@@ -148,8 +150,8 @@ SPI1_DEFAULT 0
 `uc 1 LC6 1 0 :1:6 
 `uc 1 LC7 1 0 :1:7 
 ]
-[u S883 . 1 `S865 1 . 1 0 `S874 1 . 1 0 ]
-[v _LATCbits LATCbits `VES883  1 e 1 @3979 ]
+[u S890 . 1 `S872 1 . 1 0 `S881 1 . 1 0 ]
+[v _LATCbits LATCbits `VES890  1 e 1 @3979 ]
 "7581
 [v _TRISA TRISA `VEuc  1 e 1 @3986 ]
 "7803
@@ -399,7 +401,7 @@ SPI1_DEFAULT 0
 "11 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/main.c
 [v _main main `(v  1 e 1 0 ]
 {
-"50
+"37
 } 0
 "50 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/mcc.c
 [v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
@@ -414,7 +416,7 @@ SPI1_DEFAULT 0
 "172
 [v _TMR1_SetInterruptHandler TMR1_SetInterruptHandler `(v  1 e 1 0 ]
 {
-[v TMR1_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 17 ]
+[v TMR1_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 18 ]
 "174
 } 0
 "62 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/spi1.c
@@ -447,23 +449,23 @@ SPI1_DEFAULT 0
 {
 [v nrf24_write_register@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
 [v nrf24_write_register@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
-[v nrf24_write_register@value value `uc  1 p 1 18 ]
-[v nrf24_write_register@mnemonic_addr mnemonic_addr `uc  1 a 1 19 ]
+[v nrf24_write_register@value value `uc  1 p 1 19 ]
+[v nrf24_write_register@mnemonic_addr mnemonic_addr `uc  1 a 1 20 ]
 "25
 } 0
-"36
+"45
 [v _nrf24_write_buff nrf24_write_buff `(v  1 e 1 0 ]
 {
 [v nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
-"37
-[v nrf24_write_buff@i i `uc  1 a 1 22 ]
-"36
-[v nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
-[v nrf24_write_buff@buffer buffer `*.39uc  1 p 2 18 ]
-[v nrf24_write_buff@bytes bytes `uc  1 p 1 20 ]
-"38
-[v nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 21 ]
 "46
+[v nrf24_write_buff@i i `uc  1 a 1 23 ]
+"45
+[v nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
+[v nrf24_write_buff@buffer buffer `*.39uc  1 p 2 19 ]
+[v nrf24_write_buff@bytes bytes `uc  1 p 1 21 ]
+"47
+[v nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 22 ]
+"55
 } 0
 "92 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/spi1.c
 [v _SPI1_ExchangeByte SPI1_ExchangeByte `(uc  1 e 1 0 ]
@@ -471,13 +473,13 @@ SPI1_DEFAULT 0
 [v SPI1_ExchangeByte@data data `uc  1 a 1 wreg ]
 [v SPI1_ExchangeByte@data data `uc  1 a 1 wreg ]
 "94
-[v SPI1_ExchangeByte@data data `uc  1 a 1 17 ]
+[v SPI1_ExchangeByte@data data `uc  1 a 1 18 ]
 "98
 } 0
-"60 /Users/dkg/Projects/Medusa/Board_Firmware/lib/nrf24_lib.c
+"69 /Users/dkg/Projects/Medusa/Board_Firmware/lib/nrf24_lib.c
 [v _nrf24_rf_init nrf24_rf_init `(v  1 e 1 0 ]
 {
-"66
+"75
 } 0
 "72 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/spi1.c
 [v _SPI1_Open SPI1_Open `(a  1 e 1 0 ]
@@ -485,7 +487,7 @@ SPI1_DEFAULT 0
 [v SPI1_Open@spi1UniqueConfiguration spi1UniqueConfiguration `E355  1 a 1 wreg ]
 [v SPI1_Open@spi1UniqueConfiguration spi1UniqueConfiguration `E355  1 a 1 wreg ]
 "74
-[v SPI1_Open@spi1UniqueConfiguration spi1UniqueConfiguration `E355  1 a 1 18 ]
+[v SPI1_Open@spi1UniqueConfiguration spi1UniqueConfiguration `E355  1 a 1 19 ]
 "85
 } 0
 "58 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/interrupt_manager.c
@@ -506,58 +508,60 @@ SPI1_DEFAULT 0
 "52 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/handler.c
 [v _TimerInterruptHandler TimerInterruptHandler `(v  1 e 1 0 ]
 {
-"65
-[v TimerInterruptHandler@status status `uc  1 a 1 10 ]
+"81
+[v TimerInterruptHandler@sz_857 sz `uc  1 a 1 10 ]
+"63
+[v TimerInterruptHandler@status status `uc  1 a 1 11 ]
 "59
 [v TimerInterruptHandler@sz sz `uc  1 a 1 9 ]
-"88
+"86
 } 0
-"69 /Users/dkg/Projects/Medusa/Board_Firmware/lib/nrf24_lib.c
+"78 /Users/dkg/Projects/Medusa/Board_Firmware/lib/nrf24_lib.c
 [v _nrf24_send_rf_data nrf24_send_rf_data `(v  1 e 1 0 ]
 {
 [v nrf24_send_rf_data@buffer buffer `*.39uc  1 p 2 6 ]
 [v nrf24_send_rf_data@sz sz `uc  1 p 1 8 ]
-"74
+"83
 } 0
-"36
+"45
 [v i2_nrf24_write_buff nrf24_write_buff `(v  1 e 1 0 ]
 {
 [v i2nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
-"37
+"46
 [v i2nrf24_write_buff@i i `uc  1 a 1 5 ]
-"36
+"45
 [v i2nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
 [v i2nrf24_write_buff@buffer buffer `*.39uc  1 p 2 1 ]
 [v i2nrf24_write_buff@bytes bytes `uc  1 p 1 3 ]
-"38
+"47
 [v i2nrf24_write_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 4 ]
-"46
+"55
 } 0
-"83
+"92
 [v _nrf24_read_rf_data nrf24_read_rf_data `(v  1 e 1 0 ]
 {
 [v nrf24_read_rf_data@buffer buffer `*.39uc  1 p 2 6 ]
 [v nrf24_read_rf_data@sz sz `uc  1 p 1 8 ]
-"87
+"96
 } 0
-"48
+"57
 [v _nrf24_read_buff nrf24_read_buff `(v  1 e 1 0 ]
 {
 [v nrf24_read_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
-"49
+"58
 [v nrf24_read_buff@i i `uc  1 a 1 5 ]
-"48
+"57
 [v nrf24_read_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 wreg ]
 [v nrf24_read_buff@buffer buffer `*.39uc  1 p 2 1 ]
 [v nrf24_read_buff@bytes bytes `uc  1 p 1 3 ]
-"50
+"59
 [v nrf24_read_buff@mnemonic_addr mnemonic_addr `uc  1 a 1 4 ]
-"58
+"67
 } 0
-"89
+"98
 [v _nrf24_flush_tx_rx nrf24_flush_tx_rx `(v  1 e 1 0 ]
 {
-"104
+"113
 } 0
 "8
 [v i2_nrf24_write_register nrf24_write_register `(v  1 e 1 0 ]
@@ -580,6 +584,13 @@ SPI1_DEFAULT 0
 [v nrf24_read_register@mnemonic_addr mnemonic_addr `uc  1 a 1 1 ]
 "34
 } 0
+"36
+[v _nrf24_read_dynamic_payload_length nrf24_read_dynamic_payload_length `(uc  1 e 1 0 ]
+{
+"37
+[v nrf24_read_dynamic_payload_length@byte0 byte0 `uc  1 a 1 1 ]
+"43
+} 0
 "92 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/spi1.c
 [v i2_SPI1_ExchangeByte SPI1_ExchangeByte `(uc  1 e 1 0 ]
 {
@@ -599,20 +610,21 @@ SPI1_DEFAULT 0
 [v ___llmod@divisor divisor `ul  1 p 4 4 ]
 "25
 } 0
-"90 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/handler.c
+"88 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/handler.c
 [v _ProcessAckPayload ProcessAckPayload `(v  1 e 1 0 ]
 {
 [v ProcessAckPayload@buffer buffer `*.39uc  1 p 2 0 ]
-"92
+[v ProcessAckPayload@sz sz `uc  1 p 1 2 ]
+"90
 } 0
-"94
+"92
 [v _MakePingPkt MakePingPkt `(uc  1 e 1 0 ]
 {
-"96
-[v MakePingPkt@i i `uc  1 a 1 4 ]
 "94
+[v MakePingPkt@i i `uc  1 a 1 4 ]
+"92
 [v MakePingPkt@buffer buffer `*.39uc  1 p 2 0 ]
-"100
+"98
 } 0
 "121 /Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/tmr1.c
 [v _TMR1_WriteTimer TMR1_WriteTimer `(v  1 e 1 0 ]
