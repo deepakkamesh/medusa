@@ -1,55 +1,62 @@
 
-const byte address[6] = "hello";
-//const byte address[6] = {0xe1, 0xe1, 0xe1, 0xe1, 0xe1};
-char ack[10] = "hell";
-int cnt = 0;
-
-void RadioSetup(RF24 radio) {
+int RadioSetup() {
 
   if (!radio.begin()) {
-    Serial.println("Failed");
-    while (1) {};
+    return 0;
   }
 
-  Serial.println("success");
-  radio.setAutoAck(true);
-
-  if (radio.isChipConnected()) {
-    Serial.println("yay");
-  } else {
-    Serial.println("nop");
+  if (!radio.isChipConnected()) {
+    return 0;
   }
 
-  radio.openReadingPipe(0, address);
-  radio.setPALevel(RF24_PA_MIN);
-
-  //PIC STUFF
+  // Set default radio params.
+  radio.setPALevel(RF24_PA_MAX);
+  radio.setAddressWidth(5);
   radio.setDataRate(RF24_2MBPS);
-  radio.setChannel(115);
   radio.setCRCLength(RF24_CRC_8);
 
+  // Other Enhanced Shockburt.
+  radio.setAutoAck(true);
   radio.enableDynamicPayloads();
   radio.enableAckPayload();
-  radio.writeAckPayload(0, ack, sizeof(ack));
+
+  // Set params from config struct.
+  radio.setChannel(Config.nrf24Channel);
+  radio.openReadingPipe(0, Config.pipe_addr_p0);
+  radio.openReadingPipe(1, Config.pipe_addr_p1);
+  radio.openReadingPipe(2, Config.pipe_addr_p2);
+  radio.openReadingPipe(3, Config.pipe_addr_p3);
+  radio.openReadingPipe(4, Config.pipe_addr_p4);
+  radio.openReadingPipe(5, Config.pipe_addr_p5);
+
 
   radio.startListening();
+  return 1;
 }
 
 
-void RadioLoop(RF24 radio) {
-  if (!radio.available()) {
+void RadioLoop() {
+  uint8_t pipeNum;
+  if (!radio.available(&pipeNum)) {
     return;
   }
-  char text[32] = "";
-  radio.read(&text, sizeof(text));
-  sprintf(ack, "Ack %d", cnt);
-  radio.writeAckPayload(0, ack, sizeof(ack));
 
-  for (int i = 0; i < strlen(text); i++) {
-    Serial.print(text[i], HEX);
+  int sz = radio.getDynamicPayloadSize();
+  radio.read(&bufferRX, sizeof(bufferRX));
+
+  SendRadioPacket(pipeNum, bufferRX, sz);
+
+  for (int i = 0; i < sz; i++) {
+    Serial.print(bufferRX[i], HEX);
     Serial.print(" ");
   }
   Serial.println("");
+  
+  // Send Ack payload.
+  char ack[10] = "hell";
+  int cnt = 0;
+  //sprintf(ack, "Ack %d", cnt);
+  radio.writeAckPayload(0, ack, sizeof(ack));
   cnt++;
 
 }

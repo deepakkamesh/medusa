@@ -1,3 +1,4 @@
+// Sender.
 package main
 
 import (
@@ -10,12 +11,9 @@ import (
 )
 
 func main() {
-	hostName := "localhost"
-	portNum := "6000"
 
-	service := hostName + ":" + portNum
-
-	RemoteAddr, err := net.ResolveUDPAddr("udp", service)
+	hostPort := os.Args[2]
+	RemoteAddr, err := net.ResolveUDPAddr("udp", hostPort)
 
 	//LocalAddr := nil
 	// see https://golang.org/pkg/net/#DialUDP
@@ -29,13 +27,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Established connection to %s \n", service)
+	log.Printf("Established connection to %s \n", hostPort)
 	log.Printf("Remote UDP address : %s \n", conn.RemoteAddr().String())
 	log.Printf("Local UDP client address : %s \n", conn.LocalAddr().String())
 
 	defer conn.Close()
 
-	pkt := strings.Split(os.Args[2], ",")
+	pkt := strings.Split(os.Args[3], ",")
 	fmt.Println(pkt)
 	message := []byte{}
 	for i := 0; i < len(pkt); i++ {

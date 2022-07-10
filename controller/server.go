@@ -13,8 +13,8 @@ func handleUDPConnection(conn *net.UDPConn) {
 	buffer := make([]byte, 1024)
 
 	n, addr, err := conn.ReadFromUDP(buffer)
-
-	fmt.Printf("Rcvd %v -- ", addr)
+	_ = addr
+	fmt.Printf("Rcvd %db %v -- ", n, addr.IP)
 	for i := 0; i < n; i++ {
 		fmt.Printf("%X,", buffer[i])
 	}

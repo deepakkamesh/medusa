@@ -4,16 +4,22 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
+#define DEBUG 1
+#define LED_ONBOARD 16
 
-RF24 nrf24(5, 4); // CE, CSN
+// Function definitions.
+int SendRadioPacket(uint8_t * buff, uint8_t sz);
+
+
+RF24 radio(5, 4); // CE, CSN
 
 struct RelayConfig {
   uint8_t pipe_addr_p0[5];
   uint8_t pipe_addr_p1[5];
-  uint8_t pipe_addr_p2;
-  uint8_t pipe_addr_p3;
-  uint8_t pipe_addr_p4;
-  uint8_t pipe_addr_p5;
+  uint8_t pipe_addr_p2[1];
+  uint8_t pipe_addr_p3[1];
+  uint8_t pipe_addr_p4[1];
+  uint8_t pipe_addr_p5[1];
   bool isConfigured;
   uint8_t nrf24Channel;
 };
@@ -21,27 +27,25 @@ struct RelayConfig {
 struct RelayConfig Config = {
   .pipe_addr_p0 = {'h', 'e', 'l', 'l', 'o'},
   .pipe_addr_p1 = {'w', 'o', 'r', 'l', 'd'},
-  .pipe_addr_p2 = '1',
-  .pipe_addr_p3 = '2',
-  .pipe_addr_p4 = '3',
-  .pipe_addr_p5 = '4',
+  .pipe_addr_p2 = {'1'},
+  .pipe_addr_p3 = {'2'},
+  .pipe_addr_p4 = {'3'},
+  .pipe_addr_p5 = {'4'},
   .isConfigured = false,
   .nrf24Channel = 115,
 };
 
-
-
 void setup() {
   Serial.begin(9600);
+  pinMode(LED_ONBOARD, OUTPUT);
 
-  //RadioSetup(nrf24);
-
-  // Wifi Setup.
   WifiConnect();
   RelaySetup();
+  RadioSetup();
+
 }
 
 void loop() {
-  // RadioLoop(nrf24);
+  RadioLoop();
   IpLoop();
 }
