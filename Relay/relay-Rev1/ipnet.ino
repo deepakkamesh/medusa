@@ -94,8 +94,8 @@ int RelaySetup(void) {
 
 #ifdef DEBUG
     Serial.printf("Mac: %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-    PrintPkt(Config.pipe_addr_p0, 5);
-    PrintPkt(Config.pipe_addr_p1, 5);
+    PrintPkt("Addr0",Config.pipe_addr_p0, 5);
+    PrintPkt("Addr1",Config.pipe_addr_p1, 5);
     Serial.printf("%02X\n", Config.pipe_addr_p2[0]);
     Serial.printf("%02X\n", Config.pipe_addr_p3[0]);
     Serial.printf("%02X\n", Config.pipe_addr_p4[0]);
@@ -107,10 +107,7 @@ int RelaySetup(void) {
 
 }
 
-
-
 void IpLoop(void) {
-
 
   int packetSize = Udp.parsePacket(); // check if there is a packet.
   if (!packetSize) {
@@ -118,32 +115,28 @@ void IpLoop(void) {
   }
 
   // receive incoming UDP packets
-  Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());
-  int len = Udp.read(bufferRX, 255);
-  if (len > 0)
-  {
-    bufferRX[len] = 0;
+  int sz = Udp.read(bufferRX, 255);
+  PrintPkt("Ctrller pkt:",bufferRX, sz);
+  uint8_t buffer[32];
+
+  switch (bufferRX[0]) {
+    case PKT_TYPE_RELAY_DATA:
+      for (int i = 0; i < sz - 2 ; i++) {
+        buffer[i] = bufferRX[0];
+      }
+      SendNetPacket(bufferRX[1], buffer, sz - 2) ;
   }
-  Serial.printf("UDP packet contents: %s\n", bufferRX);
-
-
-  /*
-    char reply[] = {1, 2, 0xFE, 4};
-
-    // Send return packet
-    UDP.beginPacket("192.168.1.116", 6000);
-    UDP.write(reply);
-    UDP.endPacket();
-    delay(1000);
-  */
 }
 
 
-void PrintPkt(uint8_t buff[], int len) {
+void PrintPkt(char *str, uint8_t buff[], int len) {
+#ifdef DEBUG
+  Serial.print(str);
   for (int i = 0; i < len; i++) {
-    Serial.printf("%02X,", buff[i]);
+    Serial.printf(" %02X,", buff[i]);
   }
   Serial.println();
+#endif
 }
 
 int SendError(uint8_t errorCode) {

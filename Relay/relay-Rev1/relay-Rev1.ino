@@ -8,8 +8,8 @@
 #define LED_ONBOARD 16
 
 // Function definitions.
-int SendRadioPacket(uint8_t * buff, uint8_t sz);
-
+//int SendRadioPacket(uint8_t * buff, uint8_t sz);
+///void SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz);
 
 RF24 radio(5, 4); // CE, CSN
 

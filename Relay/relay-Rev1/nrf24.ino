@@ -46,17 +46,10 @@ void RadioLoop() {
 
   SendRadioPacket(pipeNum, bufferRX, sz);
 
-  for (int i = 0; i < sz; i++) {
-    Serial.print(bufferRX[i], HEX);
-    Serial.print(" ");
-  }
-  Serial.println("");
-  
-  // Send Ack payload.
-  char ack[10] = "hell";
-  int cnt = 0;
-  //sprintf(ack, "Ack %d", cnt);
-  radio.writeAckPayload(0, ack, sizeof(ack));
-  cnt++;
+  PrintPkt("RadioPkt", bufferRX, sz);
+}
 
+
+void SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz) {
+  radio.writeAckPayload(pipeNum, data, sz);
 }
