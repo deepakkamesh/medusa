@@ -5,9 +5,9 @@ Linker command line:
 -W-3 --edf=/Applications/microchip/xc8/v2.36/pic/dat/en_msgs.txt -cn \
   -h+dist/default/production/18f26K22-rev0.01.X.production.sym \
   --cmf=dist/default/production/18f26K22-rev0.01.X.production.cmf -z \
-  -Q18F26K22 -o/tmp/xcZjgV9AF --defsym=__MPLAB_BUILD=1 \
+  -Q18F26K22 -o/tmp/xcmlij3zs --defsym=__MPLAB_BUILD=1 \
   -Mdist/default/production/18f26K22-rev0.01.X.production.map \
-  --md=/tmp/xcv779BnJ.dat -E1 -ver=XC8 Compiler --acfsm=1493 \
+  --md=/tmp/xccaLJsVl.dat -E1 -ver=XC8 Compiler --acfsm=1493 \
   -ACODE=00h-0FFFFh -ACONST=00h-0FFFFh -ASMALLCONST=01000h-010FFhx240 \
   -AMEDIUMCONST=01000h-0FFFFh -ACOMRAM=01h-05Fh -AABS1=00h-0F37h \
   -ABIGRAM=01h-0F37h -ARAM=060h-0FFh,0100h-01FFhx14,0F00h-0F37h \
@@ -26,7 +26,7 @@ Linker command line:
   -pfarbss=FARRAM,fardata=FARRAM,nvFARRAM=FARRAM \
   -pintsave_regs=BIGRAM,bigbss=BIGRAM,bigdata=BIGRAM -pbss=RAM \
   -pidata=CODE,irdata=CODE,ibigdata=CODE,ifardata=CODE -prparam=COMRAM \
-  /tmp/xcZTdgDV5.o dist/default/production/18f26K22-rev0.01.X.production.o 
+  /tmp/xcNnm8ww0.o dist/default/production/18f26K22-rev0.01.X.production.o 
 
 Object code version is 3.11
 
@@ -35,7 +35,7 @@ Machine type is 18F26K22
 
 
                 Name                               Link     Load   Length Selector   Space Scale
-/tmp/xcZTdgDV5.o
+/tmp/xcNnm8ww0.o
                 idloc                            200000   200000        8        0       5
                 config                           300000   300000        E        0       4
                 init                                 6C       6C        4        4       0

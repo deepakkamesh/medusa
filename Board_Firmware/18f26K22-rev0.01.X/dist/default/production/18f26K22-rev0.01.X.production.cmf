@@ -11,7 +11,7 @@
 # All addresses and the length are given in unqualified hexadecimal
 # in delta units.  Any other numeric values are decimal.
 %PSECTS
-$/tmp/xcZTdgDV5.o
+$/tmp/xcNnm8ww0.o
 idloc IDLOC 5 200000 200000 8 1 1
 init CODE 0 6C 6C 4 1 2
 reset_vec CODE 0 0 0 4 1 2
@@ -110,7 +110,7 @@ MEDIUMCONST 1752-FFFF 1
 # All other numeric values are in decimal.
 %LINETAB
 $dist/default/production/18f26K22-rev0.01.X.production.o
-8 intcode CODE >6878:/tmp/xc80Fvy7S.s
+8 intcode CODE >6878:/tmp/xcFdqwCF1.s
 8 intcode CODE >58:/Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/interrupt_manager.c
 22 intcode CODE >61:/Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/interrupt_manager.c
 30 intcode CODE >63:/Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/mcc_generated_files/interrupt_manager.c
@@ -367,40 +367,40 @@ $dist/default/production/18f26K22-rev0.01.X.production.o
 1636 text0 CODE >30:/Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/main.c
 1642 text0 CODE >32:/Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/main.c
 1646 text0 CODE >35:/Users/dkg/Projects/Medusa/Board_Firmware/18f26K22-rev0.01.X/main.c
-1490 cinit CODE >4722:/tmp/xc80Fvy7S.s
-1490 cinit CODE >4724:/tmp/xc80Fvy7S.s
-1490 cinit CODE >4727:/tmp/xc80Fvy7S.s
-1490 cinit CODE >4760:/tmp/xc80Fvy7S.s
-1492 cinit CODE >4761:/tmp/xc80Fvy7S.s
-1494 cinit CODE >4762:/tmp/xc80Fvy7S.s
-1496 cinit CODE >4763:/tmp/xc80Fvy7S.s
-1498 cinit CODE >4764:/tmp/xc80Fvy7S.s
-149A cinit CODE >4765:/tmp/xc80Fvy7S.s
-149C cinit CODE >4766:/tmp/xc80Fvy7S.s
-14A0 cinit CODE >4767:/tmp/xc80Fvy7S.s
-14A4 cinit CODE >4768:/tmp/xc80Fvy7S.s
-14A4 cinit CODE >4769:/tmp/xc80Fvy7S.s
-14A6 cinit CODE >4770:/tmp/xc80Fvy7S.s
-14AA cinit CODE >4771:/tmp/xc80Fvy7S.s
-14AC cinit CODE >4772:/tmp/xc80Fvy7S.s
-14AE cinit CODE >4773:/tmp/xc80Fvy7S.s
-14B0 cinit CODE >4777:/tmp/xc80Fvy7S.s
-14B4 cinit CODE >4778:/tmp/xc80Fvy7S.s
-14B6 cinit CODE >4779:/tmp/xc80Fvy7S.s
-14B6 cinit CODE >4780:/tmp/xc80Fvy7S.s
-14B8 cinit CODE >4781:/tmp/xc80Fvy7S.s
-14BA cinit CODE >4782:/tmp/xc80Fvy7S.s
-14BC cinit CODE >4785:/tmp/xc80Fvy7S.s
-14C0 cinit CODE >4786:/tmp/xc80Fvy7S.s
-14C2 cinit CODE >4787:/tmp/xc80Fvy7S.s
-14C2 cinit CODE >4788:/tmp/xc80Fvy7S.s
-14C4 cinit CODE >4789:/tmp/xc80Fvy7S.s
-14C6 cinit CODE >4790:/tmp/xc80Fvy7S.s
-14C8 cinit CODE >4796:/tmp/xc80Fvy7S.s
-14C8 cinit CODE >4798:/tmp/xc80Fvy7S.s
-14CA cinit CODE >4799:/tmp/xc80Fvy7S.s
-14CC cinit CODE >4800:/tmp/xc80Fvy7S.s
-14CE cinit CODE >4801:/tmp/xc80Fvy7S.s
+1490 cinit CODE >4722:/tmp/xcFdqwCF1.s
+1490 cinit CODE >4724:/tmp/xcFdqwCF1.s
+1490 cinit CODE >4727:/tmp/xcFdqwCF1.s
+1490 cinit CODE >4760:/tmp/xcFdqwCF1.s
+1492 cinit CODE >4761:/tmp/xcFdqwCF1.s
+1494 cinit CODE >4762:/tmp/xcFdqwCF1.s
+1496 cinit CODE >4763:/tmp/xcFdqwCF1.s
+1498 cinit CODE >4764:/tmp/xcFdqwCF1.s
+149A cinit CODE >4765:/tmp/xcFdqwCF1.s
+149C cinit CODE >4766:/tmp/xcFdqwCF1.s
+14A0 cinit CODE >4767:/tmp/xcFdqwCF1.s
+14A4 cinit CODE >4768:/tmp/xcFdqwCF1.s
+14A4 cinit CODE >4769:/tmp/xcFdqwCF1.s
+14A6 cinit CODE >4770:/tmp/xcFdqwCF1.s
+14AA cinit CODE >4771:/tmp/xcFdqwCF1.s
+14AC cinit CODE >4772:/tmp/xcFdqwCF1.s
+14AE cinit CODE >4773:/tmp/xcFdqwCF1.s
+14B0 cinit CODE >4777:/tmp/xcFdqwCF1.s
+14B4 cinit CODE >4778:/tmp/xcFdqwCF1.s
+14B6 cinit CODE >4779:/tmp/xcFdqwCF1.s
+14B6 cinit CODE >4780:/tmp/xcFdqwCF1.s
+14B8 cinit CODE >4781:/tmp/xcFdqwCF1.s
+14BA cinit CODE >4782:/tmp/xcFdqwCF1.s
+14BC cinit CODE >4785:/tmp/xcFdqwCF1.s
+14C0 cinit CODE >4786:/tmp/xcFdqwCF1.s
+14C2 cinit CODE >4787:/tmp/xcFdqwCF1.s
+14C2 cinit CODE >4788:/tmp/xcFdqwCF1.s
+14C4 cinit CODE >4789:/tmp/xcFdqwCF1.s
+14C6 cinit CODE >4790:/tmp/xcFdqwCF1.s
+14C8 cinit CODE >4796:/tmp/xcFdqwCF1.s
+14C8 cinit CODE >4798:/tmp/xcFdqwCF1.s
+14CA cinit CODE >4799:/tmp/xcFdqwCF1.s
+14CC cinit CODE >4800:/tmp/xcFdqwCF1.s
+14CE cinit CODE >4801:/tmp/xcFdqwCF1.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -420,7 +420,7 @@ __Hspace_2 0 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 __Hspace_4 60000E 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _nrf24_read_register 16AC 0 CODE 0 text24 dist/default/production/18f26K22-rev0.01.X.production.o
 __Hibigdata 0 0 CODE 0 ibigdata dist/default/production/18f26K22-rev0.01.X.production.o
-__mediumconst 0 0 MEDIUMCONST 0 mediumconst /tmp/xcZTdgDV5.o
+__mediumconst 0 0 MEDIUMCONST 0 mediumconst /tmp/xcNnm8ww0.o
 __Heeprom_data 0 0 EEDATA 0 eeprom_data dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of_INTERRUPT_Initialize 1750 0 CODE 0 text7 dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of_InitRadio 1222 0 CODE 0 text8 dist/default/production/18f26K22-rev0.01.X.production.o
@@ -432,11 +432,11 @@ _LATB F8A 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _LATC F8B 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _TMR1 FCE 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _WPUB F61 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
-___sp 0 0 STACK 2 stack /tmp/xcZTdgDV5.o
+___sp 0 0 STACK 2 stack /tmp/xcNnm8ww0.o
 _main 162E 0 CODE 0 text0 dist/default/production/18f26K22-rev0.01.X.production.o
 btemp 4D 0 COMRAM 1 temp dist/default/production/18f26K22-rev0.01.X.production.o
 i2nrf24_write_buff@mnemonic_addr 2F 0 COMRAM 1 cstackCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
-start 6C 0 CODE 0 init /tmp/xcZTdgDV5.o
+start 6C 0 CODE 0 init /tmp/xcNnm8ww0.o
 nrf24_write_buff@bytes 40 0 COMRAM 1 cstackCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 __HbssCOMRAM 0 0 ABS 0 bssCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of_SPI1_Initialize 171E 0 CODE 0 text4 dist/default/production/18f26K22-rev0.01.X.production.o
@@ -454,11 +454,11 @@ ttemp7 55 0 COMRAM 1 temp dist/default/production/18f26K22-rev0.01.X.production.
 __LnvCOMRAM 0 0 ABS 0 nvCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 __HdataCOMRAM 0 0 ABS 0 dataCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 _nrf24_read_rf_data 1650 0 CODE 0 text20 dist/default/production/18f26K22-rev0.01.X.production.o
-__accesstop 60 0 ABS 0 - /tmp/xcZTdgDV5.o
-intlevel0 0 0 CODE 0 text /tmp/xcZTdgDV5.o
-intlevel1 0 0 CODE 0 text /tmp/xcZTdgDV5.o
-intlevel2 0 0 CODE 0 text /tmp/xcZTdgDV5.o
-intlevel3 0 0 CODE 0 text /tmp/xcZTdgDV5.o
+__accesstop 60 0 ABS 0 - /tmp/xcNnm8ww0.o
+intlevel0 0 0 CODE 0 text /tmp/xcNnm8ww0.o
+intlevel1 0 0 CODE 0 text /tmp/xcNnm8ww0.o
+intlevel2 0 0 CODE 0 text /tmp/xcNnm8ww0.o
+intlevel3 0 0 CODE 0 text /tmp/xcNnm8ww0.o
 __LbssCOMRAM 0 0 ABS 0 bssCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 __LnvFARRAM 0 0 FARRAM 0 nvFARRAM dist/default/production/18f26K22-rev0.01.X.production.o
 wtemp8 4E 0 COMRAM 1 temp dist/default/production/18f26K22-rev0.01.X.production.o
@@ -476,8 +476,8 @@ _spi1_configuration 1001 0 SMALLCONST 0 smallconst dist/default/production/18f26
 _ANSELA F38 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _ANSELB F39 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _ANSELC F3A 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
-___inthi_sp 0 0 STACK 2 stack /tmp/xcZTdgDV5.o
-___intlo_sp 0 0 STACK 2 stack /tmp/xcZTdgDV5.o
+___inthi_sp 0 0 STACK 2 stack /tmp/xcNnm8ww0.o
+___intlo_sp 0 0 STACK 2 stack /tmp/xcNnm8ww0.o
 __LdataCOMRAM 0 0 ABS 0 dataCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 nrf24_read_rf_data@buffer 31 0 COMRAM 1 cstackCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of_INTERRUPT_InterruptManager 6C 0 CODE 0 intcode dist/default/production/18f26K22-rev0.01.X.production.o
@@ -510,7 +510,7 @@ __end_of_SYSTEM_Initialize 16F6 0 CODE 0 text1 dist/default/production/18f26K22-
 nrf24_send_rf_data@buffer 31 0 COMRAM 1 cstackCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
 _T1GCON FCC 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of_nrf24_flush_tx_rx 13F8 0 CODE 0 text22 dist/default/production/18f26K22-rev0.01.X.production.o
-isa$xinst 0 0 ABS 0 - /tmp/xcZTdgDV5.o
+isa$xinst 0 0 ABS 0 - /tmp/xcNnm8ww0.o
 __end_of_TMR1_SetInterruptHandler 1746 0 CODE 0 text3 dist/default/production/18f26K22-rev0.01.X.production.o
 __Hbank0 0 0 ABS 0 bank0 dist/default/production/18f26K22-rev0.01.X.production.o
 __Hbank1 0 0 ABS 0 bank1 dist/default/production/18f26K22-rev0.01.X.production.o
@@ -552,7 +552,7 @@ __Hbank15 0 0 ABS 0 bank15 dist/default/production/18f26K22-rev0.01.X.production
 __Hbigbss 0 0 BIGRAM 1 bigbss dist/default/production/18f26K22-rev0.01.X.production.o
 __Hbigram 0 0 ABS 0 bigram dist/default/production/18f26K22-rev0.01.X.production.o
 __Hbigsfr 0 0 ABS 0 bigsfr dist/default/production/18f26K22-rev0.01.X.production.o
-__smallconst 1000 0 SMALLCONST 0 smallconst /tmp/xcZTdgDV5.o
+__smallconst 1000 0 SMALLCONST 0 smallconst /tmp/xcNnm8ww0.o
 __Hcomram 0 0 ABS 0 comram dist/default/production/18f26K22-rev0.01.X.production.o
 __Hconfig 30000E 0 CONFIG 4 config dist/default/production/18f26K22-rev0.01.X.production.o
 _nrf24_rf_init 171E 0 CODE 0 text12 dist/default/production/18f26K22-rev0.01.X.production.o
@@ -708,11 +708,11 @@ i2SPI1_ExchangeByte@data 2B 0 COMRAM 1 cstackCOMRAM dist/default/production/18f2
 __Lfarbss 0 0 FARRAM 0 farbss dist/default/production/18f26K22-rev0.01.X.production.o
 _SPI1_ExchangeByte 1692 0 CODE 0 text11 dist/default/production/18f26K22-rev0.01.X.production.o
 __Lfardata 0 0 FARRAM 0 fardata dist/default/production/18f26K22-rev0.01.X.production.o
-isa$std 1 0 ABS 0 - /tmp/xcZTdgDV5.o
+isa$std 1 0 ABS 0 - /tmp/xcNnm8ww0.o
 __end_of_nrf24_read_buff 1490 0 CODE 0 text21 dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of_SPI1_Open 1190 0 CODE 0 text13 dist/default/production/18f26K22-rev0.01.X.production.o
-stackhi 0 0 ABS 0 - /tmp/xcZTdgDV5.o
-stacklo 0 0 ABS 0 - /tmp/xcZTdgDV5.o
+stackhi 0 0 ABS 0 - /tmp/xcNnm8ww0.o
+stacklo 0 0 ABS 0 - /tmp/xcNnm8ww0.o
 __Lintcode 8 0 CODE 0 intcode dist/default/production/18f26K22-rev0.01.X.production.o
 _OSCCON2 FD2 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 _OSCTUNE F9B 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
@@ -781,7 +781,7 @@ __Ltext28 0 0 ABS 0 text28 dist/default/production/18f26K22-rev0.01.X.production
 __Ltext29 0 0 ABS 0 text29 dist/default/production/18f26K22-rev0.01.X.production.o
 __Ltext30 0 0 ABS 0 text30 dist/default/production/18f26K22-rev0.01.X.production.o
 __Ltext31 0 0 ABS 0 text31 dist/default/production/18f26K22-rev0.01.X.production.o
-__ramtop 1000 0 RAM 0 ramtop /tmp/xcZTdgDV5.o
+__ramtop 1000 0 RAM 0 ramtop /tmp/xcNnm8ww0.o
 __Lpowerup 6C 0 CODE 0 powerup dist/default/production/18f26K22-rev0.01.X.production.o
 __Leeprom_data 0 0 EEDATA 0 eeprom_data dist/default/production/18f26K22-rev0.01.X.production.o
 TMR1_WriteTimer@timerVal 2B 0 COMRAM 1 cstackCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
@@ -790,8 +790,8 @@ __end_of_TMR1_WriteTimer 160A 0 CODE 0 text30 dist/default/production/18f26K22-r
 __psmallconst 1000 0 SMALLCONST 0 smallconst dist/default/production/18f26K22-rev0.01.X.production.o
 __Lreset_vec 0 0 CODE 0 reset_vec dist/default/production/18f26K22-rev0.01.X.production.o
 nrf24_read_buff@i 30 0 COMRAM 1 cstackCOMRAM dist/default/production/18f26K22-rev0.01.X.production.o
-___heap_hi 0 0 ABS 0 - /tmp/xcZTdgDV5.o
-___heap_lo 0 0 ABS 0 - /tmp/xcZTdgDV5.o
+___heap_hi 0 0 ABS 0 - /tmp/xcNnm8ww0.o
+___heap_lo 0 0 ABS 0 - /tmp/xcNnm8ww0.o
 ___param_bank 0 0 ABS 0 - dist/default/production/18f26K22-rev0.01.X.production.o
 __Hbigdata 0 0 BIGRAM 1 bigdata dist/default/production/18f26K22-rev0.01.X.production.o
 __end_of__initialization 14C8 0 CODE 0 cinit dist/default/production/18f26K22-rev0.01.X.production.o
