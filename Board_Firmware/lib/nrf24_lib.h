@@ -71,7 +71,7 @@ typedef enum {
  * @param[in]	value NRF24L01 Memory Address's value
  *
  */
-void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
+void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
 
 /**
  * @brief  Read value from the Memory Address of NRF24L01
@@ -81,7 +81,7 @@ void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
  * @return      current value of the read NRF24L01 Memory Address
  *
  */
-unsigned char nrf24_read_register(unsigned char mnemonic_addr);
+uint8_t nrf24_read_register(uint8_t mnemonic_addr);
 
 /**
  * @brief  Write or update buffer into the Memory Address of NRF24L01
@@ -91,7 +91,7 @@ unsigned char nrf24_read_register(unsigned char mnemonic_addr);
  * @param[in]	bytes size of the write buffer
  *
  */
-void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 /**
  * @brief  Read buffer data from the Memory Address of NRF24L01
@@ -101,7 +101,7 @@ void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsign
  * @param[in]	bytes size of the read buffer
  *
  */
-void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 /**
  * @brief  Initialize NRF24L01 to setup CSN, CE and SPI
@@ -125,7 +125,7 @@ void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
  * @param[in]   sz is the size of buffer
  *
  */
-void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
 
 /**
  * @brief  Receive data availability check
@@ -134,7 +134,7 @@ void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
  *          0 if data not present
  *
  */
-unsigned char nrf24_is_rf_data_available(void);
+uint8_t nrf24_is_rf_data_available(void);
 
 /**
  * @brief  Read payload from NRF24L01
@@ -143,7 +143,7 @@ unsigned char nrf24_is_rf_data_available(void);
  * @param[in]	sz number of bytes to read
  *  
  */
-void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
 
 /**
  * @brief  Set NRF24L01 RF Channel Frequency
@@ -153,7 +153,7 @@ void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
  * @Note: NRF24L01 frequency will be (2400 + rf_channel)GHz
  *
  */
-void nrf24_set_channel_frq(unsigned char rf_channel);
+void nrf24_set_channel_frq(uint8_t rf_channel);
 
 /**
  * @brief  Get NRF24L01 RF Channel Frequency
@@ -163,7 +163,7 @@ void nrf24_set_channel_frq(unsigned char rf_channel);
  * @Note: For actual NRF24L01 frequency will be (2400 + rf_channel)GHz
  *
  */
-unsigned char nrf24_get_channel_frq(void);
+uint8_t nrf24_get_channel_frq(void);
 
 /**
  * @brief  Set NRF24L01 into StandBy-I

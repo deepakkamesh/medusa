@@ -56,11 +56,11 @@ void TimerInterruptHandler(void) {
     if (Ticks % config.PingInterval != 0) {
         return;
     }
-    unsigned char sz = MakePingPkt(bufferTX);
+    uint8_t sz = MakePingPkt(bufferTX);
     nrf24_send_rf_data(bufferTX, sz);
 
     // Wait for successful transmission or MAX_RT assertion.
-    unsigned char status = 0;
+    uint8_t status = 0;
     while (1) {
         status = nrf24_read_register(NRF24_MEM_STATUSS);
         if ((status & 0x20) || (status & 0x10)) {
@@ -85,11 +85,11 @@ void TimerInterruptHandler(void) {
 
 }
 
-void ProcessAckPayload(unsigned char * buffer, uint8_t sz) {
+void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     LED_Toggle();
 }
 
-unsigned char MakePingPkt(unsigned char *buffer) {
+uint8_t MakePingPkt(uint8_t *buffer) {
     buffer[0] = PKT_PING;
     for (char i = 0; i < ADDR_LEN; i++) {
         buffer[i + 1] = config.Address[i];
