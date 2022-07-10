@@ -1,12 +1,19 @@
 #define UDP_LISTEN_PORT 6069 // default listen port.
+
+#define RELAY_CONFIG_ANS_LEN 16 // Length of  Relay Get Answer
+
 #define PKT_TYPE_RELAY_GET_CONFIG 0xAA // Packet type for Relay Get Config
 #define PKT_TYPE_RELAY_CONFIG_ANS 0xAB // Packet type for Relay Get Answer
 #define PKT_TYPE_RELAY_ERROR 0xAC // Packet type for Relay  error. 
 #define PKT_TYPE_RELAY_DATA 0xAD // Packet type for Relay  data packet. 
-
-#define RELAY_CONFIG_ANS_LEN 16 // Length of  Relay Get Answer
+#define PKT_TYPE_RELAY_ACTION 0xAE // Packet type for relay action.
 
 #define ERROR_RELAY_RADIO_INIT_FAILED 0x02
+#define ERROR_RELAY_ACK_PAYLOAD_LOAD 0x03
+#define ERROR_RELAY_NOT_IMPLEMENTED 0x04
+
+#define ACTION_STATUS_LED 0x13
+#define ACTION_RESET_DEVICE 0x14
 
 WiFiUDP Udp;
 uint8_t bufferRX[255];
@@ -15,9 +22,10 @@ uint8_t bufferTX[255];
 // TODO: get from wifimanager.
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
-const char* controllerHost = "192.168.1.116";
-const uint16_t controllerPort = 6000;
+char* controllerHost = "192.168.1.111";
+uint16_t controllerPort = 6000;
 
+/* WifiConnect establishes connection to the specified access point*/
 void WifiConnect(void) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -27,6 +35,7 @@ void WifiConnect(void) {
     digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
   }
   digitalWrite(LED_ONBOARD, true); // For some reason true turns this off.
+
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
 
@@ -54,7 +63,6 @@ int RelaySetup(void) {
 
   while (1) {
     delay(1000);
-
     // Send config packet request.
     int ok = Udp.beginPacket(controllerHost, controllerPort);
     if (!ok) {
@@ -65,9 +73,10 @@ int RelaySetup(void) {
     if (!ok) {
       return 0;
     }
+
     delay(10);
 
-    // See if we got a return.
+    // See if we got a response.
     int packetSize = Udp.parsePacket();
     if (!packetSize) {
       continue;
@@ -94,8 +103,8 @@ int RelaySetup(void) {
 
 #ifdef DEBUG
     Serial.printf("Mac: %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-    PrintPkt("Addr0",Config.pipe_addr_p0, 5);
-    PrintPkt("Addr1",Config.pipe_addr_p1, 5);
+    PrintPkt("Addr0", Config.pipe_addr_p0, 5);
+    PrintPkt("Addr1", Config.pipe_addr_p1, 5);
     Serial.printf("%02X\n", Config.pipe_addr_p2[0]);
     Serial.printf("%02X\n", Config.pipe_addr_p3[0]);
     Serial.printf("%02X\n", Config.pipe_addr_p4[0]);
@@ -104,7 +113,6 @@ int RelaySetup(void) {
 #endif
     return 1;
   }
-
 }
 
 void IpLoop(void) {
@@ -114,20 +122,65 @@ void IpLoop(void) {
     return;
   }
 
-  // receive incoming UDP packets
+  // receive incoming UDP packets.
   int sz = Udp.read(bufferRX, 255);
-  PrintPkt("Ctrller pkt:",bufferRX, sz);
-  uint8_t buffer[32];
+  PrintPkt("Ctrller pkt:", bufferRX, sz);
 
+  // Process packets.
+  uint8_t buffer[32];
   switch (bufferRX[0]) {
     case PKT_TYPE_RELAY_DATA:
+    {
       for (int i = 0; i < sz - 2 ; i++) {
-        buffer[i] = bufferRX[0];
+        buffer[i] = bufferRX[i + 2];
       }
-      SendNetPacket(bufferRX[1], buffer, sz - 2) ;
+      uint8_t pipeNum = bufferRX[1];
+      int ok = SendNetPacket(pipeNum, buffer, sz - 2) ;
+      if (!ok) {
+        SendError(ERROR_RELAY_ACK_PAYLOAD_LOAD);
+      }
+      break;
+    }
+    case PKT_TYPE_RELAY_ACTION:
+    {
+      for (int i = 0; i < sz - 2 ; i++) {
+        buffer[i] = bufferRX[i + 2];
+      }
+      uint8_t actionID = bufferRX[1];
+      ProcessAction(actionID, buffer);
+      break;
+    }
+    default:
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
   }
 }
 
+void ProcessAction(uint8_t actionID, uint8_t * data) {
+  switch (actionID) {
+    case ACTION_RESET_DEVICE:
+      ESP.restart();
+      break;
+    case ACTION_STATUS_LED:
+      digitalWrite(LED_ONBOARD, data[0]);
+      break;
+    default:
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
+  }
+}
+
+unsigned long previousMillis = 0;
+unsigned long interval = 30000;
+
+void WifiKeepAlive(void) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    if (WiFi.status() != WL_CONNECTED) {
+      delay(1000);
+      ESP.restart();
+    }
+    previousMillis = currentMillis;
+  }
+}
 
 void PrintPkt(char *str, uint8_t buff[], int len) {
 #ifdef DEBUG
@@ -155,13 +208,12 @@ int SendError(uint8_t errorCode) {
   return 1;
 }
 
-int SendRadioPacket(uint8_t pipeNum, uint8_t * buff, uint8_t sz) {
+int SendRadioPacket(uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   bufferTX[0] = PKT_TYPE_RELAY_DATA;
   bufferTX[1] = pipeNum;
   for (int i = 0; i < sz; i++) {
     bufferTX[i + 2] = buff[i];
   }
-
   int ok = Udp.beginPacket(controllerHost, controllerPort);
   if (!ok) {
     return 0;

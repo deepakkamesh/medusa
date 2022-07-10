@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 )
 
 func handleUDPConnection(conn *net.UDPConn) {
@@ -14,7 +15,7 @@ func handleUDPConnection(conn *net.UDPConn) {
 
 	n, addr, err := conn.ReadFromUDP(buffer)
 	_ = addr
-	fmt.Printf("Rcvd %db %v -- ", n, addr.IP)
+	fmt.Printf("%v Rcvd %db %v -- ", time.Now().Unix(), n, addr.IP)
 	for i := 0; i < n; i++ {
 		fmt.Printf("%X,", buffer[i])
 	}

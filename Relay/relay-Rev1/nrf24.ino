@@ -1,3 +1,4 @@
+RF24 radio(5, 4); // CE, CSN
 
 int RadioSetup() {
 
@@ -44,12 +45,19 @@ void RadioLoop() {
   int sz = radio.getDynamicPayloadSize();
   radio.read(&bufferRX, sizeof(bufferRX));
 
-  SendRadioPacket(pipeNum, bufferRX, sz);
+  int ok =  SendRadioPacket(pipeNum, bufferRX, sz);
+  // Try restart if network comms is broken.
+  if (!ok) {
+    delay(1000);
+    ESP.restart();
+  }
 
   PrintPkt("RadioPkt", bufferRX, sz);
 }
 
 
-void SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz) {
-  radio.writeAckPayload(pipeNum, data, sz);
+int SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz) {
+  // Flush tx_fifo to ensure no back payloads remain.
+  radio.flush_tx();
+  return radio.writeAckPayload(pipeNum, data, sz);
 }

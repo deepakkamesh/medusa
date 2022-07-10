@@ -1,17 +1,10 @@
 #include <SPI.h>
-//#include <nRF24L01.h>
 #include <RF24.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
 #define DEBUG 1
 #define LED_ONBOARD 16
-
-// Function definitions.
-//int SendRadioPacket(uint8_t * buff, uint8_t sz);
-///void SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz);
-
-RF24 radio(5, 4); // CE, CSN
 
 struct RelayConfig {
   uint8_t pipe_addr_p0[5];
@@ -40,12 +33,22 @@ void setup() {
   pinMode(LED_ONBOARD, OUTPUT);
 
   WifiConnect();
-  RelaySetup();
-  RadioSetup();
-
+  int ok = RelaySetup();
+  if (!ok) {
+    digitalWrite(LED_ONBOARD, false);
+    delay(1000);
+    ESP.restart();
+  }
+  ok = RadioSetup();
+  if (!ok) {
+    digitalWrite(LED_ONBOARD, false);
+    delay(1000);
+    ESP.restart();
+  }
 }
 
 void loop() {
   RadioLoop();
   IpLoop();
+  WifiKeepAlive();
 }
