@@ -9448,19 +9448,22 @@ void OSCILLATOR_Initialize(void);
 # 5 "main.c" 2
 
 # 1 "./handler.h" 1
-# 55 "./handler.h"
-unsigned char DEFAULT_PIPE_ADDR[] = "hello";
+# 62 "./handler.h"
+uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
-unsigned char MakePingPkt(unsigned char *buffer);
-void ProcessAckPayload(unsigned char * buffer,uint8_t sz) ;
+uint8_t MakePingPkt(uint8_t *buffer);
+void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
+void ProcessActionRequest(uint8_t actionID, uint8_t * data);
+_Bool VerifyBoardAddress(uint8_t *bufferRX);
+
 
 
 
 struct Config {
     _Bool IsConfigured;
-    unsigned char Address[3];
+    uint8_t Address[3];
     unsigned int PingInterval;
 };
 # 6 "main.c" 2
@@ -9477,13 +9480,13 @@ typedef enum {
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
 # 74 "./../lib/nrf24_lib.h"
-void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
+void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
 # 84 "./../lib/nrf24_lib.h"
-unsigned char nrf24_read_register(unsigned char mnemonic_addr);
+uint8_t nrf24_read_register(uint8_t mnemonic_addr);
 # 94 "./../lib/nrf24_lib.h"
-void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 # 104 "./../lib/nrf24_lib.h"
-void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 
 
@@ -9500,15 +9503,15 @@ void nrf24_rf_init();
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
 # 128 "./../lib/nrf24_lib.h"
-void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
 # 137 "./../lib/nrf24_lib.h"
-unsigned char nrf24_is_rf_data_available(void);
+uint8_t nrf24_is_rf_data_available(void);
 # 146 "./../lib/nrf24_lib.h"
-void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
 # 156 "./../lib/nrf24_lib.h"
-void nrf24_set_channel_frq(unsigned char rf_channel);
+void nrf24_set_channel_frq(uint8_t rf_channel);
 # 166 "./../lib/nrf24_lib.h"
-unsigned char nrf24_get_channel_frq(void);
+uint8_t nrf24_get_channel_frq(void);
 
 
 

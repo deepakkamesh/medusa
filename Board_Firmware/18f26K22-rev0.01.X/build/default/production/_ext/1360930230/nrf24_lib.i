@@ -9467,13 +9467,13 @@ typedef enum {
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
 # 74 "../lib/nrf24_lib.h"
-void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
+void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
 # 84 "../lib/nrf24_lib.h"
-unsigned char nrf24_read_register(unsigned char mnemonic_addr);
+uint8_t nrf24_read_register(uint8_t mnemonic_addr);
 # 94 "../lib/nrf24_lib.h"
-void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 # 104 "../lib/nrf24_lib.h"
-void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 
 
@@ -9490,15 +9490,15 @@ void nrf24_rf_init();
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
 # 128 "../lib/nrf24_lib.h"
-void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
 # 137 "../lib/nrf24_lib.h"
-unsigned char nrf24_is_rf_data_available(void);
+uint8_t nrf24_is_rf_data_available(void);
 # 146 "../lib/nrf24_lib.h"
-void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
 # 156 "../lib/nrf24_lib.h"
-void nrf24_set_channel_frq(unsigned char rf_channel);
+void nrf24_set_channel_frq(uint8_t rf_channel);
 # 166 "../lib/nrf24_lib.h"
-unsigned char nrf24_get_channel_frq(void);
+uint8_t nrf24_get_channel_frq(void);
 
 
 
@@ -9520,7 +9520,7 @@ uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 6 "../lib/nrf24_lib.c" 2
 
 
-void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value) {
+void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value) {
     do { LATCbits.LATC1 = 0; } while(0);
     if (mnemonic_addr < 0x20) {
 
@@ -9539,8 +9539,8 @@ void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value) {
     do { LATCbits.LATC1 = 1; } while(0);
 }
 
-unsigned char nrf24_read_register(unsigned char mnemonic_addr) {
-    unsigned char byte0;
+uint8_t nrf24_read_register(uint8_t mnemonic_addr) {
+    uint8_t byte0;
     do { LATCbits.LATC1 = 0; } while(0);
     SPI1_ExchangeByte(0x00 | (mnemonic_addr & 0x1F));
     byte0 = SPI1_ExchangeByte(0xFF);
@@ -9553,12 +9553,13 @@ uint8_t nrf24_read_dynamic_payload_length(void) {
     do { LATCbits.LATC1 = 0; } while(0);
     SPI1_ExchangeByte(0x60);
     byte0 = SPI1_ExchangeByte(0xFF);
+    _delay((unsigned long)((1)*(1000000/4000.0)));
     do { LATCbits.LATC1 = 1; } while(0);
     return byte0;
 }
 
-void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes) {
-    unsigned char i;
+void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes) {
+    uint8_t i;
     do { LATCbits.LATC1 = 0; } while(0);
     SPI1_ExchangeByte(0x20 | mnemonic_addr);
     for (i = 0; i < bytes; i++) {
@@ -9569,15 +9570,15 @@ void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsign
     do { LATCbits.LATC1 = 1; } while(0);
 }
 
-void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes) {
-    unsigned char i;
+void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes) {
+    uint8_t i;
     do { LATCbits.LATC1 = 0; } while(0);
     SPI1_ExchangeByte(0x00 | mnemonic_addr);
     for (i = 0; i < bytes; i++) {
         *buffer = SPI1_ExchangeByte(0xFF);
         buffer++;
     }
-    *buffer = (unsigned char) ((void*)0);
+    *buffer = (uint8_t) ((void*)0);
     do { LATCbits.LATC1 = 1; } while(0);
 }
 
@@ -9590,21 +9591,21 @@ void nrf24_rf_init() {
 }
 
 
-void nrf24_send_rf_data(unsigned char *buffer,unsigned char sz) {
+void nrf24_send_rf_data(uint8_t *buffer,uint8_t sz) {
     nrf24_write_buff(0xA0, buffer, sz);
     do { LATCbits.LATC2 = 1; } while(0);
     _delay((unsigned long)((1)*(1000000/4000.0)));
     do { LATCbits.LATC2 = 0; } while(0);
 }
 
-unsigned char nrf24_is_rf_data_available(void) {
+uint8_t nrf24_is_rf_data_available(void) {
     if ((nrf24_read_register(0x07) & 0x40) == 0x40) {
         return 0;
     }
     return 1;
 }
 
-void nrf24_read_rf_data(unsigned char *buffer,unsigned char sz) {
+void nrf24_read_rf_data(uint8_t *buffer,uint8_t sz) {
     nrf24_read_buff(0x61, buffer, sz);
     nrf24_write_register(0x07, 0x70);
     nrf24_flush_tx_rx();

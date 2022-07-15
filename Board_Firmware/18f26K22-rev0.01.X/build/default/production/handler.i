@@ -14,21 +14,6 @@
 
 
 
-
-# 1 "./mcc_generated_files/mcc.h" 1
-# 49 "./mcc_generated_files/mcc.h"
-# 1 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 1 3
-# 18 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 3
-extern const char __xc8_OPTIM_SPEED;
-
-extern double __fpnormalize(double);
-
-
-
-# 1 "/Applications/microchip/xc8/v2.36/pic/include/c99/xc8debug.h" 1 3
-
-
-
 # 1 "/Applications/microchip/xc8/v2.36/pic/include/c99/stdlib.h" 1 3
 
 
@@ -109,14 +94,20 @@ typedef struct { unsigned int quot, rem; } udiv_t;
 typedef struct { unsigned long quot, rem; } uldiv_t;
 udiv_t udiv (unsigned int, unsigned int);
 uldiv_t uldiv (unsigned long, unsigned long);
-# 5 "/Applications/microchip/xc8/v2.36/pic/include/c99/xc8debug.h" 2 3
+# 9 "handler.c" 2
+
+# 1 "./mcc_generated_files/mcc.h" 1
+# 49 "./mcc_generated_files/mcc.h"
+# 1 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 1 3
+# 18 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 3
+extern const char __xc8_OPTIM_SPEED;
+
+extern double __fpnormalize(double);
 
 
 
-
-
-
-
+# 1 "/Applications/microchip/xc8/v2.36/pic/include/c99/xc8debug.h" 1 3
+# 12 "/Applications/microchip/xc8/v2.36/pic/include/c99/xc8debug.h" 3
 #pragma intrinsic(__builtin_software_breakpoint)
 extern void __builtin_software_breakpoint(void);
 # 24 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 2 3
@@ -9449,7 +9440,7 @@ void TMR1_DefaultInterruptHandler(void);
 void SYSTEM_Initialize(void);
 # 85 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
-# 10 "handler.c" 2
+# 11 "handler.c" 2
 # 1 "./../lib/nrf24_lib.h" 1
 # 10 "./../lib/nrf24_lib.h"
 # 1 "./../lib/../18f26K22-rev0.01.X/nRF24.h" 1
@@ -9462,13 +9453,13 @@ typedef enum {
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
 # 74 "./../lib/nrf24_lib.h"
-void nrf24_write_register(unsigned char mnemonic_addr, unsigned char value);
+void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
 # 84 "./../lib/nrf24_lib.h"
-unsigned char nrf24_read_register(unsigned char mnemonic_addr);
+uint8_t nrf24_read_register(uint8_t mnemonic_addr);
 # 94 "./../lib/nrf24_lib.h"
-void nrf24_write_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 # 104 "./../lib/nrf24_lib.h"
-void nrf24_read_buff(unsigned char mnemonic_addr, unsigned char *buffer, unsigned char bytes);
+void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 
 
@@ -9485,15 +9476,15 @@ void nrf24_rf_init();
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
 # 128 "./../lib/nrf24_lib.h"
-void nrf24_send_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
 # 137 "./../lib/nrf24_lib.h"
-unsigned char nrf24_is_rf_data_available(void);
+uint8_t nrf24_is_rf_data_available(void);
 # 146 "./../lib/nrf24_lib.h"
-void nrf24_read_rf_data(unsigned char *buffer, unsigned char sz);
+void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
 # 156 "./../lib/nrf24_lib.h"
-void nrf24_set_channel_frq(unsigned char rf_channel);
+void nrf24_set_channel_frq(uint8_t rf_channel);
 # 166 "./../lib/nrf24_lib.h"
-unsigned char nrf24_get_channel_frq(void);
+uint8_t nrf24_get_channel_frq(void);
 
 
 
@@ -9512,7 +9503,7 @@ void nrf24_flush_tx_rx(void);
 
 
 uint8_t nrf24_read_dynamic_payload_length(void) ;
-# 11 "handler.c" 2
+# 12 "handler.c" 2
 # 1 "./../lib/dht11_lib.h" 1
 
 # 1 "./../lib/../18f26K22-rev0.01.X/nRF24.h" 1
@@ -9521,25 +9512,28 @@ uint8_t nrf24_read_dynamic_payload_length(void) ;
 
 uint8_t GetmockTemp(void);
 uint8_t GetmockHumidity(void);
-# 12 "handler.c" 2
+# 13 "handler.c" 2
 
 # 1 "./handler.h" 1
-# 55 "./handler.h"
-unsigned char DEFAULT_PIPE_ADDR[] = "hello";
+# 62 "./handler.h"
+uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
-unsigned char MakePingPkt(unsigned char *buffer);
-void ProcessAckPayload(unsigned char * buffer,uint8_t sz) ;
+uint8_t MakePingPkt(uint8_t *buffer);
+void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
+void ProcessActionRequest(uint8_t actionID, uint8_t * data);
+_Bool VerifyBoardAddress(uint8_t *bufferRX);
+
 
 
 
 struct Config {
     _Bool IsConfigured;
-    unsigned char Address[3];
+    uint8_t Address[3];
     unsigned int PingInterval;
 };
-# 14 "handler.c" 2
+# 15 "handler.c" 2
 
 
 uint32_t Ticks = 0;
@@ -9554,7 +9548,7 @@ void InitRadio(void) {
     nrf24_write_buff(0x10, DEFAULT_PIPE_ADDR, 5);
     nrf24_write_buff(0x0A, DEFAULT_PIPE_ADDR, 5);
 
-    nrf24_write_register(0x00, 0b1010);
+    nrf24_write_register(0x00, 0b1111010);
 
     nrf24_write_register(0x01, 0b1);
 
@@ -9562,7 +9556,7 @@ void InitRadio(void) {
 
     nrf24_write_register(0x03, 0b11);
 
-    nrf24_write_register(0x04, 0b10101010);
+    nrf24_write_register(0x04, 0b11011111);
 
     nrf24_write_register(0x05, 115);
 
@@ -9575,7 +9569,7 @@ void InitRadio(void) {
 
 
     config.IsConfigured = 0;
-    config.PingInterval = 1;
+    config.PingInterval = 2;
 }
 
 void TimerInterruptHandler(void) {
@@ -9585,22 +9579,25 @@ void TimerInterruptHandler(void) {
     if (Ticks % config.PingInterval != 0) {
         return;
     }
-    unsigned char sz = MakePingPkt(bufferTX);
+    uint8_t sz = MakePingPkt(bufferTX);
     nrf24_send_rf_data(bufferTX, sz);
 
 
-    unsigned char status = 0;
+    uint8_t status = 0;
     while (1) {
         status = nrf24_read_register(0x07);
         if ((status & 0x20) || (status & 0x10)) {
             break;
         }
+        _delay((unsigned long)((10)*(1000000/4000000.0)));
     }
 
     nrf24_write_register(0x07, 0x70);
 
 
     if (status & 0x10) {
+        do { LATAbits.LATA1 = 1; } while(0);
+        nrf24_flush_tx_rx();
         return;
 
     }
@@ -9609,16 +9606,63 @@ void TimerInterruptHandler(void) {
     if (status & 0x40) {
         uint8_t sz = nrf24_read_dynamic_payload_length();
         nrf24_read_rf_data(bufferRX, sz);
+        if (!VerifyBoardAddress(bufferRX)) {
+            return;
+        }
         ProcessAckPayload(bufferRX, sz);
+    }
+}
+
+_Bool VerifyBoardAddress(uint8_t *bufferRX) {
+    uint8_t addr[3];
+    for (int i = 0; i < 3; i++) {
+        if (config.Address[i] != bufferRX[i + 1]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
+    uint8_t data[32];
+
+    uint8_t pktType = buffer[0];
+    uint8_t actionID;
+    switch (pktType) {
+        case 0x10:
+            actionID = buffer[4];
+            for (int i = 0; i < sz - 5; i++) {
+                data[i] = buffer[i + 5];
+            }
+            ProcessActionRequest(actionID, data);
+            break;
+        case 0x03:
+            break;
     }
 
 }
 
-void ProcessAckPayload(unsigned char * buffer, uint8_t sz) {
-    do { LATAbits.LATA1 = ~LATAbits.LATA1; } while(0);
+void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+
+    switch (actionID) {
+        case 0x13:
+            do { LATAbits.LATA1 = 0; } while(0);
+            if (data[0]) {
+                do { LATAbits.LATA1 = 1; } while(0);
+            }
+            break;
+    }
 }
 
-unsigned char MakePingPkt(unsigned char *buffer) {
+void SendError(uint8_t errorCode, uint8_t *buffer) {
+    buffer[0] = 0x01;
+    for (uint8_t i = 0; i < 3; i++) {
+        buffer[i + 1] = config.Address[i];
+    }
+
+}
+
+uint8_t MakePingPkt(uint8_t *buffer) {
     buffer[0] = 0x02;
     for (char i = 0; i < 3; i++) {
         buffer[i + 1] = config.Address[i];

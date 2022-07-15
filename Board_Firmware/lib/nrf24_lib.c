@@ -38,6 +38,7 @@ uint8_t nrf24_read_dynamic_payload_length(void) {
     NRF24L01_CSN_L();
     SPI_WRITE_BYTE(R_RX_PL_WID);
     byte0 = SPI_READ_BYTE(NRF24_MEM_CMD_NOP);
+    __delay_ms(1);
     NRF24L01_CSN_H();
     return byte0;
 }

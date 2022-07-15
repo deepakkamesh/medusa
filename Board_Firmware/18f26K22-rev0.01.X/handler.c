@@ -5,6 +5,7 @@
  * Created on July 5, 2022, 8:38 PM
  */
 
+#include <stdlib.h>
 
 #include "mcc_generated_files/mcc.h"
 #include "../lib/nrf24_lib.h"
@@ -24,8 +25,8 @@ void InitRadio(void) {
 
     nrf24_write_buff(NRF24_MEM_TX_ADDR, DEFAULT_PIPE_ADDR, 5);
     nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, DEFAULT_PIPE_ADDR, 5);
-    // EN_CRC,CRCO=1byte,PWR_UP,PTX.   
-    nrf24_write_register(NRF24_MEM_CONFIG, 0b1010);
+    // Mask all interrupts, EN_CRC,CRCO=1byte,PWR_UP,PTX, 
+    nrf24_write_register(NRF24_MEM_CONFIG, 0b1111010);
     // ENAA_P0. 
     nrf24_write_register(NRF24_MEM_EN_AA, 0b1);
     // ERX_P0.
@@ -33,7 +34,7 @@ void InitRadio(void) {
     // AW=5byte.
     nrf24_write_register(NRF24_MEM_SETUP_AW, 0b11);
     // Retry Settings. 
-    nrf24_write_register(NRF24_MEM_SETUP_RETR, 0b10101010);
+    nrf24_write_register(NRF24_MEM_SETUP_RETR, 0b11011111);
     // RF channel.
     nrf24_write_register(NRF24_MEM_RF_CH, 115);
     // RF_PWR=0bDm, RF_DR_HIGH=2Mbps.
@@ -66,12 +67,15 @@ void TimerInterruptHandler(void) {
         if ((status & 0x20) || (status & 0x10)) {
             break;
         }
+        __delay_us(10);
     }
     // Clear status register.
     nrf24_write_register(NRF24_MEM_STATUSS, 0x70);
 
     // MAX_RT exceeded.
     if (status & 0x10) {
+        LED_SetHigh();
+        nrf24_flush_tx_rx();
         return;
         // TODO: Update primary address to another pipe address.
     }
@@ -80,13 +84,60 @@ void TimerInterruptHandler(void) {
     if (status & 0x40) {
         uint8_t sz = nrf24_read_dynamic_payload_length();
         nrf24_read_rf_data(bufferRX, sz);
+        if (!VerifyBoardAddress(bufferRX)) { // Address does not match.
+            return;
+        }
         ProcessAckPayload(bufferRX, sz);
+    }
+}
+
+bool VerifyBoardAddress(uint8_t *bufferRX) {
+    uint8_t addr[3];
+    for (int i = 0; i < 3; i++) {
+        if (config.Address[i] != bufferRX[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
+    uint8_t data[32];
+
+    uint8_t pktType = buffer[0];
+    uint8_t actionID;
+    switch (pktType) {
+        case PKT_ACTION:
+            actionID = buffer[4];
+            for (int i = 0; i < sz - 5; i++) {
+                data[i] = buffer[i + 5];
+            }
+            ProcessActionRequest(actionID, data);
+            break;
+        case PKT_CFG:
+            break;
     }
 
 }
 
-void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
-    LED_Toggle();
+void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+
+    switch (actionID) {
+        case ACTION_STATUS_LED:
+            LED_SetLow();
+            if (data[0]) {
+                LED_SetHigh();
+            }
+            break;
+    }
+}
+
+void SendError(uint8_t errorCode, uint8_t *buffer) {
+    buffer[0] = PKT_DATA;
+    for (uint8_t i = 0; i < ADDR_LEN; i++) {
+        buffer[i + 1] = config.Address[i];
+    }
+    
 }
 
 uint8_t MakePingPkt(uint8_t *buffer) {
