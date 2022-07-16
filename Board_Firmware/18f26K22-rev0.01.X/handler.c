@@ -51,7 +51,7 @@ void InitRadio(void) {
     config.IsConfigured = false;
     config.PingInterval = PING_INT;
 
-    // Init Transmit buffer.
+    // Initialize Transmit buffer.
     for (uint8_t i = 0; i < MAX_TX_QUEUE_SZ; i++) {
         packetsTX[i].free = true;
         packetsTX[i].size = 0;
@@ -138,48 +138,6 @@ void TimerInterruptHandler(void) {
     }
     SendPing();
 }
-
-/*
-void TimerInterruptHandlerOld(void) {
-    Ticks++;
-
-    // Send ping packets. 
-    if (Ticks % config.PingInterval != 0) {
-        return;
-    }
-    uint8_t sz = SendPing();
-    nrf24_send_rf_data(bufferTX, sz);
-
-    // Wait for successful transmission or MAX_RT assertion.
-    uint8_t status = 0;
-    while (1) {
-        status = nrf24_read_register(NRF24_MEM_STATUSS);
-        if ((status & 0x20) || (status & 0x10)) {
-            break;
-        }
-        __delay_us(10);
-    }
-    // Clear status register.
-    nrf24_write_register(NRF24_MEM_STATUSS, 0x70);
-
-    // MAX_RT exceeded.
-    if (status & 0x10) {
-        LED_SetHigh();
-        nrf24_flush_tx_rx();
-        return;
-        // TODO: Update primary address to another pipe address.
-    }
-
-    // Check for ack payload. 
-    if (status & 0x40) {
-        uint8_t sz = nrf24_read_dynamic_payload_length();
-        nrf24_read_rf_data(bufferRX, sz);
-        if (!VerifyBoardAddress(bufferRX)) { // Address does not match.
-            return;
-        }
-        ProcessAckPayload(bufferRX, sz);
-    }
-}*/
 
 bool VerifyBoardAddress(uint8_t *bufferRX) {
     for (int i = 0; i < 3; i++) {
