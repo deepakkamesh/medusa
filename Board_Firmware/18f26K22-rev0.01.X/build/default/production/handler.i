@@ -95,6 +95,61 @@ typedef struct { unsigned long quot, rem; } uldiv_t;
 udiv_t udiv (unsigned int, unsigned int);
 uldiv_t uldiv (unsigned long, unsigned long);
 # 9 "handler.c" 2
+# 1 "/Applications/microchip/xc8/v2.36/pic/include/c99/string.h" 1 3
+# 25 "/Applications/microchip/xc8/v2.36/pic/include/c99/string.h" 3
+# 1 "/Applications/microchip/xc8/v2.36/pic/include/c99/bits/alltypes.h" 1 3
+# 411 "/Applications/microchip/xc8/v2.36/pic/include/c99/bits/alltypes.h" 3
+typedef struct __locale_struct * locale_t;
+# 26 "/Applications/microchip/xc8/v2.36/pic/include/c99/string.h" 2 3
+
+void *memcpy (void *restrict, const void *restrict, size_t);
+void *memmove (void *, const void *, size_t);
+void *memset (void *, int, size_t);
+int memcmp (const void *, const void *, size_t);
+void *memchr (const void *, int, size_t);
+
+char *strcpy (char *restrict, const char *restrict);
+char *strncpy (char *restrict, const char *restrict, size_t);
+
+char *strcat (char *restrict, const char *restrict);
+char *strncat (char *restrict, const char *restrict, size_t);
+
+int strcmp (const char *, const char *);
+int strncmp (const char *, const char *, size_t);
+
+int strcoll (const char *, const char *);
+size_t strxfrm (char *restrict, const char *restrict, size_t);
+
+char *strchr (const char *, int);
+char *strrchr (const char *, int);
+
+size_t strcspn (const char *, const char *);
+size_t strspn (const char *, const char *);
+char *strpbrk (const char *, const char *);
+char *strstr (const char *, const char *);
+char *strtok (char *restrict, const char *restrict);
+
+size_t strlen (const char *);
+
+char *strerror (int);
+# 65 "/Applications/microchip/xc8/v2.36/pic/include/c99/string.h" 3
+char *strtok_r (char *restrict, const char *restrict, char **restrict);
+int strerror_r (int, char *, size_t);
+char *stpcpy(char *restrict, const char *restrict);
+char *stpncpy(char *restrict, const char *restrict, size_t);
+size_t strnlen (const char *, size_t);
+char *strdup (const char *);
+char *strndup (const char *, size_t);
+char *strsignal(int);
+char *strerror_l (int, locale_t);
+int strcoll_l (const char *, const char *, locale_t);
+size_t strxfrm_l (char *restrict, const char *restrict, size_t, locale_t);
+
+
+
+
+void *memccpy (void *restrict, const void *restrict, int, size_t);
+# 10 "handler.c" 2
 
 # 1 "./mcc_generated_files/mcc.h" 1
 # 49 "./mcc_generated_files/mcc.h"
@@ -9440,7 +9495,7 @@ void TMR1_DefaultInterruptHandler(void);
 void SYSTEM_Initialize(void);
 # 85 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
-# 11 "handler.c" 2
+# 12 "handler.c" 2
 # 1 "./../lib/nrf24_lib.h" 1
 # 10 "./../lib/nrf24_lib.h"
 # 1 "./../lib/../18f26K22-rev0.01.X/nRF24.h" 1
@@ -9503,7 +9558,7 @@ void nrf24_flush_tx_rx(void);
 
 
 uint8_t nrf24_read_dynamic_payload_length(void) ;
-# 12 "handler.c" 2
+# 13 "handler.c" 2
 # 1 "./../lib/dht11_lib.h" 1
 
 # 1 "./../lib/../18f26K22-rev0.01.X/nRF24.h" 1
@@ -9512,7 +9567,7 @@ uint8_t nrf24_read_dynamic_payload_length(void) ;
 
 uint8_t GetmockTemp(void);
 uint8_t GetmockHumidity(void);
-# 13 "handler.c" 2
+# 14 "handler.c" 2
 
 # 1 "./handler.h" 1
 # 66 "./handler.h"
@@ -9526,6 +9581,7 @@ _Bool VerifyBoardAddress(uint8_t *bufferRX);
 void HandlePacketLoop(void);
 uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
+void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 
 typedef struct {
     uint8_t packet[32];
@@ -9538,9 +9594,13 @@ typedef struct {
 struct Config {
     _Bool IsConfigured;
     uint8_t Address[3];
-    unsigned int PingInterval;
+    uint8_t PingInterval;
+    uint8_t Channel;
+    uint8_t PipeAddr1[5];
+    uint8_t PipeAddr2[5];
+    uint8_t ARD;
 };
-# 15 "handler.c" 2
+# 16 "handler.c" 2
 
 
 uint32_t Ticks = 0;
@@ -9602,9 +9662,7 @@ uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
     }
     packetsTX[i].free = 0;
     packetsTX[i].size = sz;
-    for (uint8_t j = 0; j < sz; j++) {
-        packetsTX[i].packet[j] = buffer[j];
-    }
+    memcpy(packetsTX[i].packet, buffer,sz);
     return 1;
 }
 
@@ -9642,6 +9700,7 @@ void HandlePacketLoop(void) {
         nrf24_flush_tx_rx();
         return;
 
+
     }
 
 
@@ -9667,7 +9726,7 @@ void TimerInterruptHandler(void) {
     }
     SendPing();
 }
-# 184 "handler.c"
+
 _Bool VerifyBoardAddress(uint8_t *bufferRX) {
     for (int i = 0; i < 3; i++) {
         if (config.Address[i] != bufferRX[i + 1]) {
@@ -9685,9 +9744,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     switch (pktType) {
         case 0x10:
             actionID = buffer[4];
-            for (int i = 0; i < sz - 5; i++) {
-                data[i] = buffer[i + 5];
-            }
+            SuperMemCpy(data,0,buffer,5,sz-5);
             ProcessActionRequest(actionID, data);
             break;
         case 0x03:
@@ -9716,18 +9773,22 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 uint8_t SendError(uint8_t errorCode) {
     uint8_t i = 0;
     bufferTX[i] = 0x01;
-    for (i = 1; i <= 3; i++) {
-        bufferTX[i] = config.Address[i - 1];
-    }
-    bufferTX[i] = 0;
+    SuperMemCpy(bufferTX,1,config.Address,0,3);
+    i+=3;
+    bufferTX[++i] = 0;
     bufferTX[++i] = errorCode;
     return QueueTXPacket(bufferTX, (i+1));
 }
 
 uint8_t SendPing() {
     bufferTX[0] = 0x02;
-    for (char i = 0; i < 3; i++) {
-        bufferTX[i + 1] = config.Address[i];
-    }
+    SuperMemCpy(bufferTX,1,config.Address,0,3);
     return QueueTXPacket(bufferTX, (3 + 1));
+}
+
+
+void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
+    for(uint8_t i=0; i< sz; i++) {
+        dest[i+destStart] = src[i+srcStart];
+    }
 }

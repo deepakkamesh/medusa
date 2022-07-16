@@ -73,6 +73,7 @@ bool VerifyBoardAddress(uint8_t *bufferRX);
 void HandlePacketLoop(void);
 uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
+void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 
 typedef struct {
     uint8_t packet[MAX_PKT_SZ];
@@ -85,5 +86,9 @@ typedef struct {
 struct Config {
     bool IsConfigured; // True if board is configured.
     uint8_t Address[3]; // Address of the board.
-    unsigned int PingInterval; // Ping interval in seconds
+    uint8_t PingInterval; // Ping interval in seconds
+    uint8_t Channel; // Frequency channel.
+    uint8_t PipeAddr1[5]; 
+    uint8_t PipeAddr2[5];
+    uint8_t ARD;  // Auto Retry Duration. 
 };

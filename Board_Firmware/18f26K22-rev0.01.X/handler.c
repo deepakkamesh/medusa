@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "mcc_generated_files/mcc.h"
 #include "../lib/nrf24_lib.h"
@@ -73,9 +74,7 @@ uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
     }
     packetsTX[i].free = false;
     packetsTX[i].size = sz;
-    for (uint8_t j = 0; j < sz; j++) {
-        packetsTX[i].packet[j] = buffer[j];
-    }
+    memcpy(packetsTX[i].packet, buffer,sz);
     return 1;
 }
 
@@ -113,6 +112,7 @@ void HandlePacketLoop(void) {
         nrf24_flush_tx_rx();
         return;
         // TODO: Update primary address to another pipe address.
+        // after x retries shutdown to conserve battery.
     }
 
     // Free up the slot since packet was transmitted successfully.
@@ -156,9 +156,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     switch (pktType) {
         case PKT_ACTION:
             actionID = buffer[4];
-            for (int i = 0; i < sz - 5; i++) {
-                data[i] = buffer[i + 5];
-            }
+            SuperMemCpy(data,0,buffer,5,sz-5);
             ProcessActionRequest(actionID, data);
             break;
         case PKT_CFG:
@@ -187,18 +185,22 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 uint8_t SendError(uint8_t errorCode) {
     uint8_t i = 0;
     bufferTX[i] = PKT_DATA;
-    for (i = 1; i <= ADDR_LEN; i++) {
-        bufferTX[i] = config.Address[i - 1];
-    }
-    bufferTX[i] = 0; // ActionID.
+    SuperMemCpy(bufferTX,1,config.Address,0,ADDR_LEN);
+    i+=ADDR_LEN;
+    bufferTX[++i] = 0; // ActionID.
     bufferTX[++i] = errorCode;
     return QueueTXPacket(bufferTX, (i+1));
 }
 
 uint8_t SendPing() {
     bufferTX[0] = PKT_PING;
-    for (char i = 0; i < ADDR_LEN; i++) {
-        bufferTX[i + 1] = config.Address[i];
-    }
+    SuperMemCpy(bufferTX,1,config.Address,0,ADDR_LEN);
     return QueueTXPacket(bufferTX, (ADDR_LEN + 1));
+}
+
+
+void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
+    for(uint8_t i=0; i< sz; i++) {
+        dest[i+destStart] = src[i+srcStart];
+    }
 }
