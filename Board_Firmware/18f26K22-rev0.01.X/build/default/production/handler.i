@@ -9515,16 +9515,23 @@ uint8_t GetmockHumidity(void);
 # 13 "handler.c" 2
 
 # 1 "./handler.h" 1
-# 62 "./handler.h"
+# 66 "./handler.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
-uint8_t MakePingPkt(uint8_t *buffer);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
 void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 _Bool VerifyBoardAddress(uint8_t *bufferRX);
+void HandlePacketLoop(void);
+uint8_t SendError(uint8_t errorCode);
+uint8_t SendPing();
 
+typedef struct {
+    uint8_t packet[32];
+    _Bool free;
+    uint8_t size;
+} Packet;
 
 
 
@@ -9541,6 +9548,8 @@ struct Config config;
 
 uint8_t bufferTX[32];
 uint8_t bufferRX[32];
+
+Packet packetsTX[8];
 
 void InitRadio(void) {
     nrf24_rf_init();
@@ -9570,17 +9579,51 @@ void InitRadio(void) {
 
     config.IsConfigured = 0;
     config.PingInterval = 2;
+
+
+    for (uint8_t i = 0; i < 8; i++) {
+        packetsTX[i].free = 1;
+        packetsTX[i].size = 0;
+    }
 }
 
-void TimerInterruptHandler(void) {
-    Ticks++;
 
 
-    if (Ticks % config.PingInterval != 0) {
+
+uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
+    uint8_t i;
+    for (i = 0; i < 8; i++) {
+        if (packetsTX[i].free) {
+            break;
+        }
+    }
+    if (i == 8) {
+        return 0;
+    }
+    packetsTX[i].free = 0;
+    packetsTX[i].size = sz;
+    for (uint8_t j = 0; j < sz; j++) {
+        packetsTX[i].packet[j] = buffer[j];
+    }
+    return 1;
+}
+
+
+
+void HandlePacketLoop(void) {
+    uint8_t i;
+
+
+    for (i = 0; i < 8; i++) {
+        if (!packetsTX[i].free) {
+            break;
+        }
+    }
+    if (i == 8) {
         return;
     }
-    uint8_t sz = MakePingPkt(bufferTX);
-    nrf24_send_rf_data(bufferTX, sz);
+
+    nrf24_send_rf_data(packetsTX[i].packet, packetsTX[i].size);
 
 
     uint8_t status = 0;
@@ -9596,11 +9639,13 @@ void TimerInterruptHandler(void) {
 
 
     if (status & 0x10) {
-        do { LATAbits.LATA1 = 1; } while(0);
         nrf24_flush_tx_rx();
         return;
 
     }
+
+
+    packetsTX[i].free = 1;
 
 
     if (status & 0x40) {
@@ -9613,8 +9658,17 @@ void TimerInterruptHandler(void) {
     }
 }
 
+void TimerInterruptHandler(void) {
+    Ticks++;
+
+
+    if (Ticks % config.PingInterval != 0) {
+        return;
+    }
+    SendPing();
+}
+# 184 "handler.c"
 _Bool VerifyBoardAddress(uint8_t *bufferRX) {
-    uint8_t addr[3];
     for (int i = 0; i < 3; i++) {
         if (config.Address[i] != bufferRX[i + 1]) {
             return 0;
@@ -9625,9 +9679,9 @@ _Bool VerifyBoardAddress(uint8_t *bufferRX) {
 
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     uint8_t data[32];
+    uint8_t actionID;
 
     uint8_t pktType = buffer[0];
-    uint8_t actionID;
     switch (pktType) {
         case 0x10:
             actionID = buffer[4];
@@ -9638,6 +9692,9 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
             break;
         case 0x03:
             break;
+
+        default:
+            SendError(0x04);
     }
 
 }
@@ -9651,21 +9708,26 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
                 do { LATAbits.LATA1 = 1; } while(0);
             }
             break;
+        default:
+            SendError(0x04);
     }
 }
 
-void SendError(uint8_t errorCode, uint8_t *buffer) {
-    buffer[0] = 0x01;
-    for (uint8_t i = 0; i < 3; i++) {
-        buffer[i + 1] = config.Address[i];
+uint8_t SendError(uint8_t errorCode) {
+    uint8_t i = 0;
+    bufferTX[i] = 0x01;
+    for (i = 1; i <= 3; i++) {
+        bufferTX[i] = config.Address[i - 1];
     }
-
+    bufferTX[i] = 0;
+    bufferTX[++i] = errorCode;
+    return QueueTXPacket(bufferTX, (i+1));
 }
 
-uint8_t MakePingPkt(uint8_t *buffer) {
-    buffer[0] = 0x02;
+uint8_t SendPing() {
+    bufferTX[0] = 0x02;
     for (char i = 0; i < 3; i++) {
-        buffer[i + 1] = config.Address[i];
+        bufferTX[i + 1] = config.Address[i];
     }
-    return 3 + 1;
+    return QueueTXPacket(bufferTX, (3 + 1));
 }

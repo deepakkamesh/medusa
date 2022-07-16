@@ -9448,16 +9448,23 @@ void OSCILLATOR_Initialize(void);
 # 5 "main.c" 2
 
 # 1 "./handler.h" 1
-# 62 "./handler.h"
+# 66 "./handler.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
-uint8_t MakePingPkt(uint8_t *buffer);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
 void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 _Bool VerifyBoardAddress(uint8_t *bufferRX);
+void HandlePacketLoop(void);
+uint8_t SendError(uint8_t errorCode);
+uint8_t SendPing();
 
+typedef struct {
+    uint8_t packet[32];
+    _Bool free;
+    uint8_t size;
+} Packet;
 
 
 
@@ -9559,6 +9566,7 @@ void main(void) {
     InitRadio();
 
     while (1) {
+        HandlePacketLoop();
         __nop();
     }
 }

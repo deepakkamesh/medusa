@@ -32,6 +32,7 @@ void main(void) {
     InitRadio();
 
     while (1) {
+        HandlePacketLoop();
         NOP();
     }
 }

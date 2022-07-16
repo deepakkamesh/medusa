@@ -49,11 +49,15 @@ extern "C" {
 // Protocol Stuff
 #define ADDR_LEN 3
 #define MIN_PKT_SZ 4
+#define MAX_PKT_SZ 32
+#define MAX_TX_QUEUE_SZ 8 
 
 #define PKT_DATA 0x01
 #define PKT_PING 0x02
 #define PKT_CFG 0x03
 #define PKT_ACTION 0x10
+
+#define ERR_NOT_IMPL 0x04
 
 #define ACTION_STATUS_LED 0x13
 
@@ -63,11 +67,18 @@ uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
-uint8_t MakePingPkt(uint8_t *buffer);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
 void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 bool VerifyBoardAddress(uint8_t *bufferRX);
+void HandlePacketLoop(void);
+uint8_t SendError(uint8_t errorCode);
+uint8_t SendPing();
 
+typedef struct {
+    uint8_t packet[MAX_PKT_SZ];
+    bool free;
+    uint8_t size; // Size of packet.
+} Packet;
 
 // Config stores the configuration of the board.
 
