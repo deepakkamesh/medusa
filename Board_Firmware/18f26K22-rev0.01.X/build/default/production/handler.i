@@ -9567,10 +9567,11 @@ uint8_t nrf24_read_dynamic_payload_length(void) ;
 
 uint8_t GetmockTemp(void);
 uint8_t GetmockHumidity(void);
+uint8_t GetMockTempHumidity(uint8_t *temp);
 # 14 "handler.c" 2
 
 # 1 "./handler.h" 1
-# 71 "./handler.h"
+# 75 "./handler.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 uint8_t PingInterval = 1;
 uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
@@ -9585,6 +9586,7 @@ uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
+uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 
 typedef struct {
     uint8_t packet[32];
@@ -9645,9 +9647,8 @@ void InitRadio(void) {
     config.RFChannel = 115;
     memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, 5);
     memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, 5);
-    memcpy(config.Address,BoardAddress,3);
+    memcpy(config.Address, BoardAddress, 3);
     config.ARD = 0xA;
-
 
 
     for (uint8_t i = 0; i < 8; i++) {
@@ -9773,6 +9774,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 }
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+    uint8_t tmpHumidity[] ={0,0};
 
     switch (actionID) {
         case 0x13:
@@ -9782,13 +9784,18 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             }
             break;
         case 0x15:
-             ReloadConfig();
+            ReloadConfig();
+            break;
+        case 0x02:
+            GetMockTempHumidity(tmpHumidity);
+            SendData(0x02,tmpHumidity,2);
             break;
         default:
             SendError(0x04);
     }
 }
-# 212 "handler.c"
+
+
 void ReloadConfig(void) {
     config.IsConfigured = 1;
     nrf24_write_register(0x05, config.RFChannel);
@@ -9799,7 +9806,7 @@ void ReloadConfig(void) {
     uint8_t ard = (config.ARD << 4) | 0xF;
     nrf24_write_register(0x04, ard);
 
-    memcpy(BoardAddress,config.Address,3);
+    memcpy(BoardAddress, config.Address, 3);
     PingInterval = config.PingInterval;
 }
 
@@ -9810,6 +9817,18 @@ uint8_t SendError(uint8_t errorCode) {
     i += 3;
     bufferTX[++i] = 0;
     bufferTX[++i] = errorCode;
+    return QueueTXPacket(bufferTX, (i + 1));
+}
+
+uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
+    uint8_t i = 0;
+    bufferTX[i] = 0x01;
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+    i += 3;
+    bufferTX[++i] = actionID;
+    bufferTX[++i] = 0x00;
+    SuperMemCpy(bufferTX, i+1, data, 0, dataSz);
+    i += dataSz;
     return QueueTXPacket(bufferTX, (i + 1));
 }
 

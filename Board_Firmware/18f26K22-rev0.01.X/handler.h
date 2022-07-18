@@ -60,10 +60,14 @@ extern "C" {
 #define PKT_ACTION 0x10
 
 // Error Types.
+#define ERR_NA 0x00
 #define ERR_NOT_IMPL 0x04
 
+// Action Types.
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RELOAD_CONFIG 0x15
+#define ACTION_GET_TEMP_HUMIDITY 0x02
+#define ACTION_GET_LIGHT 0x03
 
 #define PIPE_ADDR_LEN 5 
 #define DEFAULT_RF_CHANNEL 115
@@ -82,6 +86,7 @@ uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
+uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 
 typedef struct {
     uint8_t packet[MAX_PKT_SZ];

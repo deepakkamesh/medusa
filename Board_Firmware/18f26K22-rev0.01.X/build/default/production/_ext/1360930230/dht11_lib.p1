@@ -762,3 +762,24 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../lib/dht11_lib.c: 9: }
 [e :UE 830 ]
 }
+"11
+[; ;../lib/dht11_lib.c: 11: uint8_t GetMockTempHumidity(uint8_t *temp) {
+[v _GetMockTempHumidity `(uc ~T0 @X0 1 ef1`*uc ]
+{
+[e :U _GetMockTempHumidity ]
+[v _temp `*uc ~T0 @X0 1 r1 ]
+[f ]
+"12
+[; ;../lib/dht11_lib.c: 12:     temp[0] = 35;
+[e = *U + _temp * -> -> 0 `i `x -> -> # *U _temp `i `x -> -> 35 `i `uc ]
+"13
+[; ;../lib/dht11_lib.c: 13:     temp[1] = 40;
+[e = *U + _temp * -> -> 1 `i `x -> -> # *U _temp `i `x -> -> 40 `i `uc ]
+"14
+[; ;../lib/dht11_lib.c: 14:     return 1;
+[e ) -> -> 1 `i `uc ]
+[e $UE 831  ]
+"15
+[; ;../lib/dht11_lib.c: 15: }
+[e :UE 831 ]
+}

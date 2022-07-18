@@ -181,6 +181,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 }
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+    uint8_t tmpHumidity[] ={0,0};
 
     switch (actionID) {
         case ACTION_STATUS_LED:
@@ -192,12 +193,16 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
         case ACTION_RELOAD_CONFIG:
             ReloadConfig();
             break;
+        case ACTION_GET_TEMP_HUMIDITY:
+            GetMockTempHumidity(tmpHumidity);
+            SendData(ACTION_GET_TEMP_HUMIDITY,tmpHumidity,2);
+            break;
         default:
             SendError(ERR_NOT_IMPL);
     }
 }
 
-/* ReloadConfig loads the config in the config struct and makes tit active */
+/* ReloadConfig loads the config in the config struct and makes it active */
 void ReloadConfig(void) {
     config.IsConfigured = true;
     nrf24_write_register(NRF24_MEM_RF_CH, config.RFChannel);
@@ -219,6 +224,18 @@ uint8_t SendError(uint8_t errorCode) {
     i += ADDR_LEN;
     bufferTX[++i] = 0; // ActionID.
     bufferTX[++i] = errorCode;
+    return QueueTXPacket(bufferTX, (i + 1));
+}
+
+uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
+    uint8_t i = 0;
+    bufferTX[i] = PKT_DATA;
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
+    i += ADDR_LEN;
+    bufferTX[++i] = actionID;
+    bufferTX[++i] = ERR_NA;
+    SuperMemCpy(bufferTX, i+1, data, 0, dataSz);
+    i += dataSz;
     return QueueTXPacket(bufferTX, (i + 1));
 }
 

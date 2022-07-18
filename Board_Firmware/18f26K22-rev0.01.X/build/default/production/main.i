@@ -9448,7 +9448,7 @@ void OSCILLATOR_Initialize(void);
 # 5 "main.c" 2
 
 # 1 "./handler.h" 1
-# 71 "./handler.h"
+# 75 "./handler.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 uint8_t PingInterval = 1;
 uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
@@ -9463,6 +9463,7 @@ uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
+uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 
 typedef struct {
     uint8_t packet[32];

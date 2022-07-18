@@ -26,14 +26,14 @@ Version 4.0 HI-TECH Software Intermediate Code
 "364 ./mcc_generated_files/tmr1.h
 [; ;./mcc_generated_files/tmr1.h: 364:  void TMR1_SetInterruptHandler(void (* InterruptHandler)(void));
 [v _TMR1_SetInterruptHandler `(v ~T0 @X0 0 ef1`*F6110 ]
-"75 ./handler.h
-[; ;./handler.h: 75: void TimerInterruptHandler(void);
+"79 ./handler.h
+[; ;./handler.h: 79: void TimerInterruptHandler(void);
 [v _TimerInterruptHandler `(v ~T0 @X0 0 ef ]
-"76
-[; ;./handler.h: 76: void InitRadio(void);
-[v _InitRadio `(v ~T0 @X0 0 ef ]
 "80
-[; ;./handler.h: 80: void HandlePacketLoop(void);
+[; ;./handler.h: 80: void InitRadio(void);
+[v _InitRadio `(v ~T0 @X0 0 ef ]
+"84
+[; ;./handler.h: 84: void HandlePacketLoop(void);
 [v _HandlePacketLoop `(v ~T0 @X0 0 ef ]
 "8 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/builtins.h
 [v ___nop `(v ~T0 @X0 0 ef ]
@@ -773,8 +773,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 "16610
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 16610: __asm("TOSU equ 0FFFh");
 [; <" TOSU equ 0FFFh ;# ">
-"71 ./handler.h
-[; ;./handler.h: 71: uint8_t DEFAULT_PIPE_ADDR[] = "hello";
+"75 ./handler.h
+[; ;./handler.h: 75: uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 [v _DEFAULT_PIPE_ADDR `uc ~T0 @X0 -> 6 `i e ]
 [i _DEFAULT_PIPE_ADDR
 :U ..
@@ -786,14 +786,14 @@ Version 4.0 HI-TECH Software Intermediate Code
 -> 0 `c
 ..
 ]
-"72
-[; ;./handler.h: 72: uint8_t PingInterval = 1;
+"76
+[; ;./handler.h: 76: uint8_t PingInterval = 1;
 [v _PingInterval `uc ~T0 @X0 1 e ]
 [i _PingInterval
 -> -> 1 `i `uc
 ]
-"73
-[; ;./handler.h: 73: uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
+"77
+[; ;./handler.h: 77: uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
 [v _BoardAddress `uc ~T0 @X0 -> 3 `i e ]
 [i _BoardAddress
 :U ..
