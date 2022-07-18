@@ -1,6 +1,7 @@
 #define UDP_LISTEN_PORT 6069 // default listen port.
 
 #define RELAY_CONFIG_ANS_LEN 16 // Length of  Relay Get Answer
+#define PIPE_ADDR_LEN 5 // Address length of pipe.
 
 #define PKT_TYPE_RELAY_GET_CONFIG 0xAA // Packet type for Relay Get Config
 #define PKT_TYPE_RELAY_CONFIG_ANS 0xAB // Packet type for Relay Get Answer
@@ -89,10 +90,10 @@ int RelaySetup(void) {
     }
 
     // Parse config packet and store in Config struct.
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < PIPE_ADDR_LEN; i++) {
       Config.pipe_addr_p0[i] = bufferRX[i + 1];
     }
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < PIPE_ADDR_LEN; i++) {
       Config.pipe_addr_p1[i] = bufferRX[i + 6];
     }
     Config.pipe_addr_p2[0] = bufferRX[11];
@@ -124,7 +125,7 @@ void IpLoop(void) {
 
   // receive incoming UDP packets.
   int sz = Udp.read(bufferRX, 255);
-  PrintPkt("Ctrller pkt:", bufferRX, sz);
+  PrintPkt("Ctrl pkt:", bufferRX, sz);
 
   // Process packets.
   uint8_t buffer[32];

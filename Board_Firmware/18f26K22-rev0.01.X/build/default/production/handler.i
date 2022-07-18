@@ -9570,8 +9570,10 @@ uint8_t GetmockHumidity(void);
 # 14 "handler.c" 2
 
 # 1 "./handler.h" 1
-# 66 "./handler.h"
+# 71 "./handler.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
+uint8_t PingInterval = 1;
+uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
@@ -9582,6 +9584,7 @@ void HandlePacketLoop(void);
 uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
+void ReloadConfig(void);
 
 typedef struct {
     uint8_t packet[32];
@@ -9595,7 +9598,7 @@ struct Config {
     _Bool IsConfigured;
     uint8_t Address[3];
     uint8_t PingInterval;
-    uint8_t Channel;
+    uint8_t RFChannel;
     uint8_t PipeAddr1[5];
     uint8_t PipeAddr2[5];
     uint8_t ARD;
@@ -9638,7 +9641,13 @@ void InitRadio(void) {
 
 
     config.IsConfigured = 0;
-    config.PingInterval = 2;
+    config.PingInterval = PingInterval;
+    config.RFChannel = 115;
+    memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, 5);
+    memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, 5);
+    memcpy(config.Address,BoardAddress,3);
+    config.ARD = 0xA;
+
 
 
     for (uint8_t i = 0; i < 8; i++) {
@@ -9662,7 +9671,7 @@ uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
     }
     packetsTX[i].free = 0;
     packetsTX[i].size = sz;
-    memcpy(packetsTX[i].packet, buffer,sz);
+    memcpy(packetsTX[i].packet, buffer, sz);
     return 1;
 }
 
@@ -9721,7 +9730,7 @@ void TimerInterruptHandler(void) {
     Ticks++;
 
 
-    if (Ticks % config.PingInterval != 0) {
+    if (Ticks % PingInterval != 0) {
         return;
     }
     SendPing();
@@ -9729,7 +9738,7 @@ void TimerInterruptHandler(void) {
 
 _Bool VerifyBoardAddress(uint8_t *bufferRX) {
     for (int i = 0; i < 3; i++) {
-        if (config.Address[i] != bufferRX[i + 1]) {
+        if (BoardAddress[i] != bufferRX[i + 1]) {
             return 0;
         }
     }
@@ -9744,12 +9753,19 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     switch (pktType) {
         case 0x10:
             actionID = buffer[4];
-            SuperMemCpy(data,0,buffer,5,sz-5);
+            SuperMemCpy(data, 0, buffer, 5, sz - 5);
             ProcessActionRequest(actionID, data);
             break;
         case 0x03:
+            config.RFChannel = buffer[4];
+            SuperMemCpy(config.PipeAddr1, 0, buffer, 5, 5);
+            SuperMemCpy(config.PipeAddr2, 0, buffer, 10, 5);
+            config.ARD = buffer[15];
             break;
-
+        case 0x04:
+            SuperMemCpy(config.Address, 0, buffer, 4, 3);
+            config.PingInterval = buffer[7];
+            break;
         default:
             SendError(0x04);
     }
@@ -9765,30 +9781,46 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
                 do { LATAbits.LATA1 = 1; } while(0);
             }
             break;
+        case 0x15:
+             ReloadConfig();
+            break;
         default:
             SendError(0x04);
     }
+}
+# 212 "handler.c"
+void ReloadConfig(void) {
+    config.IsConfigured = 1;
+    nrf24_write_register(0x05, config.RFChannel);
+
+    nrf24_write_buff(0x10, config.PipeAddr1, 5);
+    nrf24_write_buff(0x0A, config.PipeAddr1, 5);
+
+    uint8_t ard = (config.ARD << 4) | 0xF;
+    nrf24_write_register(0x04, ard);
+
+    memcpy(BoardAddress,config.Address,3);
+    PingInterval = config.PingInterval;
 }
 
 uint8_t SendError(uint8_t errorCode) {
     uint8_t i = 0;
     bufferTX[i] = 0x01;
-    SuperMemCpy(bufferTX,1,config.Address,0,3);
-    i+=3;
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+    i += 3;
     bufferTX[++i] = 0;
     bufferTX[++i] = errorCode;
-    return QueueTXPacket(bufferTX, (i+1));
+    return QueueTXPacket(bufferTX, (i + 1));
 }
 
 uint8_t SendPing() {
     bufferTX[0] = 0x02;
-    SuperMemCpy(bufferTX,1,config.Address,0,3);
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
     return QueueTXPacket(bufferTX, (3 + 1));
 }
 
-
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
-    for(uint8_t i=0; i< sz; i++) {
-        dest[i+destStart] = src[i+srcStart];
+    for (uint8_t i = 0; i < sz; i++) {
+        dest[i + destStart] = src[i + srcStart];
     }
 }

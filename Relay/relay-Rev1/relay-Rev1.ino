@@ -35,13 +35,13 @@ void setup() {
   WifiConnect();
   int ok = RelaySetup();
   if (!ok) {
-    digitalWrite(LED_ONBOARD, false);
+    digitalWrite(LED_ONBOARD, false); // false turns it on?.
     delay(1000);
     ESP.restart();
   }
   ok = RadioSetup();
   if (!ok) {
-    digitalWrite(LED_ONBOARD, false);
+    digitalWrite(LED_ONBOARD, false); // false turns it on?.
     delay(1000);
     ESP.restart();
   }

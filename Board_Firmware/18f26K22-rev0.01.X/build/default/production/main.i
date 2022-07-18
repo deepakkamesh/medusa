@@ -9448,8 +9448,10 @@ void OSCILLATOR_Initialize(void);
 # 5 "main.c" 2
 
 # 1 "./handler.h" 1
-# 66 "./handler.h"
+# 71 "./handler.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
+uint8_t PingInterval = 1;
+uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
@@ -9460,6 +9462,7 @@ void HandlePacketLoop(void);
 uint8_t SendError(uint8_t errorCode);
 uint8_t SendPing();
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
+void ReloadConfig(void);
 
 typedef struct {
     uint8_t packet[32];
@@ -9473,7 +9476,7 @@ struct Config {
     _Bool IsConfigured;
     uint8_t Address[3];
     uint8_t PingInterval;
-    uint8_t Channel;
+    uint8_t RFChannel;
     uint8_t PipeAddr1[5];
     uint8_t PipeAddr2[5];
     uint8_t ARD;

@@ -26,8 +26,8 @@ Packet packetsTX[MAX_TX_QUEUE_SZ]; // Transmit buffer.
 void InitRadio(void) {
     nrf24_rf_init();
 
-    nrf24_write_buff(NRF24_MEM_TX_ADDR, DEFAULT_PIPE_ADDR, 5);
-    nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, DEFAULT_PIPE_ADDR, 5);
+    nrf24_write_buff(NRF24_MEM_TX_ADDR, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+    nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
     // Mask all interrupts, EN_CRC,CRCO=1byte,PWR_UP,PTX, 
     nrf24_write_register(NRF24_MEM_CONFIG, 0b1111010);
     // ENAA_P0. 
@@ -48,9 +48,14 @@ void InitRadio(void) {
     nrf24_write_register(NRF24_MEM_DYNPD, 0b1); // Dynamic payload on Pipe 0.
     __delay_us(10);
 
-
+    // Setup defaults in Config.
     config.IsConfigured = false;
-    config.PingInterval = PING_INT;
+    config.PingInterval = PingInterval;
+    config.RFChannel = DEFAULT_RF_CHANNEL;
+    memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+    memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+    memcpy(config.Address, BoardAddress, ADDR_LEN);
+    config.ARD = DEFAULT_ARD;
 
     // Initialize Transmit buffer.
     for (uint8_t i = 0; i < MAX_TX_QUEUE_SZ; i++) {
@@ -74,7 +79,7 @@ uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
     }
     packetsTX[i].free = false;
     packetsTX[i].size = sz;
-    memcpy(packetsTX[i].packet, buffer,sz);
+    memcpy(packetsTX[i].packet, buffer, sz);
     return 1;
 }
 
@@ -133,15 +138,15 @@ void TimerInterruptHandler(void) {
     Ticks++;
 
     // Send ping packets. 
-    if (Ticks % config.PingInterval != 0) {
+    if (Ticks % PingInterval != 0) {
         return;
     }
     SendPing();
 }
 
 bool VerifyBoardAddress(uint8_t *bufferRX) {
-    for (int i = 0; i < 3; i++) {
-        if (config.Address[i] != bufferRX[i + 1]) {
+    for (int i = 0; i < ADDR_LEN; i++) {
+        if (BoardAddress[i] != bufferRX[i + 1]) {
             return false;
         }
     }
@@ -156,12 +161,19 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     switch (pktType) {
         case PKT_ACTION:
             actionID = buffer[4];
-            SuperMemCpy(data,0,buffer,5,sz-5);
+            SuperMemCpy(data, 0, buffer, 5, sz - 5);
             ProcessActionRequest(actionID, data);
             break;
-        case PKT_CFG:
+        case PKT_CFG_1:
+            config.RFChannel = buffer[4];
+            SuperMemCpy(config.PipeAddr1, 0, buffer, 5, PIPE_ADDR_LEN);
+            SuperMemCpy(config.PipeAddr2, 0, buffer, 10, PIPE_ADDR_LEN);
+            config.ARD = buffer[15];
             break;
-
+        case PKT_CFG_2:
+            SuperMemCpy(config.Address, 0, buffer, 4, ADDR_LEN);
+            config.PingInterval = buffer[7];
+            break;
         default:
             SendError(ERR_NOT_IMPL);
     }
@@ -177,30 +189,47 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
                 LED_SetHigh();
             }
             break;
+        case ACTION_RELOAD_CONFIG:
+            ReloadConfig();
+            break;
         default:
             SendError(ERR_NOT_IMPL);
     }
 }
 
+/* ReloadConfig loads the config in the config struct and makes tit active */
+void ReloadConfig(void) {
+    config.IsConfigured = true;
+    nrf24_write_register(NRF24_MEM_RF_CH, config.RFChannel);
+
+    nrf24_write_buff(NRF24_MEM_TX_ADDR, config.PipeAddr1, PIPE_ADDR_LEN);
+    nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, config.PipeAddr1, PIPE_ADDR_LEN);
+
+    uint8_t ard = (config.ARD << 4) | 0xF;
+    nrf24_write_register(NRF24_MEM_SETUP_RETR, ard);
+
+    memcpy(BoardAddress, config.Address, ADDR_LEN);
+    PingInterval = config.PingInterval;
+}
+
 uint8_t SendError(uint8_t errorCode) {
     uint8_t i = 0;
     bufferTX[i] = PKT_DATA;
-    SuperMemCpy(bufferTX,1,config.Address,0,ADDR_LEN);
-    i+=ADDR_LEN;
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
+    i += ADDR_LEN;
     bufferTX[++i] = 0; // ActionID.
     bufferTX[++i] = errorCode;
-    return QueueTXPacket(bufferTX, (i+1));
+    return QueueTXPacket(bufferTX, (i + 1));
 }
 
 uint8_t SendPing() {
     bufferTX[0] = PKT_PING;
-    SuperMemCpy(bufferTX,1,config.Address,0,ADDR_LEN);
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     return QueueTXPacket(bufferTX, (ADDR_LEN + 1));
 }
 
-
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
-    for(uint8_t i=0; i< sz; i++) {
-        dest[i+destStart] = src[i+srcStart];
+    for (uint8_t i = 0; i < sz; i++) {
+        dest[i + destStart] = src[i + srcStart];
     }
 }

@@ -1,10 +1,10 @@
 Version 4.0 HI-TECH Software Intermediate Code
-"86 ./handler.h
-[; ;./handler.h: 86: struct Config {
+"94 ./handler.h
+[; ;./handler.h: 94: struct Config {
 [s S833 `a 1 `uc -> 3 `i `uc 1 `uc 1 `uc -> 5 `i `uc -> 5 `i `uc 1 ]
-[n S833 Config IsConfigured Address PingInterval Channel PipeAddr1 PipeAddr2 ARD ]
-"78
-[; ;./handler.h: 78: typedef struct {
+[n S833 Config IsConfigured Address PingInterval RFChannel PipeAddr1 PipeAddr2 ARD ]
+"86
+[; ;./handler.h: 86: typedef struct {
 [s S832 `uc -> 32 `i `a 1 `uc 1 ]
 [n S832 . packet free size ]
 "111 ./../lib/nrf24_lib.h
@@ -38,23 +38,23 @@ Version 4.0 HI-TECH Software Intermediate Code
 "146
 [; ;./../lib/nrf24_lib.h: 146: void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
 [v _nrf24_read_rf_data `(v ~T0 @X0 0 ef2`*uc`uc ]
-"72 ./handler.h
-[; ;./handler.h: 72: _Bool VerifyBoardAddress(uint8_t *bufferRX);
+"79 ./handler.h
+[; ;./handler.h: 79: _Bool VerifyBoardAddress(uint8_t *bufferRX);
 [v _VerifyBoardAddress `(a ~T0 @X0 0 ef1`*uc ]
-"70
-[; ;./handler.h: 70: void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
+"77
+[; ;./handler.h: 77: void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
 [v _ProcessAckPayload `(v ~T0 @X0 0 ef2`*uc`uc ]
-"75
-[; ;./handler.h: 75: uint8_t SendPing();
+"82
+[; ;./handler.h: 82: uint8_t SendPing();
 [v _SendPing `(uc ~T0 @X0 0 e? ]
-"76
-[; ;./handler.h: 76: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
+"83
+[; ;./handler.h: 83: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 [v _SuperMemCpy `(v ~T0 @X0 0 ef5`*uc`uc`*uc`uc`uc ]
-"71
-[; ;./handler.h: 71: void ProcessActionRequest(uint8_t actionID, uint8_t * data);
+"78
+[; ;./handler.h: 78: void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 [v _ProcessActionRequest `(v ~T0 @X0 0 ef2`uc`*uc ]
-"74
-[; ;./handler.h: 74: uint8_t SendError(uint8_t errorCode);
+"81
+[; ;./handler.h: 81: uint8_t SendError(uint8_t errorCode);
 [v _SendError `(uc ~T0 @X0 0 ef1`uc ]
 "7251 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7251:     struct {
@@ -71,6 +71,9 @@ Version 4.0 HI-TECH Software Intermediate Code
 "7272
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7272: extern volatile LATAbits_t LATAbits __attribute__((address(0xF89)));
 [v _LATAbits `VS371 ~T0 @X0 0 e@3977 ]
+"84 ./handler.h
+[; ;./handler.h: 84: void ReloadConfig(void);
+[v _ReloadConfig `(v ~T0 @X0 0 ef ]
 "55 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 55: __asm("ANSELA equ 0F38h");
 [; <" ANSELA equ 0F38h ;# ">
@@ -806,8 +809,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 "16610
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 16610: __asm("TOSU equ 0FFFh");
 [; <" TOSU equ 0FFFh ;# ">
-"66 ./handler.h
-[; ;./handler.h: 66: uint8_t DEFAULT_PIPE_ADDR[] = "hello";
+"71 ./handler.h
+[; ;./handler.h: 71: uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 [v _DEFAULT_PIPE_ADDR `uc ~T0 @X0 -> 6 `i e ]
 [i _DEFAULT_PIPE_ADDR
 :U ..
@@ -817,6 +820,22 @@ Version 4.0 HI-TECH Software Intermediate Code
 -> 108 `c
 -> 111 `c
 -> 0 `c
+..
+]
+"72
+[; ;./handler.h: 72: uint8_t PingInterval = 1;
+[v _PingInterval `uc ~T0 @X0 1 e ]
+[i _PingInterval
+-> -> 1 `i `uc
+]
+"73
+[; ;./handler.h: 73: uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
+[v _BoardAddress `uc ~T0 @X0 -> 3 `i e ]
+[i _BoardAddress
+:U ..
+-> -> 255 `i `uc
+-> -> 255 `i `uc
+-> -> 255 `i `uc
 ..
 ]
 "18 handler.c
@@ -886,10 +905,25 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;handler.c: 52:     config.IsConfigured = 0;
 [e = . _config 0 -> -> 0 `i `a ]
 "53
-[; ;handler.c: 53:     config.PingInterval = 2;
-[e = . _config 2 -> -> 2 `i `uc ]
+[; ;handler.c: 53:     config.PingInterval = PingInterval;
+[e = . _config 2 _PingInterval ]
+"54
+[; ;handler.c: 54:     config.RFChannel = 115;
+[e = . _config 3 -> -> 115 `i `uc ]
+"55
+[; ;handler.c: 55:     memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, 5);
+[e ( _memcpy (3 , , -> &U . _config 4 `*v -> &U _DEFAULT_PIPE_ADDR `*Cv -> -> 5 `i `ui ]
 "56
-[; ;handler.c: 56:     for (uint8_t i = 0; i < 8; i++) {
+[; ;handler.c: 56:     memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, 5);
+[e ( _memcpy (3 , , -> &U . _config 5 `*v -> &U _DEFAULT_PIPE_ADDR `*Cv -> -> 5 `i `ui ]
+"57
+[; ;handler.c: 57:     memcpy(config.Address,BoardAddress,3);
+[e ( _memcpy (3 , , -> &U . _config 1 `*v -> &U _BoardAddress `*Cv -> -> 3 `i `ui ]
+"58
+[; ;handler.c: 58:     config.ARD = 0xA;
+[e = . _config 6 -> -> 10 `i `uc ]
+"62
+[; ;handler.c: 62:     for (uint8_t i = 0; i < 8; i++) {
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
@@ -897,258 +931,258 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 836  ]
 [e :U 835 ]
 {
-"57
-[; ;handler.c: 57:         packetsTX[i].free = 1;
+"63
+[; ;handler.c: 63:         packetsTX[i].free = 1;
 [e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 -> -> 1 `i `a ]
-"58
-[; ;handler.c: 58:         packetsTX[i].size = 0;
+"64
+[; ;handler.c: 64:         packetsTX[i].size = 0;
 [e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 2 -> -> 0 `i `uc ]
-"59
-[; ;handler.c: 59:     }
+"65
+[; ;handler.c: 65:     }
 }
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 835  ]
 [e :U 836 ]
 }
-"60
-[; ;handler.c: 60: }
+"66
+[; ;handler.c: 66: }
 [e :UE 834 ]
 }
-"65
-[; ;handler.c: 65: uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
+"71
+[; ;handler.c: 71: uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
 [v _QueueTXPacket `(uc ~T0 @X0 1 ef2`*uc`uc ]
 {
 [e :U _QueueTXPacket ]
 [v _buffer `*uc ~T0 @X0 1 r1 ]
 [v _sz `uc ~T0 @X0 1 r2 ]
 [f ]
-"66
-[; ;handler.c: 66:     uint8_t i;
+"72
+[; ;handler.c: 72:     uint8_t i;
 [v _i `uc ~T0 @X0 1 a ]
-"67
-[; ;handler.c: 67:     for (i = 0; i < 8; i++) {
+"73
+[; ;handler.c: 73:     for (i = 0; i < 8; i++) {
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 839  ]
 [e $U 840  ]
 [e :U 839 ]
 {
-"68
-[; ;handler.c: 68:         if (packetsTX[i].free) {
+"74
+[; ;handler.c: 74:         if (packetsTX[i].free) {
 [e $ ! != -> . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 `i -> 0 `i 842  ]
 {
-"69
-[; ;handler.c: 69:             break;
+"75
+[; ;handler.c: 75:             break;
 [e $U 840  ]
-"70
-[; ;handler.c: 70:         }
+"76
+[; ;handler.c: 76:         }
 }
 [e :U 842 ]
-"71
-[; ;handler.c: 71:     }
+"77
+[; ;handler.c: 77:     }
 }
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 839  ]
 [e :U 840 ]
 }
-"72
-[; ;handler.c: 72:     if (i == 8) {
+"78
+[; ;handler.c: 78:     if (i == 8) {
 [e $ ! == -> _i `i -> 8 `i 843  ]
 {
-"73
-[; ;handler.c: 73:         return 0;
+"79
+[; ;handler.c: 79:         return 0;
 [e ) -> -> 0 `i `uc ]
 [e $UE 838  ]
-"74
-[; ;handler.c: 74:     }
+"80
+[; ;handler.c: 80:     }
 }
 [e :U 843 ]
-"75
-[; ;handler.c: 75:     packetsTX[i].free = 0;
+"81
+[; ;handler.c: 81:     packetsTX[i].free = 0;
 [e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 -> -> 0 `i `a ]
-"76
-[; ;handler.c: 76:     packetsTX[i].size = sz;
+"82
+[; ;handler.c: 82:     packetsTX[i].size = sz;
 [e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 2 _sz ]
-"77
-[; ;handler.c: 77:     memcpy(packetsTX[i].packet, buffer,sz);
+"83
+[; ;handler.c: 83:     memcpy(packetsTX[i].packet, buffer, sz);
 [e ( _memcpy (3 , , -> &U . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 0 `*v -> _buffer `*Cv -> _sz `ui ]
-"78
-[; ;handler.c: 78:     return 1;
+"84
+[; ;handler.c: 84:     return 1;
 [e ) -> -> 1 `i `uc ]
 [e $UE 838  ]
-"79
-[; ;handler.c: 79: }
+"85
+[; ;handler.c: 85: }
 [e :UE 838 ]
 }
-"83
-[; ;handler.c: 83: void HandlePacketLoop(void) {
+"89
+[; ;handler.c: 89: void HandlePacketLoop(void) {
 [v _HandlePacketLoop `(v ~T0 @X0 1 ef ]
 {
 [e :U _HandlePacketLoop ]
 [f ]
-"84
-[; ;handler.c: 84:     uint8_t i;
+"90
+[; ;handler.c: 90:     uint8_t i;
 [v _i `uc ~T0 @X0 1 a ]
-"87
-[; ;handler.c: 87:     for (i = 0; i < 8; i++) {
+"93
+[; ;handler.c: 93:     for (i = 0; i < 8; i++) {
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 845  ]
 [e $U 846  ]
 [e :U 845 ]
 {
-"88
-[; ;handler.c: 88:         if (!packetsTX[i].free) {
+"94
+[; ;handler.c: 94:         if (!packetsTX[i].free) {
 [e $ ! ! != -> . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 `i -> 0 `i 848  ]
 {
-"89
-[; ;handler.c: 89:             break;
+"95
+[; ;handler.c: 95:             break;
 [e $U 846  ]
-"90
-[; ;handler.c: 90:         }
+"96
+[; ;handler.c: 96:         }
 }
 [e :U 848 ]
-"91
-[; ;handler.c: 91:     }
+"97
+[; ;handler.c: 97:     }
 }
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 845  ]
 [e :U 846 ]
 }
-"92
-[; ;handler.c: 92:     if (i == 8) {
+"98
+[; ;handler.c: 98:     if (i == 8) {
 [e $ ! == -> _i `i -> 8 `i 849  ]
 {
-"93
-[; ;handler.c: 93:         return;
+"99
+[; ;handler.c: 99:         return;
 [e $UE 844  ]
-"94
-[; ;handler.c: 94:     }
+"100
+[; ;handler.c: 100:     }
 }
 [e :U 849 ]
-"96
-[; ;handler.c: 96:     nrf24_send_rf_data(packetsTX[i].packet, packetsTX[i].size);
+"102
+[; ;handler.c: 102:     nrf24_send_rf_data(packetsTX[i].packet, packetsTX[i].size);
 [e ( _nrf24_send_rf_data (2 , &U . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 0 . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 2 ]
-"99
-[; ;handler.c: 99:     uint8_t status = 0;
+"105
+[; ;handler.c: 105:     uint8_t status = 0;
 [v _status `uc ~T0 @X0 1 a ]
 [e = _status -> -> 0 `i `uc ]
-"100
-[; ;handler.c: 100:     while (1) {
+"106
+[; ;handler.c: 106:     while (1) {
 [e :U 851 ]
 {
-"101
-[; ;handler.c: 101:         status = nrf24_read_register(0x07);
+"107
+[; ;handler.c: 107:         status = nrf24_read_register(0x07);
 [e = _status ( _nrf24_read_register (1 -> -> 7 `i `uc ]
-"102
-[; ;handler.c: 102:         if ((status & 0x20) || (status & 0x10)) {
+"108
+[; ;handler.c: 108:         if ((status & 0x20) || (status & 0x10)) {
 [e $ ! || != & -> _status `i -> 32 `i -> 0 `i != & -> _status `i -> 16 `i -> 0 `i 853  ]
 {
-"103
-[; ;handler.c: 103:             break;
+"109
+[; ;handler.c: 109:             break;
 [e $U 852  ]
-"104
-[; ;handler.c: 104:         }
+"110
+[; ;handler.c: 110:         }
 }
 [e :U 853 ]
-"105
-[; ;handler.c: 105:         _delay((unsigned long)((10)*(1000000/4000000.0)));
+"111
+[; ;handler.c: 111:         _delay((unsigned long)((10)*(1000000/4000000.0)));
 [e ( __delay (1 -> * -> -> 10 `i `d / -> -> 1000000 `l `d .4000000.0 `ul ]
-"106
-[; ;handler.c: 106:     }
+"112
+[; ;handler.c: 112:     }
 }
 [e :U 850 ]
 [e $U 851  ]
 [e :U 852 ]
-"108
-[; ;handler.c: 108:     nrf24_write_register(0x07, 0x70);
+"114
+[; ;handler.c: 114:     nrf24_write_register(0x07, 0x70);
 [e ( _nrf24_write_register (2 , -> -> 7 `i `uc -> -> 112 `i `uc ]
-"111
-[; ;handler.c: 111:     if (status & 0x10) {
+"117
+[; ;handler.c: 117:     if (status & 0x10) {
 [e $ ! != & -> _status `i -> 16 `i -> 0 `i 854  ]
 {
-"112
-[; ;handler.c: 112:         nrf24_flush_tx_rx();
+"118
+[; ;handler.c: 118:         nrf24_flush_tx_rx();
 [e ( _nrf24_flush_tx_rx ..  ]
-"113
-[; ;handler.c: 113:         return;
+"119
+[; ;handler.c: 119:         return;
 [e $UE 844  ]
-"116
-[; ;handler.c: 116:     }
+"122
+[; ;handler.c: 122:     }
 }
 [e :U 854 ]
-"119
-[; ;handler.c: 119:     packetsTX[i].free = 1;
+"125
+[; ;handler.c: 125:     packetsTX[i].free = 1;
 [e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 -> -> 1 `i `a ]
-"122
-[; ;handler.c: 122:     if (status & 0x40) {
+"128
+[; ;handler.c: 128:     if (status & 0x40) {
 [e $ ! != & -> _status `i -> 64 `i -> 0 `i 855  ]
 {
-"123
-[; ;handler.c: 123:         uint8_t sz = nrf24_read_dynamic_payload_length();
+"129
+[; ;handler.c: 129:         uint8_t sz = nrf24_read_dynamic_payload_length();
 [v _sz `uc ~T0 @X0 1 a ]
 [e = _sz ( _nrf24_read_dynamic_payload_length ..  ]
-"124
-[; ;handler.c: 124:         nrf24_read_rf_data(bufferRX, sz);
+"130
+[; ;handler.c: 130:         nrf24_read_rf_data(bufferRX, sz);
 [e ( _nrf24_read_rf_data (2 , &U _bufferRX _sz ]
-"125
-[; ;handler.c: 125:         if (!VerifyBoardAddress(bufferRX)) {
+"131
+[; ;handler.c: 131:         if (!VerifyBoardAddress(bufferRX)) {
 [e $ ! ! != -> ( _VerifyBoardAddress (1 &U _bufferRX `i -> 0 `i 856  ]
 {
-"126
-[; ;handler.c: 126:             return;
+"132
+[; ;handler.c: 132:             return;
 [e $UE 844  ]
-"127
-[; ;handler.c: 127:         }
+"133
+[; ;handler.c: 133:         }
 }
 [e :U 856 ]
-"128
-[; ;handler.c: 128:         ProcessAckPayload(bufferRX, sz);
+"134
+[; ;handler.c: 134:         ProcessAckPayload(bufferRX, sz);
 [e ( _ProcessAckPayload (2 , &U _bufferRX _sz ]
-"129
-[; ;handler.c: 129:     }
+"135
+[; ;handler.c: 135:     }
 }
 [e :U 855 ]
-"130
-[; ;handler.c: 130: }
+"136
+[; ;handler.c: 136: }
 [e :UE 844 ]
 }
-"132
-[; ;handler.c: 132: void TimerInterruptHandler(void) {
+"138
+[; ;handler.c: 138: void TimerInterruptHandler(void) {
 [v _TimerInterruptHandler `(v ~T0 @X0 1 ef ]
 {
 [e :U _TimerInterruptHandler ]
 [f ]
-"133
-[; ;handler.c: 133:     Ticks++;
+"139
+[; ;handler.c: 139:     Ticks++;
 [e ++ _Ticks -> -> -> 1 `i `l `ul ]
-"136
-[; ;handler.c: 136:     if (Ticks % config.PingInterval != 0) {
-[e $ ! != % _Ticks -> . _config 2 `ul -> -> -> 0 `i `l `ul 858  ]
+"142
+[; ;handler.c: 142:     if (Ticks % PingInterval != 0) {
+[e $ ! != % _Ticks -> _PingInterval `ul -> -> -> 0 `i `l `ul 858  ]
 {
-"137
-[; ;handler.c: 137:         return;
+"143
+[; ;handler.c: 143:         return;
 [e $UE 857  ]
-"138
-[; ;handler.c: 138:     }
+"144
+[; ;handler.c: 144:     }
 }
 [e :U 858 ]
-"139
-[; ;handler.c: 139:     SendPing();
+"145
+[; ;handler.c: 145:     SendPing();
 [e ( _SendPing ..  ]
-"140
-[; ;handler.c: 140: }
+"146
+[; ;handler.c: 146: }
 [e :UE 857 ]
 }
-"142
-[; ;handler.c: 142: _Bool VerifyBoardAddress(uint8_t *bufferRX) {
+"148
+[; ;handler.c: 148: _Bool VerifyBoardAddress(uint8_t *bufferRX) {
 [v _VerifyBoardAddress `(a ~T0 @X0 1 ef1`*uc ]
 {
 [e :U _VerifyBoardAddress ]
 [v _bufferRX `*uc ~T0 @X0 1 r1 ]
 [f ]
-"143
-[; ;handler.c: 143:     for (int i = 0; i < 3; i++) {
+"149
+[; ;handler.c: 149:     for (int i = 0; i < 3; i++) {
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
@@ -1156,209 +1190,279 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 861  ]
 [e :U 860 ]
 {
-"144
-[; ;handler.c: 144:         if (config.Address[i] != bufferRX[i + 1]) {
-[e $ ! != -> *U + &U . _config 1 * -> -> _i `ui `ux -> -> # *U &U . _config 1 `ui `ux `i -> *U + _bufferRX * -> + _i -> 1 `i `x -> -> # *U _bufferRX `i `x `i 863  ]
+"150
+[; ;handler.c: 150:         if (BoardAddress[i] != bufferRX[i + 1]) {
+[e $ ! != -> *U + &U _BoardAddress * -> -> _i `ui `ux -> -> # *U &U _BoardAddress `ui `ux `i -> *U + _bufferRX * -> + _i -> 1 `i `x -> -> # *U _bufferRX `i `x `i 863  ]
 {
-"145
-[; ;handler.c: 145:             return 0;
+"151
+[; ;handler.c: 151:             return 0;
 [e ) -> -> 0 `i `a ]
 [e $UE 859  ]
-"146
-[; ;handler.c: 146:         }
+"152
+[; ;handler.c: 152:         }
 }
 [e :U 863 ]
-"147
-[; ;handler.c: 147:     }
+"153
+[; ;handler.c: 153:     }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 3 `i 860  ]
 [e :U 861 ]
 }
-"148
-[; ;handler.c: 148:     return 1;
+"154
+[; ;handler.c: 154:     return 1;
 [e ) -> -> 1 `i `a ]
 [e $UE 859  ]
-"149
-[; ;handler.c: 149: }
+"155
+[; ;handler.c: 155: }
 [e :UE 859 ]
 }
-"151
-[; ;handler.c: 151: void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
+"157
+[; ;handler.c: 157: void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 [v _ProcessAckPayload `(v ~T0 @X0 1 ef2`*uc`uc ]
 {
 [e :U _ProcessAckPayload ]
 [v _buffer `*uc ~T0 @X0 1 r1 ]
 [v _sz `uc ~T0 @X0 1 r2 ]
 [f ]
-"152
-[; ;handler.c: 152:     uint8_t data[32];
+"158
+[; ;handler.c: 158:     uint8_t data[32];
 [v _data `uc ~T0 @X0 -> 32 `i a ]
-"153
-[; ;handler.c: 153:     uint8_t actionID;
+"159
+[; ;handler.c: 159:     uint8_t actionID;
 [v _actionID `uc ~T0 @X0 1 a ]
-"155
-[; ;handler.c: 155:     uint8_t pktType = buffer[0];
+"161
+[; ;handler.c: 161:     uint8_t pktType = buffer[0];
 [v _pktType `uc ~T0 @X0 1 a ]
 [e = _pktType *U + _buffer * -> -> 0 `i `x -> -> # *U _buffer `i `x ]
-"156
-[; ;handler.c: 156:     switch (pktType) {
+"162
+[; ;handler.c: 162:     switch (pktType) {
 [e $U 866  ]
 {
-"157
-[; ;handler.c: 157:         case 0x10:
-[e :U 867 ]
-"158
-[; ;handler.c: 158:             actionID = buffer[4];
-[e = _actionID *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
-"159
-[; ;handler.c: 159:             SuperMemCpy(data,0,buffer,5,sz-5);
-[e ( _SuperMemCpy (4 , , , , &U _data -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> - -> _sz `i -> 5 `i `uc ]
-"160
-[; ;handler.c: 160:             ProcessActionRequest(actionID, data);
-[e ( _ProcessActionRequest (2 , _actionID &U _data ]
-"161
-[; ;handler.c: 161:             break;
-[e $U 865  ]
-"162
-[; ;handler.c: 162:         case 0x03:
-[e :U 868 ]
 "163
-[; ;handler.c: 163:             break;
-[e $U 865  ]
+[; ;handler.c: 163:         case 0x10:
+[e :U 867 ]
+"164
+[; ;handler.c: 164:             actionID = buffer[4];
+[e = _actionID *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
 "165
-[; ;handler.c: 165:         default:
-[e :U 869 ]
+[; ;handler.c: 165:             SuperMemCpy(data, 0, buffer, 5, sz - 5);
+[e ( _SuperMemCpy (4 , , , , &U _data -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> - -> _sz `i -> 5 `i `uc ]
 "166
-[; ;handler.c: 166:             SendError(0x04);
-[e ( _SendError (1 -> -> 4 `i `uc ]
+[; ;handler.c: 166:             ProcessActionRequest(actionID, data);
+[e ( _ProcessActionRequest (2 , _actionID &U _data ]
 "167
-[; ;handler.c: 167:     }
+[; ;handler.c: 167:             break;
+[e $U 865  ]
+"168
+[; ;handler.c: 168:         case 0x03:
+[e :U 868 ]
+"169
+[; ;handler.c: 169:             config.RFChannel = buffer[4];
+[e = . _config 3 *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
+"170
+[; ;handler.c: 170:             SuperMemCpy(config.PipeAddr1, 0, buffer, 5, 5);
+[e ( _SuperMemCpy (4 , , , , &U . _config 4 -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> -> 5 `i `uc ]
+"171
+[; ;handler.c: 171:             SuperMemCpy(config.PipeAddr2, 0, buffer, 10, 5);
+[e ( _SuperMemCpy (4 , , , , &U . _config 5 -> -> 0 `i `uc _buffer -> -> 10 `i `uc -> -> 5 `i `uc ]
+"172
+[; ;handler.c: 172:             config.ARD = buffer[15];
+[e = . _config 6 *U + _buffer * -> -> 15 `i `x -> -> # *U _buffer `i `x ]
+"173
+[; ;handler.c: 173:             break;
+[e $U 865  ]
+"174
+[; ;handler.c: 174:         case 0x04:
+[e :U 869 ]
+"175
+[; ;handler.c: 175:             SuperMemCpy(config.Address, 0, buffer, 4, 3);
+[e ( _SuperMemCpy (4 , , , , &U . _config 1 -> -> 0 `i `uc _buffer -> -> 4 `i `uc -> -> 3 `i `uc ]
+"176
+[; ;handler.c: 176:             config.PingInterval = buffer[7];
+[e = . _config 2 *U + _buffer * -> -> 7 `i `x -> -> # *U _buffer `i `x ]
+"177
+[; ;handler.c: 177:             break;
+[e $U 865  ]
+"178
+[; ;handler.c: 178:         default:
+[e :U 870 ]
+"179
+[; ;handler.c: 179:             SendError(0x04);
+[e ( _SendError (1 -> -> 4 `i `uc ]
+"180
+[; ;handler.c: 180:     }
 }
 [e $U 865  ]
 [e :U 866 ]
 [e [\ -> _pktType `i , $ -> 16 `i 867
  , $ -> 3 `i 868
- 869 ]
+ , $ -> 4 `i 869
+ 870 ]
 [e :U 865 ]
-"169
-[; ;handler.c: 169: }
+"182
+[; ;handler.c: 182: }
 [e :UE 864 ]
 }
-"171
-[; ;handler.c: 171: void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+"184
+[; ;handler.c: 184: void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 [v _ProcessActionRequest `(v ~T0 @X0 1 ef2`uc`*uc ]
 {
 [e :U _ProcessActionRequest ]
 [v _actionID `uc ~T0 @X0 1 r1 ]
 [v _data `*uc ~T0 @X0 1 r2 ]
 [f ]
-"173
-[; ;handler.c: 173:     switch (actionID) {
-[e $U 872  ]
+"186
+[; ;handler.c: 186:     switch (actionID) {
+[e $U 873  ]
 {
-"174
-[; ;handler.c: 174:         case 0x13:
-[e :U 873 ]
-"175
-[; ;handler.c: 175:             do { LATAbits.LATA1 = 0; } while(0);
-[e :U 876 ]
+"187
+[; ;handler.c: 187:         case 0x13:
+[e :U 874 ]
+"188
+[; ;handler.c: 188:             do { LATAbits.LATA1 = 0; } while(0);
+[e :U 877 ]
 {
 [e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
 }
-[e :U 875 ]
-"176
-[; ;handler.c: 176:             if (data[0]) {
-[e $ ! != -> *U + _data * -> -> 0 `i `x -> -> # *U _data `i `x `i -> 0 `i 877  ]
+[e :U 876 ]
+"189
+[; ;handler.c: 189:             if (data[0]) {
+[e $ ! != -> *U + _data * -> -> 0 `i `x -> -> # *U _data `i `x `i -> 0 `i 878  ]
 {
-"177
-[; ;handler.c: 177:                 do { LATAbits.LATA1 = 1; } while(0);
-[e :U 880 ]
+"190
+[; ;handler.c: 190:                 do { LATAbits.LATA1 = 1; } while(0);
+[e :U 881 ]
 {
 [e = . . _LATAbits 0 1 -> -> 1 `i `uc ]
 }
-[e :U 879 ]
-"178
-[; ;handler.c: 178:             }
+[e :U 880 ]
+"191
+[; ;handler.c: 191:             }
 }
-[e :U 877 ]
-"179
-[; ;handler.c: 179:             break;
-[e $U 871  ]
-"180
-[; ;handler.c: 180:         default:
-[e :U 881 ]
-"181
-[; ;handler.c: 181:             SendError(0x04);
+[e :U 878 ]
+"192
+[; ;handler.c: 192:             break;
+[e $U 872  ]
+"193
+[; ;handler.c: 193:         case 0x15:
+[e :U 882 ]
+"194
+[; ;handler.c: 194:              ReloadConfig();
+[e ( _ReloadConfig ..  ]
+"195
+[; ;handler.c: 195:             break;
+[e $U 872  ]
+"196
+[; ;handler.c: 196:         default:
+[e :U 883 ]
+"197
+[; ;handler.c: 197:             SendError(0x04);
 [e ( _SendError (1 -> -> 4 `i `uc ]
-"182
-[; ;handler.c: 182:     }
+"198
+[; ;handler.c: 198:     }
 }
-[e $U 871  ]
+[e $U 872  ]
+[e :U 873 ]
+[e [\ -> _actionID `i , $ -> 19 `i 874
+ , $ -> 21 `i 882
+ 883 ]
 [e :U 872 ]
-[e [\ -> _actionID `i , $ -> 19 `i 873
- 881 ]
-[e :U 871 ]
-"183
-[; ;handler.c: 183: }
-[e :UE 870 ]
+"199
+[; ;handler.c: 199: }
+[e :UE 871 ]
 }
-"185
-[; ;handler.c: 185: uint8_t SendError(uint8_t errorCode) {
+"212
+[; ;handler.c: 212: void ReloadConfig(void) {
+[v _ReloadConfig `(v ~T0 @X0 1 ef ]
+{
+[e :U _ReloadConfig ]
+[f ]
+"213
+[; ;handler.c: 213:     config.IsConfigured = 1;
+[e = . _config 0 -> -> 1 `i `a ]
+"214
+[; ;handler.c: 214:     nrf24_write_register(0x05, config.RFChannel);
+[e ( _nrf24_write_register (2 , -> -> 5 `i `uc . _config 3 ]
+"216
+[; ;handler.c: 216:     nrf24_write_buff(0x10, config.PipeAddr1, 5);
+[e ( _nrf24_write_buff (3 , , -> -> 16 `i `uc &U . _config 4 -> -> 5 `i `uc ]
+"217
+[; ;handler.c: 217:     nrf24_write_buff(0x0A, config.PipeAddr1, 5);
+[e ( _nrf24_write_buff (3 , , -> -> 10 `i `uc &U . _config 4 -> -> 5 `i `uc ]
+"219
+[; ;handler.c: 219:     uint8_t ard = (config.ARD << 4) | 0xF;
+[v _ard `uc ~T0 @X0 1 a ]
+[e = _ard -> | << -> . _config 6 `i -> 4 `i -> 15 `i `uc ]
+"220
+[; ;handler.c: 220:     nrf24_write_register(0x04, ard);
+[e ( _nrf24_write_register (2 , -> -> 4 `i `uc _ard ]
+"222
+[; ;handler.c: 222:     memcpy(BoardAddress,config.Address,3);
+[e ( _memcpy (3 , , -> &U _BoardAddress `*v -> &U . _config 1 `*Cv -> -> 3 `i `ui ]
+"223
+[; ;handler.c: 223:     PingInterval = config.PingInterval;
+[e = _PingInterval . _config 2 ]
+"224
+[; ;handler.c: 224: }
+[e :UE 884 ]
+}
+"226
+[; ;handler.c: 226: uint8_t SendError(uint8_t errorCode) {
 [v _SendError `(uc ~T0 @X0 1 ef1`uc ]
 {
 [e :U _SendError ]
 [v _errorCode `uc ~T0 @X0 1 r1 ]
 [f ]
-"186
-[; ;handler.c: 186:     uint8_t i = 0;
+"227
+[; ;handler.c: 227:     uint8_t i = 0;
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-"187
-[; ;handler.c: 187:     bufferTX[i] = 0x01;
+"228
+[; ;handler.c: 228:     bufferTX[i] = 0x01;
 [e = *U + &U _bufferTX * -> _i `ux -> -> # *U &U _bufferTX `ui `ux -> -> 1 `i `uc ]
-"188
-[; ;handler.c: 188:     SuperMemCpy(bufferTX,1,config.Address,0,3);
-[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U . _config 1 -> -> 0 `i `uc -> -> 3 `i `uc ]
-"189
-[; ;handler.c: 189:     i+=3;
+"229
+[; ;handler.c: 229:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
+"230
+[; ;handler.c: 230:     i += 3;
 [e =+ _i -> -> 3 `i `uc ]
-"190
-[; ;handler.c: 190:     bufferTX[++i] = 0;
+"231
+[; ;handler.c: 231:     bufferTX[++i] = 0;
 [e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux -> -> 0 `i `uc ]
-"191
-[; ;handler.c: 191:     bufferTX[++i] = errorCode;
+"232
+[; ;handler.c: 232:     bufferTX[++i] = errorCode;
 [e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux _errorCode ]
-"192
-[; ;handler.c: 192:     return QueueTXPacket(bufferTX, (i+1));
+"233
+[; ;handler.c: 233:     return QueueTXPacket(bufferTX, (i + 1));
 [e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> _i `i -> 1 `i `uc ]
-[e $UE 882  ]
-"193
-[; ;handler.c: 193: }
-[e :UE 882 ]
+[e $UE 885  ]
+"234
+[; ;handler.c: 234: }
+[e :UE 885 ]
 }
-"195
-[; ;handler.c: 195: uint8_t SendPing() {
+"236
+[; ;handler.c: 236: uint8_t SendPing() {
 [v _SendPing `(uc ~T0 @X0 1 ef ]
 {
 [e :U _SendPing ]
 [f ]
-"196
-[; ;handler.c: 196:     bufferTX[0] = 0x02;
+"237
+[; ;handler.c: 237:     bufferTX[0] = 0x02;
 [e = *U + &U _bufferTX * -> -> -> 0 `i `ui `ux -> -> # *U &U _bufferTX `ui `ux -> -> 2 `i `uc ]
-"197
-[; ;handler.c: 197:     SuperMemCpy(bufferTX,1,config.Address,0,3);
-[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U . _config 1 -> -> 0 `i `uc -> -> 3 `i `uc ]
-"198
-[; ;handler.c: 198:     return QueueTXPacket(bufferTX, (3 + 1));
+"238
+[; ;handler.c: 238:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
+"239
+[; ;handler.c: 239:     return QueueTXPacket(bufferTX, (3 + 1));
 [e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> 3 `i -> 1 `i `uc ]
-[e $UE 883  ]
-"199
-[; ;handler.c: 199: }
-[e :UE 883 ]
+[e $UE 886  ]
+"240
+[; ;handler.c: 240: }
+[e :UE 886 ]
 }
-"202
-[; ;handler.c: 202: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
+"242
+[; ;handler.c: 242: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
 [v _SuperMemCpy `(v ~T0 @X0 1 ef5`*uc`uc`*uc`uc`uc ]
 {
 [e :U _SuperMemCpy ]
@@ -1368,26 +1472,26 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _srcStart `uc ~T0 @X0 1 r4 ]
 [v _sz `uc ~T0 @X0 1 r5 ]
 [f ]
-"203
-[; ;handler.c: 203:     for(uint8_t i=0; i< sz; i++) {
+"243
+[; ;handler.c: 243:     for (uint8_t i = 0; i < sz; i++) {
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-[e $U 888  ]
-[e :U 885 ]
+[e $U 891  ]
+[e :U 888 ]
 {
-"204
-[; ;handler.c: 204:         dest[i+destStart] = src[i+srcStart];
+"244
+[; ;handler.c: 244:         dest[i + destStart] = src[i + srcStart];
 [e = *U + _dest * -> + -> _i `i -> _destStart `i `x -> -> # *U _dest `i `x *U + _src * -> + -> _i `i -> _srcStart `i `x -> -> # *U _src `i `x ]
-"205
-[; ;handler.c: 205:     }
+"245
+[; ;handler.c: 245:     }
 }
 [e ++ _i -> -> 1 `i `uc ]
-[e :U 888 ]
-[e $ < -> _i `i -> _sz `i 885  ]
-[e :U 886 ]
+[e :U 891 ]
+[e $ < -> _i `i -> _sz `i 888  ]
+[e :U 889 ]
 }
-"206
-[; ;handler.c: 206: }
-[e :UE 884 ]
+"246
+[; ;handler.c: 246: }
+[e :UE 887 ]
 }
