@@ -5,9 +5,9 @@ Linker command line:
 -W-3 --edf=/Applications/microchip/xc8/v2.36/pic/dat/en_msgs.txt -cn \
   -h+dist/default/production/18f26K22-rev0.01.X.production.sym \
   --cmf=dist/default/production/18f26K22-rev0.01.X.production.cmf -z \
-  -Q18F26K22 -o/tmp/xcf93Le7S --defsym=__MPLAB_BUILD=1 \
+  -Q18F26K22 -o/tmp/xceXJOnbB --defsym=__MPLAB_BUILD=1 \
   -Mdist/default/production/18f26K22-rev0.01.X.production.map \
-  --md=/tmp/xcXFJKZxL.dat -E1 -ver=XC8 Compiler --acfsm=1493 \
+  --md=/tmp/xcDjL31q1.dat -E1 -ver=XC8 Compiler --acfsm=1493 \
   -ACODE=00h-0FFFFh -ACONST=00h-0FFFFh -ASMALLCONST=01000h-010FFhx240 \
   -AMEDIUMCONST=01000h-0FFFFh -ACOMRAM=01h-05Fh -AABS1=00h-0F37h \
   -ABIGRAM=01h-0F37h -ARAM=060h-0FFh,0100h-01FFhx14,0F00h-0F37h \
@@ -26,7 +26,7 @@ Linker command line:
   -pfarbss=FARRAM,fardata=FARRAM,nvFARRAM=FARRAM \
   -pintsave_regs=BIGRAM,bigbss=BIGRAM,bigdata=BIGRAM -pbss=RAM \
   -pidata=CODE,irdata=CODE,ibigdata=CODE,ifardata=CODE -prparam=COMRAM \
-  /tmp/xczHHnBoF.o dist/default/production/18f26K22-rev0.01.X.production.o 
+  /tmp/xcoCEpf0p.o dist/default/production/18f26K22-rev0.01.X.production.o 
 
 Object code version is 3.11
 
@@ -35,7 +35,7 @@ Machine type is 18F26K22
 
 
                 Name                               Link     Load   Length Selector   Space Scale
-/tmp/xczHHnBoF.o
+/tmp/xcoCEpf0p.o
                 idloc                            200000   200000        8        0       5
                 config                           300000   300000        E        0       4
                 init                                 7C       7C        4        4       0
@@ -797,6 +797,21 @@ wtemp8                                     temp         000048
 MODULE INFORMATION
 
 Module		Function		Class		Link	Load	Size
+../lib/handler_lib.c
+		_SendPing      		CODE           	1BE4	0000	56
+		_TimerInterruptHandler		CODE           	1B20	0000	74
+		_SendData      		CODE           	1624	0000	138
+		_VerifyBoardAddress		CODE           	1820	0000	104
+		_ReloadConfig  		CODE           	17B6	0000	106
+		_SuperMemCpy   		CODE           	1944	0000	82
+		_HandlePacketLoop		CODE           	1006	0000	314
+		_QueueTXPacket 		CODE           	144E	0000	160
+		_ProcessAckPayload		CODE           	1140	0000	306
+		_SendError     		CODE           	1888	0000	102
+		_InitRadio     		CODE           	1272	0000	300
+
+../lib/handler_lib.c estimated size: 1742
+
 mcc_generated_files/interrupt_manager.c
 		_INTERRUPT_Initialize		CODE           	1DCC	0000	4
 		_INTERRUPT_InterruptManager		CODE           	0008	0000	116
@@ -868,23 +883,8 @@ mcc_generated_files/tmr1.c estimated size: 152
 /Applications/microchip/xc8/v2.36/pic/sources/c99/common/llmod.c estimated size: 136
 
 main.c
+		_ProcessActionRequest		CODE           	158E	0000	150
 		_main          		CODE           	1C9A	0000	38
 
-main.c estimated size: 38
-
-handler.c
-		_SendPing      		CODE           	1BE4	0000	56
-		_ProcessActionRequest		CODE           	158E	0000	150
-		_TimerInterruptHandler		CODE           	1B20	0000	74
-		_SendData      		CODE           	1624	0000	138
-		_VerifyBoardAddress		CODE           	1820	0000	104
-		_ReloadConfig  		CODE           	17B6	0000	106
-		_SuperMemCpy   		CODE           	1944	0000	82
-		_HandlePacketLoop		CODE           	1006	0000	314
-		_QueueTXPacket 		CODE           	144E	0000	160
-		_ProcessAckPayload		CODE           	1140	0000	306
-		_SendError     		CODE           	1888	0000	102
-		_InitRadio     		CODE           	1272	0000	300
-
-handler.c estimated size: 1892
+main.c estimated size: 188
 

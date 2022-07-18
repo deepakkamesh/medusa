@@ -6,9 +6,7 @@
 
 #ifndef NRF24_LIB_H
 #define	NRF24_LIB_H
-#include <xc.h>
-#include "../18f26K22-rev0.01.X/exports.h"
-
+#include "master_exports.h"
 // NRF24L01 Operation Modes
 typedef enum {
     RX_MODE = 1,
@@ -108,7 +106,7 @@ void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
  *
  *
  */
-void nrf24_rf_init();
+void nrf24_rf_init(void);
 
 /**
  * @brief  Set the NRF24L01 Operation Mode Tx/Rx

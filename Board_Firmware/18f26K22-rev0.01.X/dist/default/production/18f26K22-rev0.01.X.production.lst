@@ -1,7 +1,7 @@
 
 
 Microchip MPLAB XC8 Assembler V2.36 build 20220127204148 
-                                                                                               Sun Jul 17 20:16:11 2022
+                                                                                               Sun Jul 17 21:21:11 2022
 
 Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1 
      1                           	processor	18F26K22
@@ -428,11 +428,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
    414                           	callstack 0
    415  000018                     TMR1_SetInterruptHandler@InterruptHandler:
    416                           	callstack 0
-   417  000018                     VerifyBoardAddress@bufferRX:
+   417  000018                     GetMockTempHumidity@temp:
    418                           	callstack 0
-   419  000018                     SuperMemCpy@dest:
+   419  000018                     VerifyBoardAddress@bufferRX:
    420                           	callstack 0
-   421  000018                     GetMockTempHumidity@temp:
+   421  000018                     SuperMemCpy@dest:
    422                           	callstack 0
    423  000018                     memcpy@d1:
    424                           	callstack 0
@@ -455,11 +455,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
    441                           ; 2 bytes @ 0x18
    442  000019                     	ds	1
    443  00001A                     ??_VerifyBoardAddress:
-   444  00001A                     SuperMemCpy@destStart:
+   444  00001A                     nrf24_write_register@mnemonic_addr:
    445                           	callstack 0
-   446  00001A                     nrf24_write_register@mnemonic_addr:
+   446  00001A                     nrf24_read_register@byte0:
    447                           	callstack 0
-   448  00001A                     nrf24_read_register@byte0:
+   448  00001A                     SuperMemCpy@destStart:
    449                           	callstack 0
    450  00001A                     memcpy@s1:
    451                           	callstack 0
@@ -485,11 +485,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
    471                           
    472                           ; 2 bytes @ 0x1B
    473  00001C                     	ds	1
-   474  00001D                     SuperMemCpy@srcStart:
+   474  00001D                     nrf24_write_buff@i:
    475                           	callstack 0
-   476  00001D                     nrf24_write_buff@i:
+   476  00001D                     nrf24_read_buff@i:
    477                           	callstack 0
-   478  00001D                     nrf24_read_buff@i:
+   478  00001D                     SuperMemCpy@srcStart:
    479                           	callstack 0
    480                           
    481                           ; 1 bytes @ 0x1C
@@ -498,11 +498,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
    484                           	callstack 0
    485  00001E                     memcpy@tmp:
    486                           	callstack 0
-   487  00001E                     VerifyBoardAddress@i:
+   487  00001E                     nrf24_send_rf_data@buffer:
    488                           	callstack 0
-   489  00001E                     nrf24_send_rf_data@buffer:
+   489  00001E                     nrf24_read_rf_data@buffer:
    490                           	callstack 0
-   491  00001E                     nrf24_read_rf_data@buffer:
+   491  00001E                     VerifyBoardAddress@i:
    492                           	callstack 0
    493                           
    494                           ; 2 bytes @ 0x1D
@@ -599,7 +599,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
    585 ;;
    586 ;; *************** function _main *****************
    587 ;; Defined at:
-   588 ;;		line 11 in file "main.c"
+   588 ;;		line 12 in file "main.c"
    589 ;; Parameters:    Size  Location     Type
    590 ;;		None
    591 ;; Auto vars:     Size  Location     Type
@@ -640,32 +640,32 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
    621  001C9A                     _main:
    622                           	callstack 19
    623  001C9A                     
-   624                           ;main.c: 13:     SYSTEM_Initialize();
+   624                           ;main.c: 14:     SYSTEM_Initialize();
    625  001C9A  ECB9  F00E         	call	_SYSTEM_Initialize	;wreg free
    626  001C9E                     
-   627                           ;main.c: 20:     (INTCONbits.GIE = 1);
+   627                           ;main.c: 21:     (INTCONbits.GIE = 1);
    628  001C9E  8EF2               	bsf	242,7,c	;volatile
    629  001CA0                     
-   630                           ;main.c: 26:     (INTCONbits.PEIE = 1);
+   630                           ;main.c: 27:     (INTCONbits.PEIE = 1);
    631  001CA0  8CF2               	bsf	242,6,c	;volatile
    632                           
-   633                           ;main.c: 30:     TMR1_SetInterruptHandler(TimerInterruptHandler);
+   633                           ;main.c: 31:     TMR1_SetInterruptHandler(TimerInterruptHandler);
    634  001CA2  0E20               	movlw	low _TimerInterruptHandler
    635  001CA4  6E18               	movwf	TMR1_SetInterruptHandler@InterruptHandler^0,c
    636  001CA6  0E1B               	movlw	high _TimerInterruptHandler
    637  001CA8  6E19               	movwf	(TMR1_SetInterruptHandler@InterruptHandler+1)^0,c
    638  001CAA  ECE1  F00E         	call	_TMR1_SetInterruptHandler	;wreg free
    639  001CAE                     
-   640                           ;main.c: 32:     InitRadio();
+   640                           ;main.c: 33:     InitRadio();
    641  001CAE  EC39  F009         	call	_InitRadio	;wreg free
-   642  001CB2                     l2839:
+   642  001CB2                     l2841:
    643                           
-   644                           ;main.c: 35:         HandlePacketLoop();
+   644                           ;main.c: 36:         HandlePacketLoop();
    645  001CB2  EC03  F008         	call	_HandlePacketLoop	;wreg free
    646  001CB6                     
-   647                           ;main.c: 36:         __nop();
+   647                           ;main.c: 37:         __nop();
    648  001CB6  F000               	nop	
-   649  001CB8  EF59  F00E         	goto	l2839
+   649  001CB8  EF59  F00E         	goto	l2841
    650  001CBC  EF3E  F000         	goto	start
    651  001CC0                     __end_of_main:
    652                           	callstack 0
@@ -1118,7 +1118,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1063                           
   1064 ;; *************** function _InitRadio *****************
   1065 ;; Defined at:
-  1066 ;;		line 26 in file "handler.c"
+  1066 ;;		line 23 in file "../lib/handler_lib.c"
   1067 ;; Parameters:    Size  Location     Type
   1068 ;;		None
   1069 ;; Auto vars:     Size  Location     Type
@@ -1160,10 +1160,10 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1100  001272                     _InitRadio:
   1101                           	callstack 22
   1102  001272                     
-  1103                           ;handler.c: 27:     nrf24_rf_init();
+  1103                           ;../lib/handler_lib.c: 24:     nrf24_rf_init();
   1104  001272  ECCD  F00E         	call	_nrf24_rf_init	;wreg free
   1105  001276                     
-  1106                           ;handler.c: 29:     nrf24_write_buff(0x10, DEFAULT_PIPE_ADDR, 5);
+  1106                           ;../lib/handler_lib.c: 26:     nrf24_write_buff(0x10, DEFAULT_PIPE_ADDR, 5);
   1107  001276  0E34               	movlw	low _DEFAULT_PIPE_ADDR
   1108  001278  6E19               	movwf	nrf24_write_buff@buffer^0,c
   1109  00127A  0E00               	movlw	high _DEFAULT_PIPE_ADDR
@@ -1173,7 +1173,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1113  001282  0E10               	movlw	16
   1114  001284  ECB5  F00D         	call	_nrf24_write_buff
   1115  001288                     
-  1116                           ;handler.c: 30:     nrf24_write_buff(0x0A, DEFAULT_PIPE_ADDR, 5);
+  1116                           ;../lib/handler_lib.c: 27:     nrf24_write_buff(0x0A, DEFAULT_PIPE_ADDR, 5);
   1117  001288  0E34               	movlw	low _DEFAULT_PIPE_ADDR
   1118  00128A  6E19               	movwf	nrf24_write_buff@buffer^0,c
   1119  00128C  0E00               	movlw	high _DEFAULT_PIPE_ADDR
@@ -1183,79 +1183,79 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1123  001294  0E0A               	movlw	10
   1124  001296  ECB5  F00D         	call	_nrf24_write_buff
   1125  00129A                     
-  1126                           ;handler.c: 32:     nrf24_write_register(0x00, 0b1111010);
+  1126                           ;../lib/handler_lib.c: 29:     nrf24_write_register(0x00, 0b1111010);
   1127  00129A  0E7A               	movlw	122
   1128  00129C  6E19               	movwf	nrf24_write_register@value^0,c
   1129  00129E  0E00               	movlw	0
   1130  0012A0  EC9B  F00B         	call	_nrf24_write_register
   1131  0012A4                     
-  1132                           ;handler.c: 34:     nrf24_write_register(0x01, 0b1);
+  1132                           ;../lib/handler_lib.c: 31:     nrf24_write_register(0x01, 0b1);
   1133  0012A4  0E01               	movlw	1
   1134  0012A6  6E19               	movwf	nrf24_write_register@value^0,c
   1135  0012A8  0E01               	movlw	1
   1136  0012AA  EC9B  F00B         	call	_nrf24_write_register
   1137  0012AE                     
-  1138                           ;handler.c: 36:     nrf24_write_register(0x02, 0b1);
+  1138                           ;../lib/handler_lib.c: 33:     nrf24_write_register(0x02, 0b1);
   1139  0012AE  0E01               	movlw	1
   1140  0012B0  6E19               	movwf	nrf24_write_register@value^0,c
   1141  0012B2  0E02               	movlw	2
   1142  0012B4  EC9B  F00B         	call	_nrf24_write_register
   1143  0012B8                     
-  1144                           ;handler.c: 38:     nrf24_write_register(0x03, 0b11);
+  1144                           ;../lib/handler_lib.c: 35:     nrf24_write_register(0x03, 0b11);
   1145  0012B8  0E03               	movlw	3
   1146  0012BA  6E19               	movwf	nrf24_write_register@value^0,c
   1147  0012BC  0E03               	movlw	3
   1148  0012BE  EC9B  F00B         	call	_nrf24_write_register
   1149  0012C2                     
-  1150                           ;handler.c: 40:     nrf24_write_register(0x04, 0b11011111);
+  1150                           ;../lib/handler_lib.c: 37:     nrf24_write_register(0x04, 0b11011111);
   1151  0012C2  0EDF               	movlw	223
   1152  0012C4  6E19               	movwf	nrf24_write_register@value^0,c
   1153  0012C6  0E04               	movlw	4
   1154  0012C8  EC9B  F00B         	call	_nrf24_write_register
   1155  0012CC                     
-  1156                           ;handler.c: 42:     nrf24_write_register(0x05, 115);
+  1156                           ;../lib/handler_lib.c: 39:     nrf24_write_register(0x05, 115);
   1157  0012CC  0E73               	movlw	115
   1158  0012CE  6E19               	movwf	nrf24_write_register@value^0,c
   1159  0012D0  0E05               	movlw	5
   1160  0012D2  EC9B  F00B         	call	_nrf24_write_register
   1161  0012D6                     
-  1162                           ;handler.c: 44:     nrf24_write_register(0x06, 0b1110);
+  1162                           ;../lib/handler_lib.c: 41:     nrf24_write_register(0x06, 0b1110);
   1163  0012D6  0E0E               	movlw	14
   1164  0012D8  6E19               	movwf	nrf24_write_register@value^0,c
   1165  0012DA  0E06               	movlw	6
   1166  0012DC  EC9B  F00B         	call	_nrf24_write_register
   1167  0012E0                     
-  1168                           ;handler.c: 46:     nrf24_write_register(0x1D, 0b110);
+  1168                           ;../lib/handler_lib.c: 43:     nrf24_write_register(0x1D, 0b110);
   1169  0012E0  0E06               	movlw	6
   1170  0012E2  6E19               	movwf	nrf24_write_register@value^0,c
   1171  0012E4  0E1D               	movlw	29
   1172  0012E6  EC9B  F00B         	call	_nrf24_write_register
   1173  0012EA                     
-  1174                           ;handler.c: 48:     nrf24_write_register(0x1C, 0b1);
+  1174                           ;../lib/handler_lib.c: 45:     nrf24_write_register(0x1C, 0b1);
   1175  0012EA  0E01               	movlw	1
   1176  0012EC  6E19               	movwf	nrf24_write_register@value^0,c
   1177  0012EE  0E1C               	movlw	28
   1178  0012F0  EC9B  F00B         	call	_nrf24_write_register
   1179  0012F4                     
-  1180                           ;handler.c: 49:     _delay((unsigned long)((10)*(1000000/4000000.0)));
+  1180                           ;../lib/handler_lib.c: 46:     _delay((unsigned long)((10)*(1000000/4000000.0)));
   1181  0012F4  D000               	nop2		;2 cycle nop
   1182  0012F6                     
-  1183                           ;handler.c: 52:     config.IsConfigured = 0;
+  1183                           ;../lib/handler_lib.c: 49:     config.IsConfigured = 0;
   1184  0012F6  0E00               	movlw	0
   1185  0012F8  0100               	movlb	0	; () banked
   1186  0012FA  6FA0               	movwf	_config& (0+255),b
   1187  0012FC                     
   1188                           ; BSR set to: 0
-  1189                           ;handler.c: 53:     config.PingInterval = PingInterval;
+  1189                           ;../lib/handler_lib.c: 50:     config.PingInterval = PingInterval;
   1190  0012FC  C033  F0A4         	movff	_PingInterval,_config+4
   1191  001300                     
   1192                           ; BSR set to: 0
-  1193                           ;handler.c: 54:     config.RFChannel = 115;
+  1193                           ;../lib/handler_lib.c: 51:     config.RFChannel = 115;
   1194  001300  0E73               	movlw	115
   1195  001302  6FA5               	movwf	(_config+5)& (0+255),b
   1196  001304                     
   1197                           ; BSR set to: 0
-  1198                           ;handler.c: 55:     memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, 5);
+  1198                           ;../lib/handler_lib.c: 52:     memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, 5);
   1199  001304  0EA6               	movlw	low (_config+6)
   1200  001306  6E18               	movwf	memcpy@d1^0,c
   1201  001308  0E00               	movlw	high (_config+6)
@@ -1270,7 +1270,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1210  00131A  6E1C               	movwf	memcpy@n^0,c
   1211  00131C  ECF4  F00C         	call	_memcpy	;wreg free
   1212  001320                     
-  1213                           ;handler.c: 56:     memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, 5);
+  1213                           ;../lib/handler_lib.c: 53:     memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, 5);
   1214  001320  0EAB               	movlw	low (_config+11)
   1215  001322  6E18               	movwf	memcpy@d1^0,c
   1216  001324  0E00               	movlw	high (_config+11)
@@ -1285,7 +1285,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1225  001336  6E1C               	movwf	memcpy@n^0,c
   1226  001338  ECF4  F00C         	call	_memcpy	;wreg free
   1227  00133C                     
-  1228                           ;handler.c: 57:     memcpy(config.Address, BoardAddress, 3);
+  1228                           ;../lib/handler_lib.c: 54:     memcpy(config.Address, BoardAddress, 3);
   1229  00133C  0EA1               	movlw	low (_config+1)
   1230  00133E  6E18               	movwf	memcpy@d1^0,c
   1231  001340  0E00               	movlw	high (_config+1)
@@ -1300,18 +1300,18 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1240  001352  6E1C               	movwf	memcpy@n^0,c
   1241  001354  ECF4  F00C         	call	_memcpy	;wreg free
   1242  001358                     
-  1243                           ;handler.c: 58:     config.ARD = 0xA;
+  1243                           ;../lib/handler_lib.c: 55:     config.ARD = 0xA;
   1244  001358  0E0A               	movlw	10
   1245  00135A  0100               	movlb	0	; () banked
   1246  00135C  6FB0               	movwf	(_config+16)& (0+255),b
   1247  00135E                     
   1248                           ; BSR set to: 0
-  1249                           ;handler.c: 61:     for (uint8_t i = 0; i < 8; i++) {
+  1249                           ;../lib/handler_lib.c: 58:     for (uint8_t i = 0; i < 8; i++) {
   1250  00135E  0E00               	movlw	0
   1251  001360  6E23               	movwf	InitRadio@i^0,c
-  1252  001362                     l2759:
+  1252  001362                     l2761:
   1253                           
-  1254                           ;handler.c: 62:         packetsTX[i].free = 1;
+  1254                           ;../lib/handler_lib.c: 59:         packetsTX[i].free = 1;
   1255  001362  5023               	movf	InitRadio@i^0,w,c
   1256  001364  0D22               	mullw	34
   1257  001366  0EFB               	movlw	low (_packetsTX+32)
@@ -1323,7 +1323,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1263  001372  0E01               	movlw	1
   1264  001374  6EDF               	movwf	indf2,c
   1265                           
-  1266                           ;handler.c: 63:         packetsTX[i].size = 0;
+  1266                           ;../lib/handler_lib.c: 60:         packetsTX[i].size = 0;
   1267  001376  5023               	movf	InitRadio@i^0,w,c
   1268  001378  0D22               	mullw	34
   1269  00137A  0EFC               	movlw	low (_packetsTX+33)
@@ -1335,14 +1335,14 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1275  001386  0E00               	movlw	0
   1276  001388  6EDF               	movwf	indf2,c
   1277  00138A                     
-  1278                           ;handler.c: 64:     }
+  1278                           ;../lib/handler_lib.c: 61:     }
   1279  00138A  2A23               	incf	InitRadio@i^0,f,c
   1280  00138C  0E07               	movlw	7
   1281  00138E  6423               	cpfsgt	InitRadio@i^0,c
   1282  001390  EFCC  F009         	goto	u1051
   1283  001394  EFCE  F009         	goto	u1050
   1284  001398                     u1051:
-  1285  001398  EFB1  F009         	goto	l2759
+  1285  001398  EFB1  F009         	goto	l2761
   1286  00139C                     u1050:
   1287  00139C  0012               	return		;funcret
   1288  00139E                     __end_of_InitRadio:
@@ -1560,7 +1560,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1484                           
   1485 ;; *************** function _HandlePacketLoop *****************
   1486 ;; Defined at:
-  1487 ;;		line 88 in file "handler.c"
+  1487 ;;		line 85 in file "../lib/handler_lib.c"
   1488 ;; Parameters:    Size  Location     Type
   1489 ;;		None
   1490 ;; Auto vars:     Size  Location     Type
@@ -1608,14 +1608,15 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1527  001006                     _HandlePacketLoop:
   1528                           	callstack 19
   1529  001006                     
-  1530                           ;handler.c: 89:     uint8_t i;;handler.c: 92:     for (i = 0; i < 8; i++) {
+  1530                           ;../lib/handler_lib.c: 86:     uint8_t i;;../lib/handler_lib.c: 89:     for (i = 0; i < 
+      +                          8; i++) {
   1531  001006  0E00               	movlw	0
   1532  001008  0100               	movlb	0	; () banked
   1533  00100A  6FDA               	movwf	HandlePacketLoop@i& (0+255),b
-  1534  00100C                     l2771:
+  1534  00100C                     l2773:
   1535                           
   1536                           ; BSR set to: 0
-  1537                           ;handler.c: 93:         if (!packetsTX[i].free) {
+  1537                           ;../lib/handler_lib.c: 90:         if (!packetsTX[i].free) {
   1538  00100C  51DA               	movf	HandlePacketLoop@i& (0+255),w,b
   1539  00100E  0D22               	mullw	34
   1540  001010  0EFB               	movlw	low (_packetsTX+32)
@@ -1629,13 +1630,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1548  001020  EF14  F008         	goto	u1061
   1549  001024  EF16  F008         	goto	u1060
   1550  001028                     u1061:
-  1551  001028  EF18  F008         	goto	l2775
+  1551  001028  EF18  F008         	goto	l2777
   1552  00102C                     u1060:
-  1553  00102C  EF21  F008         	goto	l2779
-  1554  001030                     l2775:
+  1553  00102C  EF21  F008         	goto	l2781
+  1554  001030                     l2777:
   1555                           
   1556                           ; BSR set to: 0
-  1557                           ;handler.c: 96:     }
+  1557                           ;../lib/handler_lib.c: 93:     }
   1558  001030  2BDA               	incf	HandlePacketLoop@i& (0+255),f,b
   1559  001032                     
   1560                           ; BSR set to: 0
@@ -1644,25 +1645,26 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1563  001036  EF1F  F008         	goto	u1071
   1564  00103A  EF21  F008         	goto	u1070
   1565  00103E                     u1071:
-  1566  00103E  EF06  F008         	goto	l2771
+  1566  00103E  EF06  F008         	goto	l2773
   1567  001042                     u1070:
-  1568  001042                     l2779:
+  1568  001042                     l2781:
   1569                           
   1570                           ; BSR set to: 0
-  1571                           ;handler.c: 97:     if (i == 8) {
+  1571                           ;../lib/handler_lib.c: 94:     if (i == 8) {
   1572  001042  0E08               	movlw	8
   1573  001044  19DA               	xorwf	HandlePacketLoop@i& (0+255),w,b
   1574  001046  A4D8               	btfss	status,2,c
   1575  001048  EF28  F008         	goto	u1081
   1576  00104C  EF2A  F008         	goto	u1080
   1577  001050                     u1081:
-  1578  001050  EF2C  F008         	goto	l2783
+  1578  001050  EF2C  F008         	goto	l2785
   1579  001054                     u1080:
-  1580  001054  EF9F  F008         	goto	l300
-  1581  001058                     l2783:
+  1580  001054  EF9F  F008         	goto	l423
+  1581  001058                     l2785:
   1582                           
   1583                           ; BSR set to: 0
-  1584                           ;handler.c: 101:     nrf24_send_rf_data(packetsTX[i].packet, packetsTX[i].size);
+  1584                           ;../lib/handler_lib.c: 98:     nrf24_send_rf_data(packetsTX[i].packet, packetsTX[i].size
+      +                          );
   1585  001058  51DA               	movf	HandlePacketLoop@i& (0+255),w,b
   1586  00105A  0D22               	mullw	34
   1587  00105C  0EDB               	movlw	low _packetsTX
@@ -1682,21 +1684,21 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1601  001078  50DF               	movf	indf2,w,c
   1602  00107A  6E20               	movwf	nrf24_send_rf_data@sz^0,c
   1603  00107C  EC71  F00E         	call	_nrf24_send_rf_data	;wreg free
-  1604  001080                     l2787:
+  1604  001080                     l2789:
   1605                           
-  1606                           ;handler.c: 106:         status = nrf24_read_register(0x07);
+  1606                           ;../lib/handler_lib.c: 103:         status = nrf24_read_register(0x07);
   1607  001080  0E07               	movlw	7
   1608  001082  EC9F  F00E         	call	_nrf24_read_register
   1609  001086  0100               	movlb	0	; () banked
   1610  001088  6FD9               	movwf	HandlePacketLoop@status& (0+255),b
   1611  00108A                     
   1612                           ; BSR set to: 0
-  1613                           ;handler.c: 107:         if ((status & 0x20) || (status & 0x10)) {
+  1613                           ;../lib/handler_lib.c: 104:         if ((status & 0x20) || (status & 0x10)) {
   1614  00108A  BBD9               	btfsc	HandlePacketLoop@status& (0+255),5,b
   1615  00108C  EF4A  F008         	goto	u1091
   1616  001090  EF4C  F008         	goto	u1090
   1617  001094                     u1091:
-  1618  001094  EF58  F008         	goto	l2793
+  1618  001094  EF58  F008         	goto	l2795
   1619  001098                     u1090:
   1620  001098                     
   1621                           ; BSR set to: 0
@@ -1704,41 +1706,41 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1623  00109A  EF51  F008         	goto	u1101
   1624  00109E  EF53  F008         	goto	u1100
   1625  0010A2                     u1101:
-  1626  0010A2  EF55  F008         	goto	l302
+  1626  0010A2  EF55  F008         	goto	l425
   1627  0010A6                     u1100:
-  1628  0010A6  EF58  F008         	goto	l2793
-  1629  0010AA                     l302:
+  1628  0010A6  EF58  F008         	goto	l2795
+  1629  0010AA                     l425:
   1630                           
   1631                           ; BSR set to: 0
-  1632                           ;handler.c: 110:         _delay((unsigned long)((10)*(1000000/4000000.0)));
+  1632                           ;../lib/handler_lib.c: 107:         _delay((unsigned long)((10)*(1000000/4000000.0)));
   1633  0010AA  D000               	nop2		;2 cycle nop
-  1634  0010AC  EF40  F008         	goto	l2787
-  1635  0010B0                     l2793:
+  1634  0010AC  EF40  F008         	goto	l2789
+  1635  0010B0                     l2795:
   1636                           
   1637                           ; BSR set to: 0
-  1638                           ;handler.c: 113:     nrf24_write_register(0x07, 0x70);
+  1638                           ;../lib/handler_lib.c: 110:     nrf24_write_register(0x07, 0x70);
   1639  0010B0  0E70               	movlw	112
   1640  0010B2  6E19               	movwf	nrf24_write_register@value^0,c
   1641  0010B4  0E07               	movlw	7
   1642  0010B6  EC9B  F00B         	call	_nrf24_write_register
   1643  0010BA                     
-  1644                           ;handler.c: 116:     if (status & 0x10) {
+  1644                           ;../lib/handler_lib.c: 113:     if (status & 0x10) {
   1645  0010BA  0100               	movlb	0	; () banked
   1646  0010BC  A9D9               	btfss	HandlePacketLoop@status& (0+255),4,b
   1647  0010BE  EF63  F008         	goto	u1111
   1648  0010C2  EF65  F008         	goto	u1110
   1649  0010C6                     u1111:
-  1650  0010C6  EF69  F008         	goto	l2801
+  1650  0010C6  EF69  F008         	goto	l2803
   1651  0010CA                     u1110:
   1652  0010CA                     
   1653                           ; BSR set to: 0
-  1654                           ;handler.c: 117:         nrf24_flush_tx_rx();
+  1654                           ;../lib/handler_lib.c: 114:         nrf24_flush_tx_rx();
   1655  0010CA  EC44  F00D         	call	_nrf24_flush_tx_rx	;wreg free
-  1656  0010CE  EF9F  F008         	goto	l300
-  1657  0010D2                     l2801:
+  1656  0010CE  EF9F  F008         	goto	l423
+  1657  0010D2                     l2803:
   1658                           
   1659                           ; BSR set to: 0
-  1660                           ;handler.c: 124:     packetsTX[i].free = 1;
+  1660                           ;../lib/handler_lib.c: 121:     packetsTX[i].free = 1;
   1661  0010D2  51DA               	movf	HandlePacketLoop@i& (0+255),w,b
   1662  0010D4  0D22               	mullw	34
   1663  0010D6  0EFB               	movlw	low (_packetsTX+32)
@@ -1751,22 +1753,22 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1670  0010E4  6EDF               	movwf	indf2,c
   1671  0010E6                     
   1672                           ; BSR set to: 0
-  1673                           ;handler.c: 127:     if (status & 0x40) {
+  1673                           ;../lib/handler_lib.c: 124:     if (status & 0x40) {
   1674  0010E6  ADD9               	btfss	HandlePacketLoop@status& (0+255),6,b
   1675  0010E8  EF78  F008         	goto	u1121
   1676  0010EC  EF7A  F008         	goto	u1120
   1677  0010F0                     u1121:
-  1678  0010F0  EF9F  F008         	goto	l300
+  1678  0010F0  EF9F  F008         	goto	l423
   1679  0010F4                     u1120:
   1680  0010F4                     
   1681                           ; BSR set to: 0
-  1682                           ;handler.c: 128:         uint8_t sz = nrf24_read_dynamic_payload_length();
+  1682                           ;../lib/handler_lib.c: 125:         uint8_t sz = nrf24_read_dynamic_payload_length();
   1683  0010F4  EC81  F00E         	call	_nrf24_read_dynamic_payload_length	;wreg free
   1684  0010F8  0100               	movlb	0	; () banked
   1685  0010FA  6FD8               	movwf	HandlePacketLoop@sz& (0+255),b
   1686  0010FC                     
   1687                           ; BSR set to: 0
-  1688                           ;handler.c: 129:         nrf24_read_rf_data(bufferRX, sz);
+  1688                           ;../lib/handler_lib.c: 126:         nrf24_read_rf_data(bufferRX, sz);
   1689  0010FC  0E60               	movlw	low _bufferRX
   1690  0010FE  6E1E               	movwf	nrf24_read_rf_data@buffer^0,c
   1691  001100  0E00               	movlw	high _bufferRX
@@ -1774,7 +1776,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1693  001104  C0D8  F020         	movff	HandlePacketLoop@sz,nrf24_read_rf_data@sz
   1694  001108  EC60  F00E         	call	_nrf24_read_rf_data	;wreg free
   1695  00110C                     
-  1696                           ;handler.c: 130:         if (!VerifyBoardAddress(bufferRX)) {
+  1696                           ;../lib/handler_lib.c: 127:         if (!VerifyBoardAddress(bufferRX)) {
   1697  00110C  0E60               	movlw	low _bufferRX
   1698  00110E  6E18               	movwf	VerifyBoardAddress@bufferRX^0,c
   1699  001110  0E00               	movlw	high _bufferRX
@@ -1785,12 +1787,12 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1704  00111C  EF92  F008         	goto	u1131
   1705  001120  EF94  F008         	goto	u1130
   1706  001124                     u1131:
-  1707  001124  EF96  F008         	goto	l2813
+  1707  001124  EF96  F008         	goto	l2815
   1708  001128                     u1130:
-  1709  001128  EF9F  F008         	goto	l300
-  1710  00112C                     l2813:
+  1709  001128  EF9F  F008         	goto	l423
+  1710  00112C                     l2815:
   1711                           
-  1712                           ;handler.c: 133:         ProcessAckPayload(bufferRX, sz);
+  1712                           ;../lib/handler_lib.c: 130:         ProcessAckPayload(bufferRX, sz);
   1713  00112C  0E60               	movlw	low _bufferRX
   1714  00112E  0100               	movlb	0	; () banked
   1715  001130  6FB1               	movwf	ProcessAckPayload@buffer& (0+255),b
@@ -1798,7 +1800,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1717  001134  6FB2               	movwf	(ProcessAckPayload@buffer+1)& (0+255),b
   1718  001136  C0D8  F0B3         	movff	HandlePacketLoop@sz,ProcessAckPayload@sz
   1719  00113A  ECA0  F008         	call	_ProcessAckPayload	;wreg free
-  1720  00113E                     l300:
+  1720  00113E                     l423:
   1721  00113E  0012               	return		;funcret
   1722  001140                     __end_of_HandlePacketLoop:
   1723                           	callstack 0
@@ -1986,8 +1988,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1890                           ;../lib/nrf24_lib.c: 62:     for (i = 0; i < bytes; i++) {
   1891  001AE0  0E00               	movlw	0
   1892  001AE2  6E1D               	movwf	nrf24_read_buff@i^0,c
-  1893  001AE4  EF7F  F00D         	goto	l2627
-  1894  001AE8                     l2621:
+  1893  001AE4  EF7F  F00D         	goto	l2607
+  1894  001AE8                     l2601:
   1895                           
   1896                           ;../lib/nrf24_lib.c: 63:         *buffer = SPI1_ExchangeByte(0xFF);
   1897  001AE8  0EFF               	movlw	255
@@ -2002,14 +2004,14 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1906  001AFC                     
   1907                           ;../lib/nrf24_lib.c: 65:     }
   1908  001AFC  2A1D               	incf	nrf24_read_buff@i^0,f,c
-  1909  001AFE                     l2627:
+  1909  001AFE                     l2607:
   1910  001AFE  501B               	movf	nrf24_read_buff@bytes^0,w,c
   1911  001B00  5C1D               	subwf	nrf24_read_buff@i^0,w,c
   1912  001B02  A0D8               	btfss	status,0,c
   1913  001B04  EF86  F00D         	goto	u1021
   1914  001B08  EF88  F00D         	goto	u1020
   1915  001B0C                     u1021:
-  1916  001B0C  EF74  F00D         	goto	l2621
+  1916  001B0C  EF74  F00D         	goto	l2601
   1917  001B10                     u1020:
   1918  001B10                     
   1919                           ;../lib/nrf24_lib.c: 66:     *buffer = (uint8_t) ((void*)0);
@@ -2054,8 +2056,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   1953 ;;		_SPI1_ExchangeByte
   1954 ;;		_nrf24_write_register
   1955 ;; This function is called by:
-  1956 ;;		_HandlePacketLoop
-  1957 ;;		_nrf24_read_rf_data
+  1956 ;;		_nrf24_read_rf_data
+  1957 ;;		_HandlePacketLoop
   1958 ;; This function uses a non-reentrant model
   1959 ;;
   1960                           
@@ -2250,7 +2252,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2139                           
   2140 ;; *************** function _VerifyBoardAddress *****************
   2141 ;; Defined at:
-  2142 ;;		line 147 in file "handler.c"
+  2142 ;;		line 144 in file "../lib/handler_lib.c"
   2143 ;; Parameters:    Size  Location     Type
   2144 ;;  bufferRX        2   23[COMRAM] PTR unsigned char 
   2145 ;;		 -> bufferRX(32), 
@@ -2290,14 +2292,14 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2174  001820                     _VerifyBoardAddress:
   2175                           	callstack 23
   2176  001820                     
-  2177                           ;handler.c: 148:     for (int i = 0; i < 3; i++) {
+  2177                           ;../lib/handler_lib.c: 145:     for (int i = 0; i < 3; i++) {
   2178  001820  0E00               	movlw	0
   2179  001822  6E1F               	movwf	(VerifyBoardAddress@i+1)^0,c
   2180  001824  0E00               	movlw	0
   2181  001826  6E1E               	movwf	VerifyBoardAddress@i^0,c
-  2182  001828                     l2673:
+  2182  001828                     l2675:
   2183                           
-  2184                           ;handler.c: 149:         if (BoardAddress[i] != bufferRX[i + 1]) {
+  2184                           ;../lib/handler_lib.c: 146:         if (BoardAddress[i] != bufferRX[i + 1]) {
   2185  001828  501E               	movf	VerifyBoardAddress@i^0,w,c
   2186  00182A  2418               	addwf	VerifyBoardAddress@bufferRX^0,w,c
   2187  00182C  6E1A               	movwf	??_VerifyBoardAddress^0,c
@@ -2322,15 +2324,15 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2206  001852  EF2D  F00C         	goto	u1031
   2207  001856  EF2F  F00C         	goto	u1030
   2208  00185A                     u1031:
-  2209  00185A  EF32  F00C         	goto	l2679
+  2209  00185A  EF32  F00C         	goto	l2681
   2210  00185E                     u1030:
   2211  00185E                     
-  2212                           ;handler.c: 150:             return 0;
+  2212                           ;../lib/handler_lib.c: 147:             return 0;
   2213  00185E  0E00               	movlw	0
-  2214  001860  EF43  F00C         	goto	l319
-  2215  001864                     l2679:
+  2214  001860  EF43  F00C         	goto	l442
+  2215  001864                     l2681:
   2216                           
-  2217                           ;handler.c: 152:     }
+  2217                           ;../lib/handler_lib.c: 149:     }
   2218  001864  4A1E               	infsnz	VerifyBoardAddress@i^0,f,c
   2219  001866  2A1F               	incf	(VerifyBoardAddress@i+1)^0,f,c
   2220  001868  BE1F               	btfsc	(VerifyBoardAddress@i+1)^0,7,c
@@ -2343,19 +2345,19 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2227  001878  EF40  F00C         	goto	u1041
   2228  00187C  EF42  F00C         	goto	u1040
   2229  001880                     u1041:
-  2230  001880  EF14  F00C         	goto	l2673
+  2230  001880  EF14  F00C         	goto	l2675
   2231  001884                     u1040:
   2232  001884                     
-  2233                           ;handler.c: 153:     return 1;
+  2233                           ;../lib/handler_lib.c: 150:     return 1;
   2234  001884  0E01               	movlw	1
-  2235  001886                     l319:
+  2235  001886                     l442:
   2236  001886  0012               	return		;funcret
   2237  001888                     __end_of_VerifyBoardAddress:
   2238                           	callstack 0
   2239                           
   2240 ;; *************** function _ProcessAckPayload *****************
   2241 ;; Defined at:
-  2242 ;;		line 156 in file "handler.c"
+  2242 ;;		line 153 in file "../lib/handler_lib.c"
   2243 ;; Parameters:    Size  Location     Type
   2244 ;;  buffer          2    0[BANK0 ] PTR unsigned char 
   2245 ;;		 -> bufferRX(32), 
@@ -2400,20 +2402,20 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2279  001140                     _ProcessAckPayload:
   2280                           	callstack 19
   2281  001140                     
-  2282                           ;handler.c: 157:     uint8_t data[32];;handler.c: 158:     uint8_t actionID;;handler.c: 
-      +                          160:     uint8_t pktType = buffer[0];
+  2282                           ;../lib/handler_lib.c: 154:     uint8_t data[32];;../lib/handler_lib.c: 155:     uint8_t
+      +                           actionID;;../lib/handler_lib.c: 157:     uint8_t pktType = buffer[0];
   2283  001140  C0B1  FFD9         	movff	ProcessAckPayload@buffer,fsr2l
   2284  001144  C0B2  FFDA         	movff	ProcessAckPayload@buffer+1,fsr2h
   2285  001148  50DF               	movf	indf2,w,c
   2286  00114A  0100               	movlb	0	; () banked
   2287  00114C  6FD7               	movwf	ProcessAckPayload@pktType& (0+255),b
   2288                           
-  2289                           ;handler.c: 161:     switch (pktType) {
-  2290  00114E  EF1F  F009         	goto	l2707
-  2291  001152                     l2689:
+  2289                           ;../lib/handler_lib.c: 158:     switch (pktType) {
+  2290  00114E  EF1F  F009         	goto	l2709
+  2291  001152                     l2691:
   2292                           
   2293                           ; BSR set to: 0
-  2294                           ;handler.c: 163:             actionID = buffer[4];
+  2294                           ;../lib/handler_lib.c: 160:             actionID = buffer[4];
   2295  001152  EE20 F004          	lfsr	2,4
   2296  001156  51B1               	movf	ProcessAckPayload@buffer& (0+255),w,b
   2297  001158  26D9               	addwf	fsr2l,f,c
@@ -2423,7 +2425,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2301  001160  6FD6               	movwf	ProcessAckPayload@actionID& (0+255),b
   2302  001162                     
   2303                           ; BSR set to: 0
-  2304                           ;handler.c: 164:             SuperMemCpy(data, 0, buffer, 5, sz - 5);
+  2304                           ;../lib/handler_lib.c: 161:             SuperMemCpy(data, 0, buffer, 5, sz - 5);
   2305  001162  0EB6               	movlw	low ProcessAckPayload@data
   2306  001164  6E18               	movwf	SuperMemCpy@dest^0,c
   2307  001166  0E00               	movlw	high ProcessAckPayload@data
@@ -2439,7 +2441,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2317  00117E  6E1E               	movwf	SuperMemCpy@sz^0,c
   2318  001180  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2319  001184                     
-  2320                           ;handler.c: 165:             ProcessActionRequest(actionID, data);
+  2320                           ;../lib/handler_lib.c: 162:             ProcessActionRequest(actionID, data);
   2321  001184  0EB6               	movlw	low ProcessAckPayload@data
   2322  001186  6E2C               	movwf	ProcessActionRequest@data^0,c
   2323  001188  0E00               	movlw	high ProcessAckPayload@data
@@ -2448,12 +2450,12 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2326  00118E  51D6               	movf	ProcessAckPayload@actionID& (0+255),w,b
   2327  001190  ECC7  F00A         	call	_ProcessActionRequest
   2328                           
-  2329                           ;handler.c: 166:             break;
-  2330  001194  EF38  F009         	goto	l328
-  2331  001198                     l2695:
+  2329                           ;../lib/handler_lib.c: 163:             break;
+  2330  001194  EF38  F009         	goto	l451
+  2331  001198                     l2697:
   2332                           
   2333                           ; BSR set to: 0
-  2334                           ;handler.c: 168:             config.RFChannel = buffer[4];
+  2334                           ;../lib/handler_lib.c: 165:             config.RFChannel = buffer[4];
   2335  001198  EE20 F004          	lfsr	2,4
   2336  00119C  51B1               	movf	ProcessAckPayload@buffer& (0+255),w,b
   2337  00119E  26D9               	addwf	fsr2l,f,c
@@ -2463,7 +2465,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2341  0011A6  6FA5               	movwf	(_config+5)& (0+255),b
   2342  0011A8                     
   2343                           ; BSR set to: 0
-  2344                           ;handler.c: 169:             SuperMemCpy(config.PipeAddr1, 0, buffer, 5, 5);
+  2344                           ;../lib/handler_lib.c: 166:             SuperMemCpy(config.PipeAddr1, 0, buffer, 5, 5);
   2345  0011A8  0EA6               	movlw	low (_config+6)
   2346  0011AA  6E18               	movwf	SuperMemCpy@dest^0,c
   2347  0011AC  0E00               	movlw	high (_config+6)
@@ -2478,7 +2480,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2356  0011C2  6E1E               	movwf	SuperMemCpy@sz^0,c
   2357  0011C4  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2358  0011C8                     
-  2359                           ;handler.c: 170:             SuperMemCpy(config.PipeAddr2, 0, buffer, 10, 5);
+  2359                           ;../lib/handler_lib.c: 167:             SuperMemCpy(config.PipeAddr2, 0, buffer, 10, 5);
   2360  0011C8  0EAB               	movlw	low (_config+11)
   2361  0011CA  6E18               	movwf	SuperMemCpy@dest^0,c
   2362  0011CC  0E00               	movlw	high (_config+11)
@@ -2493,7 +2495,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2371  0011E2  6E1E               	movwf	SuperMemCpy@sz^0,c
   2372  0011E4  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2373                           
-  2374                           ;handler.c: 171:             config.ARD = buffer[15];
+  2374                           ;../lib/handler_lib.c: 168:             config.ARD = buffer[15];
   2375  0011E8  0100               	movlb	0	; () banked
   2376  0011EA  EE20 F00F          	lfsr	2,15
   2377  0011EE  51B1               	movf	ProcessAckPayload@buffer& (0+255),w,b
@@ -2503,12 +2505,12 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2381  0011F6  50DF               	movf	indf2,w,c
   2382  0011F8  6FB0               	movwf	(_config+16)& (0+255),b
   2383                           
-  2384                           ;handler.c: 172:             break;
-  2385  0011FA  EF38  F009         	goto	l328
-  2386  0011FE                     l2701:
+  2384                           ;../lib/handler_lib.c: 169:             break;
+  2385  0011FA  EF38  F009         	goto	l451
+  2386  0011FE                     l2703:
   2387                           
   2388                           ; BSR set to: 0
-  2389                           ;handler.c: 174:             SuperMemCpy(config.Address, 0, buffer, 4, 3);
+  2389                           ;../lib/handler_lib.c: 171:             SuperMemCpy(config.Address, 0, buffer, 4, 3);
   2390  0011FE  0EA1               	movlw	low (_config+1)
   2391  001200  6E18               	movwf	SuperMemCpy@dest^0,c
   2392  001202  0E00               	movlw	high (_config+1)
@@ -2523,7 +2525,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2401  001218  6E1E               	movwf	SuperMemCpy@sz^0,c
   2402  00121A  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2403  00121E                     
-  2404                           ;handler.c: 175:             config.PingInterval = buffer[7];
+  2404                           ;../lib/handler_lib.c: 172:             config.PingInterval = buffer[7];
   2405  00121E  0100               	movlb	0	; () banked
   2406  001220  EE20 F007          	lfsr	2,7
   2407  001224  51B1               	movf	ProcessAckPayload@buffer& (0+255),w,b
@@ -2533,18 +2535,18 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2411  00122C  50DF               	movf	indf2,w,c
   2412  00122E  6FA4               	movwf	(_config+4)& (0+255),b
   2413                           
-  2414                           ;handler.c: 176:             break;
-  2415  001230  EF38  F009         	goto	l328
-  2416  001234                     l2705:
+  2414                           ;../lib/handler_lib.c: 173:             break;
+  2415  001230  EF38  F009         	goto	l451
+  2416  001234                     l2707:
   2417                           
   2418                           ; BSR set to: 0
-  2419                           ;handler.c: 178:             SendError(0x04);
+  2419                           ;../lib/handler_lib.c: 175:             SendError(0x04);
   2420  001234  0E04               	movlw	4
   2421  001236  EC44  F00C         	call	_SendError
   2422                           
-  2423                           ;handler.c: 179:     }
-  2424  00123A  EF38  F009         	goto	l328
-  2425  00123E                     l2707:
+  2423                           ;../lib/handler_lib.c: 176:     }
+  2424  00123A  EF38  F009         	goto	l451
+  2425  00123E                     l2709:
   2426                           
   2427                           ; BSR set to: 0
   2428  00123E  51D7               	movf	ProcessAckPayload@pktType& (0+255),w,b
@@ -2562,9 +2564,9 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2439  001244  51B5               	movf	(??_ProcessAckPayload+1)& (0+255),w,b
   2440  001246  0A00               	xorlw	0	; case 0
   2441  001248  B4D8               	btfsc	status,2,c
-  2442  00124A  EF29  F009         	goto	l2887
-  2443  00124E  EF1A  F009         	goto	l2705
-  2444  001252                     l2887:
+  2442  00124A  EF29  F009         	goto	l2889
+  2443  00124E  EF1A  F009         	goto	l2707
+  2444  001252                     l2889:
   2445                           
   2446                           ; BSR set to: 0
   2447                           ; Switch size 1, requested type "simple"
@@ -2576,22 +2578,22 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2453  001252  51B4               	movf	??_ProcessAckPayload& (0+255),w,b
   2454  001254  0A03               	xorlw	3	; case 3
   2455  001256  B4D8               	btfsc	status,2,c
-  2456  001258  EFCC  F008         	goto	l2695
+  2456  001258  EFCC  F008         	goto	l2697
   2457  00125C  0A07               	xorlw	7	; case 4
   2458  00125E  B4D8               	btfsc	status,2,c
-  2459  001260  EFFF  F008         	goto	l2701
+  2459  001260  EFFF  F008         	goto	l2703
   2460  001264  0A14               	xorlw	20	; case 16
   2461  001266  B4D8               	btfsc	status,2,c
-  2462  001268  EFA9  F008         	goto	l2689
-  2463  00126C  EF1A  F009         	goto	l2705
-  2464  001270                     l328:
+  2462  001268  EFA9  F008         	goto	l2691
+  2463  00126C  EF1A  F009         	goto	l2707
+  2464  001270                     l451:
   2465  001270  0012               	return		;funcret
   2466  001272                     __end_of_ProcessAckPayload:
   2467                           	callstack 0
   2468                           
   2469 ;; *************** function _ProcessActionRequest *****************
   2470 ;; Defined at:
-  2471 ;;		line 183 in file "handler.c"
+  2471 ;;		line 41 in file "main.c"
   2472 ;; Parameters:    Size  Location     Type
   2473 ;;  actionID        1    wreg     unsigned char 
   2474 ;;  data            2   43[COMRAM] PTR unsigned char 
@@ -2640,18 +2642,18 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2512                           ;ProcessActionRequest@actionID stored from wreg
   2513  00158E  6E30               	movwf	ProcessActionRequest@actionID^0,c
   2514  001590                     
-  2515                           ;handler.c: 184:     uint8_t tmpHumidity[] ={0,0};
+  2515                           ;main.c: 42:     uint8_t tmpHumidity[] = {0, 0};
   2516  001590  0E00               	movlw	0
   2517  001592  6E32               	movwf	(ProcessActionRequest@tmpHumidity+1)^0,c
   2518  001594  0E00               	movlw	0
   2519  001596  6E31               	movwf	ProcessActionRequest@tmpHumidity^0,c
   2520                           
-  2521                           ;handler.c: 186:     switch (actionID) {
-  2522  001598  EFF8  F00A         	goto	l2611
-  2523  00159C                     l335:
+  2521                           ;main.c: 44:     switch (actionID) {
+  2522  001598  EFF8  F00A         	goto	l2591
+  2523  00159C                     l242:
   2524  00159C  9289               	bcf	137,1,c	;volatile
   2525  00159E                     
-  2526                           ;handler.c: 189:             if (data[0]) {
+  2526                           ;main.c: 47:             if (data[0]) {
   2527  00159E  C02C  FFD9         	movff	ProcessActionRequest@data,fsr2l
   2528  0015A2  C02D  FFDA         	movff	ProcessActionRequest@data+1,fsr2h
   2529  0015A6  50DF               	movf	indf2,w,c
@@ -2659,27 +2661,27 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2531  0015AA  EFD9  F00A         	goto	u1011
   2532  0015AE  EFDB  F00A         	goto	u1010
   2533  0015B2                     u1011:
-  2534  0015B2  EF11  F00B         	goto	l344
+  2534  0015B2  EF11  F00B         	goto	l251
   2535  0015B6                     u1010:
   2536  0015B6  8289               	bsf	137,1,c	;volatile
-  2537  0015B8  EF11  F00B         	goto	l344
-  2538  0015BC                     l2603:
+  2537  0015B8  EF11  F00B         	goto	l251
+  2538  0015BC                     l2583:
   2539                           
-  2540                           ;handler.c: 194:             ReloadConfig();
+  2540                           ;main.c: 52:             ReloadConfig();
   2541  0015BC  ECDB  F00B         	call	_ReloadConfig	;wreg free
   2542                           
-  2543                           ;handler.c: 195:             break;
-  2544  0015C0  EF11  F00B         	goto	l344
-  2545  0015C4                     l2605:
+  2543                           ;main.c: 53:             break;
+  2544  0015C0  EF11  F00B         	goto	l251
+  2545  0015C4                     l2585:
   2546                           
-  2547                           ;handler.c: 197:             GetMockTempHumidity(tmpHumidity);
+  2547                           ;main.c: 55:             GetMockTempHumidity(tmpHumidity);
   2548  0015C4  0E31               	movlw	low ProcessActionRequest@tmpHumidity
   2549  0015C6  6E18               	movwf	GetMockTempHumidity@temp^0,c
   2550  0015C8  0E00               	movlw	high ProcessActionRequest@tmpHumidity
   2551  0015CA  6E19               	movwf	(GetMockTempHumidity@temp+1)^0,c
   2552  0015CC  EC90  F00E         	call	_GetMockTempHumidity	;wreg free
   2553  0015D0                     
-  2554                           ;handler.c: 198:             SendData(0x02,tmpHumidity,2);
+  2554                           ;main.c: 56:             SendData(0x02, tmpHumidity, 2);
   2555  0015D0  0E31               	movlw	low ProcessActionRequest@tmpHumidity
   2556  0015D2  6E27               	movwf	SendData@data^0,c
   2557  0015D4  0E00               	movlw	high ProcessActionRequest@tmpHumidity
@@ -2689,17 +2691,17 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2561  0015DC  0E02               	movlw	2
   2562  0015DE  EC12  F00B         	call	_SendData
   2563                           
-  2564                           ;handler.c: 199:             break;
-  2565  0015E2  EF11  F00B         	goto	l344
-  2566  0015E6                     l2609:
+  2564                           ;main.c: 57:             break;
+  2565  0015E2  EF11  F00B         	goto	l251
+  2566  0015E6                     l2589:
   2567                           
-  2568                           ;handler.c: 201:             SendError(0x04);
+  2568                           ;main.c: 59:             SendError(0x04);
   2569  0015E6  0E04               	movlw	4
   2570  0015E8  EC44  F00C         	call	_SendError
   2571                           
-  2572                           ;handler.c: 202:     }
-  2573  0015EC  EF11  F00B         	goto	l344
-  2574  0015F0                     l2611:
+  2572                           ;main.c: 60:     }
+  2573  0015EC  EF11  F00B         	goto	l251
+  2574  0015F0                     l2591:
   2575  0015F0  5030               	movf	ProcessActionRequest@actionID^0,w,c
   2576  0015F2  6E2E               	movwf	??_ProcessActionRequest^0,c
   2577  0015F4  6A2F               	clrf	(??_ProcessActionRequest+1)^0,c
@@ -2715,9 +2717,9 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2586  0015F6  502F               	movf	(??_ProcessActionRequest+1)^0,w,c
   2587  0015F8  0A00               	xorlw	0	; case 0
   2588  0015FA  B4D8               	btfsc	status,2,c
-  2589  0015FC  EF02  F00B         	goto	l2889
-  2590  001600  EFF3  F00A         	goto	l2609
-  2591  001604                     l2889:
+  2589  0015FC  EF02  F00B         	goto	l2891
+  2590  001600  EFF3  F00A         	goto	l2589
+  2591  001604                     l2891:
   2592                           
   2593                           ; Switch size 1, requested type "simple"
   2594                           ; Number of cases is 3, Range of values is 2 to 21
@@ -2728,22 +2730,22 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2599  001604  502E               	movf	??_ProcessActionRequest^0,w,c
   2600  001606  0A02               	xorlw	2	; case 2
   2601  001608  B4D8               	btfsc	status,2,c
-  2602  00160A  EFE2  F00A         	goto	l2605
+  2602  00160A  EFE2  F00A         	goto	l2585
   2603  00160E  0A11               	xorlw	17	; case 19
   2604  001610  B4D8               	btfsc	status,2,c
-  2605  001612  EFCE  F00A         	goto	l335
+  2605  001612  EFCE  F00A         	goto	l242
   2606  001616  0A06               	xorlw	6	; case 21
   2607  001618  B4D8               	btfsc	status,2,c
-  2608  00161A  EFDE  F00A         	goto	l2603
-  2609  00161E  EFF3  F00A         	goto	l2609
-  2610  001622                     l344:
+  2608  00161A  EFDE  F00A         	goto	l2583
+  2609  00161E  EFF3  F00A         	goto	l2589
+  2610  001622                     l251:
   2611  001622  0012               	return		;funcret
   2612  001624                     __end_of_ProcessActionRequest:
   2613                           	callstack 0
   2614                           
   2615 ;; *************** function _SendError *****************
   2616 ;; Defined at:
-  2617 ;;		line 220 in file "handler.c"
+  2617 ;;		line 194 in file "../lib/handler_lib.c"
   2618 ;; Parameters:    Size  Location     Type
   2619 ;;  errorCode       1    wreg     unsigned char 
   2620 ;; Auto vars:     Size  Location     Type
@@ -2774,8 +2776,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2640 ;;		_QueueTXPacket
   2641 ;;		_SuperMemCpy
   2642 ;; This function is called by:
-  2643 ;;		_ProcessAckPayload
-  2644 ;;		_ProcessActionRequest
+  2643 ;;		_ProcessActionRequest
+  2644 ;;		_ProcessAckPayload
   2645 ;; This function uses a non-reentrant model
   2646 ;;
   2647                           
@@ -2789,17 +2791,17 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2655                           ;SendError@errorCode stored from wreg
   2656  001888  6E27               	movwf	SendError@errorCode^0,c
   2657  00188A                     
-  2658                           ;handler.c: 221:     uint8_t i = 0;
+  2658                           ;../lib/handler_lib.c: 195:     uint8_t i = 0;
   2659  00188A  0E00               	movlw	0
   2660  00188C  6E28               	movwf	SendError@i^0,c
   2661  00188E                     
-  2662                           ;handler.c: 222:     bufferTX[i] = 0x01;
+  2662                           ;../lib/handler_lib.c: 196:     bufferTX[i] = 0x01;
   2663  00188E  0E01               	movlw	1
   2664  001890  0100               	movlb	0	; () banked
   2665  001892  6F80               	movwf	_bufferTX& (0+255),b
   2666  001894                     
   2667                           ; BSR set to: 0
-  2668                           ;handler.c: 223:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+  2668                           ;../lib/handler_lib.c: 197:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
   2669  001894  0E80               	movlw	low _bufferTX
   2670  001896  6E18               	movwf	SuperMemCpy@dest^0,c
   2671  001898  0E00               	movlw	high _bufferTX
@@ -2816,11 +2818,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2682  0018AE  6E1E               	movwf	SuperMemCpy@sz^0,c
   2683  0018B0  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2684  0018B4                     
-  2685                           ;handler.c: 224:     i += 3;
+  2685                           ;../lib/handler_lib.c: 198:     i += 3;
   2686  0018B4  0E03               	movlw	3
   2687  0018B6  2628               	addwf	SendError@i^0,f,c
   2688  0018B8                     
-  2689                           ;handler.c: 225:     bufferTX[++i] = 0;
+  2689                           ;../lib/handler_lib.c: 199:     bufferTX[++i] = 0;
   2690  0018B8  2A28               	incf	SendError@i^0,f,c
   2691  0018BA  0E80               	movlw	low _bufferTX
   2692  0018BC  2428               	addwf	SendError@i^0,w,c
@@ -2831,7 +2833,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2697  0018C6  0E00               	movlw	0
   2698  0018C8  6EDF               	movwf	indf2,c
   2699  0018CA                     
-  2700                           ;handler.c: 226:     bufferTX[++i] = errorCode;
+  2700                           ;../lib/handler_lib.c: 200:     bufferTX[++i] = errorCode;
   2701  0018CA  2A28               	incf	SendError@i^0,f,c
   2702  0018CC  0E80               	movlw	low _bufferTX
   2703  0018CE  2428               	addwf	SendError@i^0,w,c
@@ -2841,8 +2843,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2707  0018D6  22DA               	addwfc	fsr2h,f,c
   2708  0018D8  C027  FFDF         	movff	SendError@errorCode,indf2
   2709  0018DC                     
-  2710                           ;handler.c: 227:     return QueueTXPacket(bufferTX, (i + 1));;	Return value of _SendErro
-      +                          r is never used
+  2710                           ;../lib/handler_lib.c: 201:     return QueueTXPacket(bufferTX, (i + 1));;	Return value o
+      +                          f _SendError is never used
   2711  0018DC  0E80               	movlw	low _bufferTX
   2712  0018DE  6E23               	movwf	QueueTXPacket@buffer^0,c
   2713  0018E0  0E00               	movlw	high _bufferTX
@@ -2856,7 +2858,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2721                           
   2722 ;; *************** function _SendData *****************
   2723 ;; Defined at:
-  2724 ;;		line 230 in file "handler.c"
+  2724 ;;		line 204 in file "../lib/handler_lib.c"
   2725 ;; Parameters:    Size  Location     Type
   2726 ;;  actionID        1    wreg     unsigned char 
   2727 ;;  data            2   38[COMRAM] PTR unsigned char 
@@ -2904,17 +2906,17 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2764                           ;SendData@actionID stored from wreg
   2765  001624  6E2A               	movwf	SendData@actionID^0,c
   2766  001626                     
-  2767                           ;handler.c: 231:     uint8_t i = 0;
+  2767                           ;../lib/handler_lib.c: 205:     uint8_t i = 0;
   2768  001626  0E00               	movlw	0
   2769  001628  6E2B               	movwf	SendData@i^0,c
   2770  00162A                     
-  2771                           ;handler.c: 232:     bufferTX[i] = 0x01;
+  2771                           ;../lib/handler_lib.c: 206:     bufferTX[i] = 0x01;
   2772  00162A  0E01               	movlw	1
   2773  00162C  0100               	movlb	0	; () banked
   2774  00162E  6F80               	movwf	_bufferTX& (0+255),b
   2775  001630                     
   2776                           ; BSR set to: 0
-  2777                           ;handler.c: 233:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+  2777                           ;../lib/handler_lib.c: 207:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
   2778  001630  0E80               	movlw	low _bufferTX
   2779  001632  6E18               	movwf	SuperMemCpy@dest^0,c
   2780  001634  0E00               	movlw	high _bufferTX
@@ -2931,11 +2933,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2791  00164A  6E1E               	movwf	SuperMemCpy@sz^0,c
   2792  00164C  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2793  001650                     
-  2794                           ;handler.c: 234:     i += 3;
+  2794                           ;../lib/handler_lib.c: 208:     i += 3;
   2795  001650  0E03               	movlw	3
   2796  001652  262B               	addwf	SendData@i^0,f,c
   2797  001654                     
-  2798                           ;handler.c: 235:     bufferTX[++i] = actionID;
+  2798                           ;../lib/handler_lib.c: 209:     bufferTX[++i] = actionID;
   2799  001654  2A2B               	incf	SendData@i^0,f,c
   2800  001656  0E80               	movlw	low _bufferTX
   2801  001658  242B               	addwf	SendData@i^0,w,c
@@ -2945,7 +2947,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2805  001660  22DA               	addwfc	fsr2h,f,c
   2806  001662  C02A  FFDF         	movff	SendData@actionID,indf2
   2807  001666                     
-  2808                           ;handler.c: 236:     bufferTX[++i] = 0x00;
+  2808                           ;../lib/handler_lib.c: 210:     bufferTX[++i] = 0x00;
   2809  001666  2A2B               	incf	SendData@i^0,f,c
   2810  001668  0E80               	movlw	low _bufferTX
   2811  00166A  242B               	addwf	SendData@i^0,w,c
@@ -2956,7 +2958,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2816  001674  0E00               	movlw	0
   2817  001676  6EDF               	movwf	indf2,c
   2818  001678                     
-  2819                           ;handler.c: 237:     SuperMemCpy(bufferTX, i+1, data, 0, dataSz);
+  2819                           ;../lib/handler_lib.c: 211:     SuperMemCpy(bufferTX, i + 1, data, 0, dataSz);
   2820  001678  0E80               	movlw	low _bufferTX
   2821  00167A  6E18               	movwf	SuperMemCpy@dest^0,c
   2822  00167C  0E00               	movlw	high _bufferTX
@@ -2970,12 +2972,12 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2830  001690  C029  F01E         	movff	SendData@dataSz,SuperMemCpy@sz
   2831  001694  ECA2  F00C         	call	_SuperMemCpy	;wreg free
   2832  001698                     
-  2833                           ;handler.c: 238:     i += dataSz;
+  2833                           ;../lib/handler_lib.c: 212:     i += dataSz;
   2834  001698  5029               	movf	SendData@dataSz^0,w,c
   2835  00169A  262B               	addwf	SendData@i^0,f,c
   2836  00169C                     
-  2837                           ;handler.c: 239:     return QueueTXPacket(bufferTX, (i + 1));;	Return value of _SendData
-      +                           is never used
+  2837                           ;../lib/handler_lib.c: 213:     return QueueTXPacket(bufferTX, (i + 1));;	Return value o
+      +                          f _SendData is never used
   2838  00169C  0E80               	movlw	low _bufferTX
   2839  00169E  6E23               	movwf	QueueTXPacket@buffer^0,c
   2840  0016A0  0E00               	movlw	high _bufferTX
@@ -2989,13 +2991,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2848                           
   2849 ;; *************** function _SuperMemCpy *****************
   2850 ;; Defined at:
-  2851 ;;		line 248 in file "handler.c"
+  2851 ;;		line 222 in file "../lib/handler_lib.c"
   2852 ;; Parameters:    Size  Location     Type
   2853 ;;  dest            2   23[COMRAM] PTR unsigned char 
   2854 ;;		 -> bufferTX(32), ProcessAckPayload@data(32), config(17), 
   2855 ;;  destStart       1   25[COMRAM] unsigned char 
   2856 ;;  src             2   26[COMRAM] PTR unsigned char 
-  2857 ;;		 -> ProcessActionRequest@tmpHumidity(2), bufferRX(32), BoardAddress(3), 
+  2857 ;;		 -> bufferRX(32), BoardAddress(3), ProcessActionRequest@tmpHumidity(2), 
   2858 ;;  srcStart        1   28[COMRAM] unsigned char 
   2859 ;;  sz              1   29[COMRAM] unsigned char 
   2860 ;; Auto vars:     Size  Location     Type
@@ -3036,13 +3038,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2890  001944                     _SuperMemCpy:
   2891                           	callstack 22
   2892  001944                     
-  2893                           ;handler.c: 249:     for (uint8_t i = 0; i < sz; i++) {
+  2893                           ;../lib/handler_lib.c: 223:     for (uint8_t i = 0; i < sz; i++) {
   2894  001944  0E00               	movlw	0
   2895  001946  6E23               	movwf	SuperMemCpy@i^0,c
-  2896  001948  EFC1  F00C         	goto	l2517
-  2897  00194C                     l2513:
+  2896  001948  EFC1  F00C         	goto	l2519
+  2897  00194C                     l2515:
   2898                           
-  2899                           ;handler.c: 250:         dest[i + destStart] = src[i + srcStart];
+  2899                           ;../lib/handler_lib.c: 224:         dest[i + destStart] = src[i + srcStart];
   2900  00194C  5023               	movf	SuperMemCpy@i^0,w,c
   2901  00194E  241B               	addwf	SuperMemCpy@src^0,w,c
   2902  001950  6E1F               	movwf	??_SuperMemCpy^0,c
@@ -3069,16 +3071,16 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2923  00197A  6EE2               	movwf	fsr1h,c
   2924  00197C  CFDF FFE7          	movff	indf2,indf1
   2925  001980                     
-  2926                           ;handler.c: 251:     }
+  2926                           ;../lib/handler_lib.c: 225:     }
   2927  001980  2A23               	incf	SuperMemCpy@i^0,f,c
-  2928  001982                     l2517:
+  2928  001982                     l2519:
   2929  001982  501E               	movf	SuperMemCpy@sz^0,w,c
   2930  001984  5C23               	subwf	SuperMemCpy@i^0,w,c
   2931  001986  A0D8               	btfss	status,0,c
   2932  001988  EFC8  F00C         	goto	u1001
   2933  00198C  EFCA  F00C         	goto	u1000
   2934  001990                     u1001:
-  2935  001990  EFA6  F00C         	goto	l2513
+  2935  001990  EFA6  F00C         	goto	l2515
   2936  001994                     u1000:
   2937  001994  0012               	return		;funcret
   2938  001996                     __end_of_SuperMemCpy:
@@ -3086,7 +3088,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2940                           
   2941 ;; *************** function _QueueTXPacket *****************
   2942 ;; Defined at:
-  2943 ;;		line 70 in file "handler.c"
+  2943 ;;		line 67 in file "../lib/handler_lib.c"
   2944 ;; Parameters:    Size  Location     Type
   2945 ;;  buffer          2   34[COMRAM] PTR unsigned char 
   2946 ;;		 -> bufferTX(32), 
@@ -3128,12 +3130,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2977  00144E                     _QueueTXPacket:
   2978                           	callstack 20
   2979  00144E                     
-  2980                           ;handler.c: 71:     uint8_t i;;handler.c: 72:     for (i = 0; i < 8; i++) {
+  2980                           ;../lib/handler_lib.c: 68:     uint8_t i;;../lib/handler_lib.c: 69:     for (i = 0; i < 
+      +                          8; i++) {
   2981  00144E  0E00               	movlw	0
   2982  001450  6E26               	movwf	QueueTXPacket@i^0,c
-  2983  001452                     l2489:
+  2983  001452                     l2491:
   2984                           
-  2985                           ;handler.c: 73:         if (packetsTX[i].free) {
+  2985                           ;../lib/handler_lib.c: 70:         if (packetsTX[i].free) {
   2986  001452  5026               	movf	QueueTXPacket@i^0,w,c
   2987  001454  0D22               	mullw	34
   2988  001456  0EFB               	movlw	low (_packetsTX+32)
@@ -3147,38 +3150,38 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   2996  001466  EF37  F00A         	goto	u971
   2997  00146A  EF39  F00A         	goto	u970
   2998  00146E                     u971:
-  2999  00146E  EF3B  F00A         	goto	l2493
+  2999  00146E  EF3B  F00A         	goto	l2495
   3000  001472                     u970:
-  3001  001472  EF44  F00A         	goto	l2497
-  3002  001476                     l2493:
+  3001  001472  EF44  F00A         	goto	l2499
+  3002  001476                     l2495:
   3003                           
-  3004                           ;handler.c: 76:     }
+  3004                           ;../lib/handler_lib.c: 73:     }
   3005  001476  2A26               	incf	QueueTXPacket@i^0,f,c
   3006  001478  0E07               	movlw	7
   3007  00147A  6426               	cpfsgt	QueueTXPacket@i^0,c
   3008  00147C  EF42  F00A         	goto	u981
   3009  001480  EF44  F00A         	goto	u980
   3010  001484                     u981:
-  3011  001484  EF29  F00A         	goto	l2489
+  3011  001484  EF29  F00A         	goto	l2491
   3012  001488                     u980:
-  3013  001488                     l2497:
+  3013  001488                     l2499:
   3014                           
-  3015                           ;handler.c: 77:     if (i == 8) {
+  3015                           ;../lib/handler_lib.c: 74:     if (i == 8) {
   3016  001488  0E08               	movlw	8
   3017  00148A  1826               	xorwf	QueueTXPacket@i^0,w,c
   3018  00148C  A4D8               	btfss	status,2,c
   3019  00148E  EF4B  F00A         	goto	u991
   3020  001492  EF4D  F00A         	goto	u990
   3021  001496                     u991:
-  3022  001496  EF50  F00A         	goto	l2503
+  3022  001496  EF50  F00A         	goto	l2505
   3023  00149A                     u990:
   3024  00149A                     
-  3025                           ;handler.c: 78:         return 0;
+  3025                           ;../lib/handler_lib.c: 75:         return 0;
   3026  00149A  0E00               	movlw	0
-  3027  00149C  EF76  F00A         	goto	l293
-  3028  0014A0                     l2503:
+  3027  00149C  EF76  F00A         	goto	l416
+  3028  0014A0                     l2505:
   3029                           
-  3030                           ;handler.c: 80:     packetsTX[i].free = 0;
+  3030                           ;../lib/handler_lib.c: 77:     packetsTX[i].free = 0;
   3031  0014A0  5026               	movf	QueueTXPacket@i^0,w,c
   3032  0014A2  0D22               	mullw	34
   3033  0014A4  0EFB               	movlw	low (_packetsTX+32)
@@ -3190,7 +3193,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3039  0014B0  0E00               	movlw	0
   3040  0014B2  6EDF               	movwf	indf2,c
   3041                           
-  3042                           ;handler.c: 81:     packetsTX[i].size = sz;
+  3042                           ;../lib/handler_lib.c: 78:     packetsTX[i].size = sz;
   3043  0014B4  5026               	movf	QueueTXPacket@i^0,w,c
   3044  0014B6  0D22               	mullw	34
   3045  0014B8  0EFC               	movlw	low (_packetsTX+33)
@@ -3201,7 +3204,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3050  0014C2  6EDA               	movwf	fsr2h,c
   3051  0014C4  C025  FFDF         	movff	QueueTXPacket@sz,indf2
   3052  0014C8                     
-  3053                           ;handler.c: 82:     memcpy(packetsTX[i].packet, buffer, sz);
+  3053                           ;../lib/handler_lib.c: 79:     memcpy(packetsTX[i].packet, buffer, sz);
   3054  0014C8  5026               	movf	QueueTXPacket@i^0,w,c
   3055  0014CA  0D22               	mullw	34
   3056  0014CC  0EDB               	movlw	low _packetsTX
@@ -3216,16 +3219,16 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3065  0014E4  6A1D               	clrf	(memcpy@n+1)^0,c
   3066  0014E6  ECF4  F00C         	call	_memcpy	;wreg free
   3067  0014EA                     
-  3068                           ;handler.c: 83:     return 1;
+  3068                           ;../lib/handler_lib.c: 80:     return 1;
   3069  0014EA  0E01               	movlw	1
-  3070  0014EC                     l293:
+  3070  0014EC                     l416:
   3071  0014EC  0012               	return		;funcret
   3072  0014EE                     __end_of_QueueTXPacket:
   3073                           	callstack 0
   3074                           
   3075 ;; *************** function _ReloadConfig *****************
   3076 ;; Defined at:
-  3077 ;;		line 206 in file "handler.c"
+  3077 ;;		line 180 in file "../lib/handler_lib.c"
   3078 ;; Parameters:    Size  Location     Type
   3079 ;;		None
   3080 ;; Auto vars:     Size  Location     Type
@@ -3266,18 +3269,18 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3110  0017B6                     _ReloadConfig:
   3111                           	callstack 19
   3112  0017B6                     
-  3113                           ;handler.c: 207:     config.IsConfigured = 1;
+  3113                           ;../lib/handler_lib.c: 181:     config.IsConfigured = 1;
   3114  0017B6  0E01               	movlw	1
   3115  0017B8  0100               	movlb	0	; () banked
   3116  0017BA  6FA0               	movwf	_config& (0+255),b
   3117  0017BC                     
   3118                           ; BSR set to: 0
-  3119                           ;handler.c: 208:     nrf24_write_register(0x05, config.RFChannel);
+  3119                           ;../lib/handler_lib.c: 182:     nrf24_write_register(0x05, config.RFChannel);
   3120  0017BC  C0A5  F019         	movff	_config+5,nrf24_write_register@value
   3121  0017C0  0E05               	movlw	5
   3122  0017C2  EC9B  F00B         	call	_nrf24_write_register
   3123  0017C6                     
-  3124                           ;handler.c: 210:     nrf24_write_buff(0x10, config.PipeAddr1, 5);
+  3124                           ;../lib/handler_lib.c: 184:     nrf24_write_buff(0x10, config.PipeAddr1, 5);
   3125  0017C6  0EA6               	movlw	low (_config+6)
   3126  0017C8  6E19               	movwf	nrf24_write_buff@buffer^0,c
   3127  0017CA  0E00               	movlw	high (_config+6)
@@ -3287,7 +3290,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3131  0017D2  0E10               	movlw	16
   3132  0017D4  ECB5  F00D         	call	_nrf24_write_buff
   3133  0017D8                     
-  3134                           ;handler.c: 211:     nrf24_write_buff(0x0A, config.PipeAddr1, 5);
+  3134                           ;../lib/handler_lib.c: 185:     nrf24_write_buff(0x0A, config.PipeAddr1, 5);
   3135  0017D8  0EA6               	movlw	low (_config+6)
   3136  0017DA  6E19               	movwf	nrf24_write_buff@buffer^0,c
   3137  0017DC  0E00               	movlw	high (_config+6)
@@ -3297,7 +3300,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3141  0017E4  0E0A               	movlw	10
   3142  0017E6  ECB5  F00D         	call	_nrf24_write_buff
   3143  0017EA                     
-  3144                           ;handler.c: 213:     uint8_t ard = (config.ARD << 4) | 0xF;
+  3144                           ;../lib/handler_lib.c: 187:     uint8_t ard = (config.ARD << 4) | 0xF;
   3145  0017EA  0100               	movlb	0	; () banked
   3146  0017EC  39B0               	swapf	(_config+16)& (0+255),w,b
   3147  0017EE  0BF0               	andlw	240
@@ -3305,12 +3308,12 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3149  0017F2  6E23               	movwf	ReloadConfig@ard^0,c
   3150  0017F4                     
   3151                           ; BSR set to: 0
-  3152                           ;handler.c: 214:     nrf24_write_register(0x04, ard);
+  3152                           ;../lib/handler_lib.c: 188:     nrf24_write_register(0x04, ard);
   3153  0017F4  C023  F019         	movff	ReloadConfig@ard,nrf24_write_register@value
   3154  0017F8  0E04               	movlw	4
   3155  0017FA  EC9B  F00B         	call	_nrf24_write_register
   3156  0017FE                     
-  3157                           ;handler.c: 216:     memcpy(BoardAddress, config.Address, 3);
+  3157                           ;../lib/handler_lib.c: 190:     memcpy(BoardAddress, config.Address, 3);
   3158  0017FE  0E3A               	movlw	low _BoardAddress
   3159  001800  6E18               	movwf	memcpy@d1^0,c
   3160  001802  0E00               	movlw	high _BoardAddress
@@ -3325,7 +3328,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3169  001814  6E1C               	movwf	memcpy@n^0,c
   3170  001816  ECF4  F00C         	call	_memcpy	;wreg free
   3171  00181A                     
-  3172                           ;handler.c: 217:     PingInterval = config.PingInterval;
+  3172                           ;../lib/handler_lib.c: 191:     PingInterval = config.PingInterval;
   3173  00181A  C0A4  F033         	movff	_config+4,_PingInterval
   3174  00181E  0012               	return		;funcret
   3175  001820                     __end_of_ReloadConfig:
@@ -3363,11 +3366,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3202 ;; This function calls:
   3203 ;;		_SPI1_ExchangeByte
   3204 ;; This function is called by:
-  3205 ;;		_InitRadio
-  3206 ;;		_HandlePacketLoop
-  3207 ;;		_ReloadConfig
-  3208 ;;		_nrf24_read_rf_data
-  3209 ;;		_nrf24_flush_tx_rx
+  3205 ;;		_nrf24_read_rf_data
+  3206 ;;		_nrf24_flush_tx_rx
+  3207 ;;		_InitRadio
+  3208 ;;		_HandlePacketLoop
+  3209 ;;		_ReloadConfig
   3210 ;; This function uses a non-reentrant model
   3211 ;;
   3212                           
@@ -3385,11 +3388,11 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3224                           ;../lib/nrf24_lib.c: 10:     if (mnemonic_addr < 0x20) {
   3225  00173A  0E20               	movlw	32
   3226  00173C  601A               	cpfslt	nrf24_write_register@mnemonic_addr^0,c
-  3227  00173E  EFA3  F00B         	goto	u921
-  3228  001742  EFA5  F00B         	goto	u920
-  3229  001746                     u921:
-  3230  001746  EFAF  F00B         	goto	l2467
-  3231  00174A                     u920:
+  3227  00173E  EFA3  F00B         	goto	u911
+  3228  001742  EFA5  F00B         	goto	u910
+  3229  001746                     u911:
+  3230  001746  EFAF  F00B         	goto	l2455
+  3231  00174A                     u910:
   3232  00174A                     
   3233                           ;../lib/nrf24_lib.c: 12:         SPI1_ExchangeByte(0x20 | (mnemonic_addr & 0x1F));
   3234  00174A  501A               	movf	nrf24_write_register@mnemonic_addr^0,w,c
@@ -3402,8 +3405,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3241  001756  ECAC  F00E         	call	_SPI1_ExchangeByte
   3242                           
   3243                           ;../lib/nrf24_lib.c: 14:     } else {
-  3244  00175A  EFD8  F00B         	goto	l2479
-  3245  00175E                     l2467:
+  3244  00175A  EFD8  F00B         	goto	l2467
+  3245  00175E                     l2455:
   3246                           
   3247                           ;../lib/nrf24_lib.c: 16:         SPI1_ExchangeByte(mnemonic_addr);
   3248  00175E  501A               	movf	nrf24_write_register@mnemonic_addr^0,w,c
@@ -3414,39 +3417,39 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3252  001764  0EE1               	movlw	225
   3253  001766  181A               	xorwf	nrf24_write_register@mnemonic_addr^0,w,c
   3254  001768  B4D8               	btfsc	status,2,c
-  3255  00176A  EFB9  F00B         	goto	u931
-  3256  00176E  EFBB  F00B         	goto	u930
-  3257  001772                     u931:
-  3258  001772  EFD8  F00B         	goto	l2479
-  3259  001776                     u930:
+  3255  00176A  EFB9  F00B         	goto	u921
+  3256  00176E  EFBB  F00B         	goto	u920
+  3257  001772                     u921:
+  3258  001772  EFD8  F00B         	goto	l2467
+  3259  001776                     u920:
   3260  001776  0EE2               	movlw	226
   3261  001778  181A               	xorwf	nrf24_write_register@mnemonic_addr^0,w,c
   3262  00177A  B4D8               	btfsc	status,2,c
-  3263  00177C  EFC2  F00B         	goto	u941
-  3264  001780  EFC4  F00B         	goto	u940
-  3265  001784                     u941:
-  3266  001784  EFD8  F00B         	goto	l2479
-  3267  001788                     u940:
+  3263  00177C  EFC2  F00B         	goto	u931
+  3264  001780  EFC4  F00B         	goto	u930
+  3265  001784                     u931:
+  3266  001784  EFD8  F00B         	goto	l2467
+  3267  001788                     u930:
   3268  001788  0EE3               	movlw	227
   3269  00178A  181A               	xorwf	nrf24_write_register@mnemonic_addr^0,w,c
   3270  00178C  B4D8               	btfsc	status,2,c
-  3271  00178E  EFCB  F00B         	goto	u951
-  3272  001792  EFCD  F00B         	goto	u950
-  3273  001796                     u951:
-  3274  001796  EFD8  F00B         	goto	l2479
-  3275  00179A                     u950:
+  3271  00178E  EFCB  F00B         	goto	u941
+  3272  001792  EFCD  F00B         	goto	u940
+  3273  001796                     u941:
+  3274  001796  EFD8  F00B         	goto	l2467
+  3275  00179A                     u940:
   3276  00179A  281A               	incf	nrf24_write_register@mnemonic_addr^0,w,c
   3277  00179C  B4D8               	btfsc	status,2,c
-  3278  00179E  EFD3  F00B         	goto	u961
-  3279  0017A2  EFD5  F00B         	goto	u960
-  3280  0017A6                     u961:
-  3281  0017A6  EFD8  F00B         	goto	l2479
-  3282  0017AA                     u960:
+  3278  00179E  EFD3  F00B         	goto	u951
+  3279  0017A2  EFD5  F00B         	goto	u950
+  3280  0017A6                     u951:
+  3281  0017A6  EFD8  F00B         	goto	l2467
+  3282  0017AA                     u950:
   3283  0017AA                     
   3284                           ;../lib/nrf24_lib.c: 18: ;../lib/nrf24_lib.c: 20:             SPI1_ExchangeByte(value);
   3285  0017AA  5019               	movf	nrf24_write_register@value^0,w,c
   3286  0017AC  ECAC  F00E         	call	_SPI1_ExchangeByte
-  3287  0017B0                     l2479:
+  3287  0017B0                     l2467:
   3288                           
   3289                           ;../lib/nrf24_lib.c: 23:     _delay((unsigned long)((10)*(1000000/4000000.0)));
   3290  0017B0  D000               	nop2		;2 cycle nop
@@ -3490,9 +3493,9 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3323 ;; This function calls:
   3324 ;;		_SPI1_ExchangeByte
   3325 ;; This function is called by:
-  3326 ;;		_InitRadio
-  3327 ;;		_ReloadConfig
-  3328 ;;		_nrf24_send_rf_data
+  3326 ;;		_nrf24_send_rf_data
+  3327 ;;		_InitRadio
+  3328 ;;		_ReloadConfig
   3329 ;; This function uses a non-reentrant model
   3330 ;;
   3331                           
@@ -3515,8 +3518,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3348                           ;../lib/nrf24_lib.c: 50:     for (i = 0; i < bytes; i++) {
   3349  001B76  0E00               	movlw	0
   3350  001B78  6E1D               	movwf	nrf24_write_buff@i^0,c
-  3351  001B7A  EFCA  F00D         	goto	l2459
-  3352  001B7E                     l2451:
+  3351  001B7A  EFCA  F00D         	goto	l2483
+  3352  001B7E                     l2475:
   3353                           
   3354                           ;../lib/nrf24_lib.c: 51:         SPI1_ExchangeByte(*buffer);
   3355  001B7E  C019  FFD9         	movff	nrf24_write_buff@buffer,fsr2l
@@ -3533,15 +3536,15 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3366  001B92                     
   3367                           ;../lib/nrf24_lib.c: 54:     }
   3368  001B92  2A1D               	incf	nrf24_write_buff@i^0,f,c
-  3369  001B94                     l2459:
+  3369  001B94                     l2483:
   3370  001B94  501B               	movf	nrf24_write_buff@bytes^0,w,c
   3371  001B96  5C1D               	subwf	nrf24_write_buff@i^0,w,c
   3372  001B98  A0D8               	btfss	status,0,c
-  3373  001B9A  EFD1  F00D         	goto	u911
-  3374  001B9E  EFD3  F00D         	goto	u910
-  3375  001BA2                     u911:
-  3376  001BA2  EFBF  F00D         	goto	l2451
-  3377  001BA6                     u910:
+  3373  001B9A  EFD1  F00D         	goto	u961
+  3374  001B9E  EFD3  F00D         	goto	u960
+  3375  001BA2                     u961:
+  3376  001BA2  EFBF  F00D         	goto	l2475
+  3377  001BA6                     u960:
   3378  001BA6  828B               	bsf	139,1,c	;volatile
   3379  001BA8  0012               	return		;funcret
   3380  001BAA                     __end_of_nrf24_write_buff:
@@ -3675,8 +3678,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3497  0019EC  C01B  F022         	movff	memcpy@s1+1,memcpy@s+1
   3498  0019F0  C018  F01F         	movff	memcpy@d1,memcpy@d
   3499  0019F4  C019  F020         	movff	memcpy@d1+1,memcpy@d+1
-  3500  0019F8  EF0E  F00D         	goto	l2445
-  3501  0019FC                     l2437:
+  3500  0019F8  EF0E  F00D         	goto	l2447
+  3501  0019FC                     l2439:
   3502  0019FC  C021  FFD9         	movff	memcpy@s,fsr2l
   3503  001A00  C022  FFDA         	movff	memcpy@s+1,fsr2h
   3504  001A04  50DF               	movf	indf2,w,c
@@ -3688,7 +3691,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3510  001A14  C01E  FFDF         	movff	memcpy@tmp,indf2
   3511  001A18  4A1F               	infsnz	memcpy@d^0,f,c
   3512  001A1A  2A20               	incf	(memcpy@d+1)^0,f,c
-  3513  001A1C                     l2445:
+  3513  001A1C                     l2447:
   3514  001A1C  061C               	decf	memcpy@n^0,f,c
   3515  001A1E  A0D8               	btfss	status,0,c
   3516  001A20  061D               	decf	(memcpy@n+1)^0,f,c
@@ -3699,7 +3702,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3521  001A2A  EF19  F00D         	goto	u901
   3522  001A2E  EF1B  F00D         	goto	u900
   3523  001A32                     u901:
-  3524  001A32  EFFE  F00C         	goto	l2437
+  3524  001A32  EFFE  F00C         	goto	l2439
   3525  001A36                     u900:
   3526  001A36  0012               	return		;funcret
   3527  001A38                     __end_of_memcpy:
@@ -3985,7 +3988,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3784                           
   3785 ;; *************** function _TimerInterruptHandler *****************
   3786 ;; Defined at:
-  3787 ;;		line 137 in file "handler.c"
+  3787 ;;		line 134 in file "../lib/handler_lib.c"
   3788 ;; Parameters:    Size  Location     Type
   3789 ;;		None
   3790 ;; Auto vars:     Size  Location     Type
@@ -4026,7 +4029,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3820  001B20                     _TimerInterruptHandler:
   3821                           	callstack 19
   3822  001B20                     
-  3823                           ;handler.c: 138:     Ticks++;
+  3823                           ;../lib/handler_lib.c: 135:     Ticks++;
   3824  001B20  0E01               	movlw	1
   3825  001B22  263D               	addwf	_Ticks^0,f,c
   3826  001B24  0E00               	movlw	0
@@ -4034,7 +4037,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3828  001B28  223F               	addwfc	(_Ticks+2)^0,f,c
   3829  001B2A  2240               	addwfc	(_Ticks+3)^0,f,c
   3830  001B2C                     
-  3831                           ;handler.c: 141:     if (Ticks % PingInterval != 0) {
+  3831                           ;../lib/handler_lib.c: 138:     if (Ticks % PingInterval != 0) {
   3832  001B2C  C03D  F001         	movff	_Ticks,___llmod@dividend
   3833  001B30  C03E  F002         	movff	_Ticks+1,___llmod@dividend+1
   3834  001B34  C03F  F003         	movff	_Ticks+2,___llmod@dividend+2
@@ -4053,14 +4056,14 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3847  001B54  EFAE  F00D         	goto	i2u72_41
   3848  001B58  EFB0  F00D         	goto	i2u72_40
   3849  001B5C                     i2u72_41:
-  3850  001B5C  EFB2  F00D         	goto	i2l2229
+  3850  001B5C  EFB2  F00D         	goto	i2l2231
   3851  001B60                     i2u72_40:
-  3852  001B60  EFB4  F00D         	goto	i2l313
-  3853  001B64                     i2l2229:
+  3852  001B60  EFB4  F00D         	goto	i2l436
+  3853  001B64                     i2l2231:
   3854                           
-  3855                           ;handler.c: 144:     SendPing();
+  3855                           ;../lib/handler_lib.c: 141:     SendPing();
   3856  001B64  ECF2  F00D         	call	_SendPing	;wreg free
-  3857  001B68                     i2l313:
+  3857  001B68                     i2l436:
   3858  001B68  0012               	return		;funcret
   3859  001B6A                     __end_of_TimerInterruptHandler:
   3860                           	callstack 0
@@ -4113,26 +4116,26 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3902  0016B8  EF60  F00B         	goto	i2u66_41
   3903  0016BC  EF62  F00B         	goto	i2u66_40
   3904  0016C0                     i2u66_41:
-  3905  0016C0  EF92  F00B         	goto	i2l890
+  3905  0016C0  EF92  F00B         	goto	i2l892
   3906  0016C4                     i2u66_40:
   3907  0016C4  0E01               	movlw	1
   3908  0016C6  6E09               	movwf	___llmod@counter^0,c
-  3909  0016C8  EF6C  F00B         	goto	i2l2097
-  3910  0016CC                     i2l2095:
+  3909  0016C8  EF6C  F00B         	goto	i2l2099
+  3910  0016CC                     i2l2097:
   3911  0016CC  90D8               	bcf	status,0,c
   3912  0016CE  3605               	rlcf	___llmod@divisor^0,f,c
   3913  0016D0  3606               	rlcf	(___llmod@divisor+1)^0,f,c
   3914  0016D2  3607               	rlcf	(___llmod@divisor+2)^0,f,c
   3915  0016D4  3608               	rlcf	(___llmod@divisor+3)^0,f,c
   3916  0016D6  2A09               	incf	___llmod@counter^0,f,c
-  3917  0016D8                     i2l2097:
+  3917  0016D8                     i2l2099:
   3918  0016D8  AE08               	btfss	(___llmod@divisor+3)^0,7,c
   3919  0016DA  EF71  F00B         	goto	i2u67_41
   3920  0016DE  EF73  F00B         	goto	i2u67_40
   3921  0016E2                     i2u67_41:
-  3922  0016E2  EF66  F00B         	goto	i2l2095
+  3922  0016E2  EF66  F00B         	goto	i2l2097
   3923  0016E6                     i2u67_40:
-  3924  0016E6                     i2l2099:
+  3924  0016E6                     i2l2101:
   3925  0016E6  5005               	movf	___llmod@divisor^0,w,c
   3926  0016E8  5C01               	subwf	___llmod@dividend^0,w,c
   3927  0016EA  5006               	movf	(___llmod@divisor+1)^0,w,c
@@ -4145,7 +4148,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3934  0016F8  EF80  F00B         	goto	i2u68_41
   3935  0016FC  EF82  F00B         	goto	i2u68_40
   3936  001700                     i2u68_41:
-  3937  001700  EF8A  F00B         	goto	i2l2103
+  3937  001700  EF8A  F00B         	goto	i2l2105
   3938  001704                     i2u68_40:
   3939  001704  5005               	movf	___llmod@divisor^0,w,c
   3940  001706  5E01               	subwf	___llmod@dividend^0,f,c
@@ -4155,15 +4158,15 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3944  00170E  5A03               	subwfb	(___llmod@dividend+2)^0,f,c
   3945  001710  5008               	movf	(___llmod@divisor+3)^0,w,c
   3946  001712  5A04               	subwfb	(___llmod@dividend+3)^0,f,c
-  3947  001714                     i2l2103:
+  3947  001714                     i2l2105:
   3948  001714  90D8               	bcf	status,0,c
   3949  001716  3208               	rrcf	(___llmod@divisor+3)^0,f,c
   3950  001718  3207               	rrcf	(___llmod@divisor+2)^0,f,c
   3951  00171A  3206               	rrcf	(___llmod@divisor+1)^0,f,c
   3952  00171C  3205               	rrcf	___llmod@divisor^0,f,c
   3953  00171E  2E09               	decfsz	___llmod@counter^0,f,c
-  3954  001720  EF73  F00B         	goto	i2l2099
-  3955  001724                     i2l890:
+  3954  001720  EF73  F00B         	goto	i2l2101
+  3955  001724                     i2l892:
   3956  001724  C001  F001         	movff	___llmod@dividend,?___llmod
   3957  001728  C002  F002         	movff	___llmod@dividend+1,?___llmod+1
   3958  00172C  C003  F003         	movff	___llmod@dividend+2,?___llmod+2
@@ -4174,7 +4177,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3963                           
   3964 ;; *************** function _SendPing *****************
   3965 ;; Defined at:
-  3966 ;;		line 242 in file "handler.c"
+  3966 ;;		line 216 in file "../lib/handler_lib.c"
   3967 ;; Parameters:    Size  Location     Type
   3968 ;;		None
   3969 ;; Auto vars:     Size  Location     Type
@@ -4214,13 +4217,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   3998  001BE4                     _SendPing:
   3999                           	callstack 19
   4000  001BE4                     
-  4001                           ;handler.c: 243:     bufferTX[0] = 0x02;
+  4001                           ;../lib/handler_lib.c: 217:     bufferTX[0] = 0x02;
   4002  001BE4  0E02               	movlw	2
   4003  001BE6  0100               	movlb	0	; () banked
   4004  001BE8  6F80               	movwf	_bufferTX& (0+255),b
   4005  001BEA                     
   4006                           ; BSR set to: 0
-  4007                           ;handler.c: 244:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+  4007                           ;../lib/handler_lib.c: 218:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
   4008  001BEA  0E80               	movlw	low _bufferTX
   4009  001BEC  6E01               	movwf	i2SuperMemCpy@dest^0,c
   4010  001BEE  0E00               	movlw	high _bufferTX
@@ -4237,8 +4240,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4021  001C04  6E07               	movwf	i2SuperMemCpy@sz^0,c
   4022  001C06  ECCB  F00C         	call	i2_SuperMemCpy	;wreg free
   4023  001C0A                     
-  4024                           ;handler.c: 245:     return QueueTXPacket(bufferTX, (3 + 1));;	Return value of _SendPing
-      +                           is never used
+  4024                           ;../lib/handler_lib.c: 219:     return QueueTXPacket(bufferTX, (3 + 1));;	Return value o
+      +                          f _SendPing is never used
   4025  001C0A  0E80               	movlw	low _bufferTX
   4026  001C0C  6E0C               	movwf	i2QueueTXPacket@buffer^0,c
   4027  001C0E  0E00               	movlw	high _bufferTX
@@ -4252,13 +4255,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4035                           
   4036 ;; *************** function i2_SuperMemCpy *****************
   4037 ;; Defined at:
-  4038 ;;		line 248 in file "handler.c"
+  4038 ;;		line 222 in file "../lib/handler_lib.c"
   4039 ;; Parameters:    Size  Location     Type
   4040 ;;  dest            2    0[COMRAM] PTR unsigned char 
   4041 ;;		 -> bufferTX(32), ProcessAckPayload@data(32), config(17), 
   4042 ;;  destStart       1    2[COMRAM] unsigned char 
   4043 ;;  src             2    3[COMRAM] PTR unsigned char 
-  4044 ;;		 -> ProcessActionRequest@tmpHumidity(2), bufferRX(32), BoardAddress(3), 
+  4044 ;;		 -> bufferRX(32), BoardAddress(3), ProcessActionRequest@tmpHumidity(2), 
   4045 ;;  srcStart        1    5[COMRAM] unsigned char 
   4046 ;;  sz              1    6[COMRAM] unsigned char 
   4047 ;; Auto vars:     Size  Location     Type
@@ -4296,13 +4299,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4074  001996                     i2_SuperMemCpy:
   4075                           	callstack 20
   4076  001996                     
-  4077                           ;handler.c: 249:     for (uint8_t i = 0; i < sz; i++) {
+  4077                           ;../lib/handler_lib.c: 223:     for (uint8_t i = 0; i < sz; i++) {
   4078  001996  0E00               	movlw	0
   4079  001998  6E0C               	movwf	i2SuperMemCpy@i^0,c
-  4080  00199A  EFEA  F00C         	goto	i2l2009
-  4081  00199E                     i2l2005:
+  4080  00199A  EFEA  F00C         	goto	i2l2011
+  4081  00199E                     i2l2007:
   4082                           
-  4083                           ;handler.c: 250:         dest[i + destStart] = src[i + srcStart];
+  4083                           ;../lib/handler_lib.c: 224:         dest[i + destStart] = src[i + srcStart];
   4084  00199E  500C               	movf	i2SuperMemCpy@i^0,w,c
   4085  0019A0  2404               	addwf	i2SuperMemCpy@src^0,w,c
   4086  0019A2  6E08               	movwf	??i2_SuperMemCpy^0,c
@@ -4329,16 +4332,16 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4107  0019CC  6EE2               	movwf	fsr1h,c
   4108  0019CE  CFDF FFE7          	movff	indf2,indf1
   4109  0019D2                     
-  4110                           ;handler.c: 251:     }
+  4110                           ;../lib/handler_lib.c: 225:     }
   4111  0019D2  2A0C               	incf	i2SuperMemCpy@i^0,f,c
-  4112  0019D4                     i2l2009:
+  4112  0019D4                     i2l2011:
   4113  0019D4  5007               	movf	i2SuperMemCpy@sz^0,w,c
   4114  0019D6  5C0C               	subwf	i2SuperMemCpy@i^0,w,c
   4115  0019D8  A0D8               	btfss	status,0,c
   4116  0019DA  EFF1  F00C         	goto	i2u62_41
   4117  0019DE  EFF3  F00C         	goto	i2u62_40
   4118  0019E2                     i2u62_41:
-  4119  0019E2  EFCF  F00C         	goto	i2l2005
+  4119  0019E2  EFCF  F00C         	goto	i2l2007
   4120  0019E6                     i2u62_40:
   4121  0019E6  0012               	return		;funcret
   4122  0019E8                     __end_ofi2_SuperMemCpy:
@@ -4346,7 +4349,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4124                           
   4125 ;; *************** function i2_QueueTXPacket *****************
   4126 ;; Defined at:
-  4127 ;;		line 70 in file "handler.c"
+  4127 ;;		line 67 in file "../lib/handler_lib.c"
   4128 ;; Parameters:    Size  Location     Type
   4129 ;;  buffer          2   11[COMRAM] PTR unsigned char 
   4130 ;;		 -> bufferTX(32), 
@@ -4387,12 +4390,13 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4160  0014EE                     i2_QueueTXPacket:
   4161                           	callstack 19
   4162  0014EE                     
-  4163                           ;handler.c: 71:     uint8_t i;;handler.c: 72:     for (i = 0; i < 8; i++) {
+  4163                           ;../lib/handler_lib.c: 68:     uint8_t i;;../lib/handler_lib.c: 69:     for (i = 0; i < 
+      +                          8; i++) {
   4164  0014EE  0E00               	movlw	0
   4165  0014F0  6E0F               	movwf	i2QueueTXPacket@i^0,c
-  4166  0014F2                     i2l1981:
+  4166  0014F2                     i2l1983:
   4167                           
-  4168                           ;handler.c: 73:         if (packetsTX[i].free) {
+  4168                           ;../lib/handler_lib.c: 70:         if (packetsTX[i].free) {
   4169  0014F2  500F               	movf	i2QueueTXPacket@i^0,w,c
   4170  0014F4  0D22               	mullw	34
   4171  0014F6  0EFB               	movlw	low (_packetsTX+32)
@@ -4406,38 +4410,38 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4179  001506  EF87  F00A         	goto	i2u59_41
   4180  00150A  EF89  F00A         	goto	i2u59_40
   4181  00150E                     i2u59_41:
-  4182  00150E  EF8B  F00A         	goto	i2l1985
+  4182  00150E  EF8B  F00A         	goto	i2l1987
   4183  001512                     i2u59_40:
-  4184  001512  EF94  F00A         	goto	i2l1989
-  4185  001516                     i2l1985:
+  4184  001512  EF94  F00A         	goto	i2l1991
+  4185  001516                     i2l1987:
   4186                           
-  4187                           ;handler.c: 76:     }
+  4187                           ;../lib/handler_lib.c: 73:     }
   4188  001516  2A0F               	incf	i2QueueTXPacket@i^0,f,c
   4189  001518  0E07               	movlw	7
   4190  00151A  640F               	cpfsgt	i2QueueTXPacket@i^0,c
   4191  00151C  EF92  F00A         	goto	i2u60_41
   4192  001520  EF94  F00A         	goto	i2u60_40
   4193  001524                     i2u60_41:
-  4194  001524  EF79  F00A         	goto	i2l1981
+  4194  001524  EF79  F00A         	goto	i2l1983
   4195  001528                     i2u60_40:
-  4196  001528                     i2l1989:
+  4196  001528                     i2l1991:
   4197                           
-  4198                           ;handler.c: 77:     if (i == 8) {
+  4198                           ;../lib/handler_lib.c: 74:     if (i == 8) {
   4199  001528  0E08               	movlw	8
   4200  00152A  180F               	xorwf	i2QueueTXPacket@i^0,w,c
   4201  00152C  A4D8               	btfss	status,2,c
   4202  00152E  EF9B  F00A         	goto	i2u61_41
   4203  001532  EF9D  F00A         	goto	i2u61_40
   4204  001536                     i2u61_41:
-  4205  001536  EFA0  F00A         	goto	i2l1995
+  4205  001536  EFA0  F00A         	goto	i2l1997
   4206  00153A                     i2u61_40:
   4207  00153A                     
-  4208                           ;handler.c: 78:         return 0;
+  4208                           ;../lib/handler_lib.c: 75:         return 0;
   4209  00153A  0E00               	movlw	0
-  4210  00153C  EFC6  F00A         	goto	i2l293
-  4211  001540                     i2l1995:
+  4210  00153C  EFC6  F00A         	goto	i2l416
+  4211  001540                     i2l1997:
   4212                           
-  4213                           ;handler.c: 80:     packetsTX[i].free = 0;
+  4213                           ;../lib/handler_lib.c: 77:     packetsTX[i].free = 0;
   4214  001540  500F               	movf	i2QueueTXPacket@i^0,w,c
   4215  001542  0D22               	mullw	34
   4216  001544  0EFB               	movlw	low (_packetsTX+32)
@@ -4449,7 +4453,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4222  001550  0E00               	movlw	0
   4223  001552  6EDF               	movwf	indf2,c
   4224                           
-  4225                           ;handler.c: 81:     packetsTX[i].size = sz;
+  4225                           ;../lib/handler_lib.c: 78:     packetsTX[i].size = sz;
   4226  001554  500F               	movf	i2QueueTXPacket@i^0,w,c
   4227  001556  0D22               	mullw	34
   4228  001558  0EFC               	movlw	low (_packetsTX+33)
@@ -4460,7 +4464,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4233  001562  6EDA               	movwf	fsr2h,c
   4234  001564  C00E  FFDF         	movff	i2QueueTXPacket@sz,indf2
   4235  001568                     
-  4236                           ;handler.c: 82:     memcpy(packetsTX[i].packet, buffer, sz);
+  4236                           ;../lib/handler_lib.c: 79:     memcpy(packetsTX[i].packet, buffer, sz);
   4237  001568  500F               	movf	i2QueueTXPacket@i^0,w,c
   4238  00156A  0D22               	mullw	34
   4239  00156C  0EDB               	movlw	low _packetsTX
@@ -4475,9 +4479,9 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4248  001584  6A06               	clrf	(i2memcpy@n+1)^0,c
   4249  001586  EC1C  F00D         	call	i2_memcpy	;wreg free
   4250  00158A                     
-  4251                           ;handler.c: 83:     return 1;
+  4251                           ;../lib/handler_lib.c: 80:     return 1;
   4252  00158A  0E01               	movlw	1
-  4253  00158C                     i2l293:
+  4253  00158C                     i2l416:
   4254  00158C  0012               	return		;funcret
   4255  00158E                     __end_ofi2_QueueTXPacket:
   4256                           	callstack 0
@@ -4533,8 +4537,8 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4301  001A3C  C004  F00A         	movff	i2memcpy@s1+1,i2memcpy@s+1
   4302  001A40  C001  F007         	movff	i2memcpy@d1,i2memcpy@d
   4303  001A44  C002  F008         	movff	i2memcpy@d1+1,i2memcpy@d+1
-  4304  001A48  EF36  F00D         	goto	i2l1915
-  4305  001A4C                     i2l1907:
+  4304  001A48  EF36  F00D         	goto	i2l1917
+  4305  001A4C                     i2l1909:
   4306  001A4C  C009  FFD9         	movff	i2memcpy@s,fsr2l
   4307  001A50  C00A  FFDA         	movff	i2memcpy@s+1,fsr2h
   4308  001A54  50DF               	movf	indf2,w,c
@@ -4546,7 +4550,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4314  001A64  C00B  FFDF         	movff	i2memcpy@tmp,indf2
   4315  001A68  4A07               	infsnz	i2memcpy@d^0,f,c
   4316  001A6A  2A08               	incf	(i2memcpy@d+1)^0,f,c
-  4317  001A6C                     i2l1915:
+  4317  001A6C                     i2l1917:
   4318  001A6C  0605               	decf	i2memcpy@n^0,f,c
   4319  001A6E  A0D8               	btfss	status,0,c
   4320  001A70  0606               	decf	(i2memcpy@n+1)^0,f,c
@@ -4557,7 +4561,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4325  001A7A  EF41  F00D         	goto	i2u58_41
   4326  001A7E  EF43  F00D         	goto	i2u58_40
   4327  001A82                     i2u58_41:
-  4328  001A82  EF26  F00D         	goto	i2l1907
+  4328  001A82  EF26  F00D         	goto	i2l1909
   4329  001A86                     i2u58_40:
   4330  001A86  0012               	return		;funcret
   4331  001A88                     __end_ofi2_memcpy:
@@ -4610,7 +4614,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4372  001C74  EF3E  F00E         	goto	i2u69_41
   4373  001C78  EF40  F00E         	goto	i2u69_40
   4374  001C7C                     i2u69_41:
-  4375  001C7C  EF48  F00E         	goto	i2l2129
+  4375  001C7C  EF48  F00E         	goto	i2l2131
   4376  001C80                     i2u69_40:
   4377  001C80                     
   4378                           ;mcc_generated_files/tmr1.c: 124:     {;mcc_generated_files/tmr1.c: 126:         T1CONbi
@@ -4629,7 +4633,7 @@ Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1
   4390                           
   4391                           ;mcc_generated_files/tmr1.c: 134:     }
   4392  001C8C  EF4C  F00E         	goto	i2l156
-  4393  001C90                     i2l2129:
+  4393  001C90                     i2l2131:
   4394                           
   4395                           ;mcc_generated_files/tmr1.c: 136:     {;mcc_generated_files/tmr1.c: 138:         TMR1H =
       +                           (uint8_t)(timerVal >> 8);
@@ -4925,6 +4929,27 @@ Pointer List with Targets:
 		 -> bufferTX(BANK0[32]), config.Address(BANK0[3]), BoardAddress(COMRAM[3]), config(BANK0[17]), 
 		 -> DEFAULT_PIPE_ADDR(COMRAM[6]), 
 
+    SuperMemCpy@src	PTR unsigned char  size(2) Largest target is 32
+		 -> bufferRX(BANK0[32]), BoardAddress(COMRAM[3]), ProcessActionRequest@tmpHumidity(COMRAM[2]), 
+
+    SuperMemCpy@dest	PTR unsigned char  size(2) Largest target is 32
+		 -> bufferTX(BANK0[32]), ProcessAckPayload@data(BANK0[32]), config(BANK0[17]), 
+
+    SendData@data	PTR unsigned char  size(2) Largest target is 2
+		 -> ProcessActionRequest@tmpHumidity(COMRAM[2]), 
+
+    ProcessAckPayload@buffer	PTR unsigned char  size(2) Largest target is 32
+		 -> bufferRX(BANK0[32]), 
+
+    VerifyBoardAddress@bufferRX	PTR unsigned char  size(2) Largest target is 32
+		 -> bufferRX(BANK0[32]), 
+
+    QueueTXPacket@buffer	PTR unsigned char  size(2) Largest target is 32
+		 -> bufferTX(BANK0[32]), 
+
+    sp__memcpy	PTR void  size(2) Largest target is 272
+		 -> packetsTX(BIGRAM[272]), BoardAddress(COMRAM[3]), config(BANK0[17]), 
+
     GetMockTempHumidity@temp	PTR unsigned char  size(2) Largest target is 2
 		 -> ProcessActionRequest@tmpHumidity(COMRAM[2]), 
 
@@ -4940,29 +4965,8 @@ Pointer List with Targets:
     nrf24_write_buff@buffer	PTR unsigned char  size(2) Largest target is 272
 		 -> packetsTX(BIGRAM[272]), config(BANK0[17]), DEFAULT_PIPE_ADDR(COMRAM[6]), 
 
-    SuperMemCpy@src	PTR unsigned char  size(2) Largest target is 32
-		 -> ProcessActionRequest@tmpHumidity(COMRAM[2]), bufferRX(BANK0[32]), BoardAddress(COMRAM[3]), 
-
-    SuperMemCpy@dest	PTR unsigned char  size(2) Largest target is 32
-		 -> bufferTX(BANK0[32]), ProcessAckPayload@data(BANK0[32]), config(BANK0[17]), 
-
-    SendData@data	PTR unsigned char  size(2) Largest target is 2
-		 -> ProcessActionRequest@tmpHumidity(COMRAM[2]), 
-
     ProcessActionRequest@data	PTR unsigned char  size(2) Largest target is 32
 		 -> ProcessAckPayload@data(BANK0[32]), 
-
-    ProcessAckPayload@buffer	PTR unsigned char  size(2) Largest target is 32
-		 -> bufferRX(BANK0[32]), 
-
-    VerifyBoardAddress@bufferRX	PTR unsigned char  size(2) Largest target is 32
-		 -> bufferRX(BANK0[32]), 
-
-    QueueTXPacket@buffer	PTR unsigned char  size(2) Largest target is 32
-		 -> bufferTX(BANK0[32]), 
-
-    sp__memcpy	PTR void  size(2) Largest target is 272
-		 -> packetsTX(BIGRAM[272]), BoardAddress(COMRAM[3]), config(BANK0[17]), 
 
     TMR1_SetInterruptHandler@InterruptHandler	PTR FTN()void  size(2) Largest target is 1
 		 -> TimerInterruptHandler(), TMR1_DefaultInterruptHandler(), 
@@ -5435,38 +5439,38 @@ CODE                 0      0       0       0        0.0%
 
 
 Microchip Technology PIC18 Macro Assembler V2.36 build 20220127204148 
-Symbol Table                                                                                   Sun Jul 17 20:16:11 2022
+Symbol Table                                                                                   Sun Jul 17 21:21:11 2022
 
                         _SPI1_ExchangeByte 1D58                                         l27 1C46  
                                        l51 1D98                                         l61 1D5E  
                                        l63 1D6C                                         l55 144C  
                                        l64 1D70                         ?_SPI1_ExchangeByte 0001  
                                       l110 1D86                                        l113 1DB6  
-                                      l300 113E                                        l302 10AA  
-                                      l142 1C70                                        l401 1B6C  
-                                      l411 1AD8                                        l172 1DCA  
-                                      l406 1BA6                                        l350 18EC  
-                                      l335 159C                                        l319 1886  
-                                      l408 1BA8                                        l344 1622  
-                                      l328 1270                                        l353 16AC  
-                                      l362 1994                                        l338 15B6  
-                                      l418 1B1E                                        l347 181E  
-                                      l443 1CE0                                        l436 1D00  
-                                      l188 1DCE                                        l293 14EC  
-                                      l429 1DA8                                        l446 1A88  
-                                      l286 139C                                        l391 1D56  
-                                      l384 17B4                                        l377 1738  
-                                      l394 1D02                                        l458 1AD4  
-                                      l467 1D3C                                        l387 1D40  
-                                      l398 1D1E                    ProcessAckPayload@buffer 00B1  
+                                      l300 1AD8                                        l142 1C70  
+                                      l242 159C                                        l251 1622  
+                                      l307 1B1E                                        l332 1CE0  
+                                      l172 1DCA                                        l245 15B6  
+                                      l325 1D00                                        l318 1DA8  
+                                      l335 1A88                                        l423 113E  
+                                      l416 14EC                                        l280 1D56  
+                                      l273 17B4                                        l425 10AA  
+                                      l409 139C                                        l290 1B6C  
+                                      l266 1738                                        l442 1886  
+                                      l451 1270                                        l283 1D02  
+                                      l347 1AD4                                        l356 1D3C  
+                                      l460 16AC                                        l276 1D40  
+                                      l188 1DCE                                        l454 181E  
+                                      l295 1BA6                                        l287 1D1E  
+                                      l297 1BA8                                        l457 18EC  
+                                      l469 1994                    ProcessAckPayload@buffer 00B1  
                                       u630 13AE                                        u631 13AA  
                                       u900 1A36                                        u901 1A32  
-                                      u910 1BA6                                        u911 1BA2  
-                                      u920 174A                                        u921 1746  
-                                      u930 1776                                        u931 1772  
-                                      u940 1788                                        u941 1784  
-                                      u950 179A                                        u951 1796  
-                                      u960 17AA                                        u961 17A6  
+                                      u910 174A                                        u911 1746  
+                                      u920 1776                                        u921 1772  
+                                      u930 1788                                        u931 1784  
+                                      u940 179A                                        u941 1796  
+                                      u950 17AA                                        u951 17A6  
+                                      u960 1BA6                                        u961 1BA2  
                                       u890 1D6C                                        u970 1472  
                                       u891 1D68                                        u971 146E  
                                       u980 1488                                        u981 1484  
@@ -5475,109 +5479,109 @@ Symbol Table                                                                    
                                       prod 000FF3                                        tosl 000FFD  
                                       wreg 000FE8                         _nrf24_read_rf_data 1CC0  
                            ?_nrf24_rf_init 0001                        VerifyBoardAddress@i 001E  
-                                     l2011 13A0                                       l2021 144A  
-                                     l2013 13AE                                       l2015 13EE  
-                                     l2111 1C5C                                       l2017 13F2  
-                                     l2025 1DC2                                       l2113 1C5E  
-                                     l1147 1A36                                       l2019 1416  
-                                     l2115 1C60                                       l2107 1C48  
-                                     l2141 1DA6                                       l2133 1D9A  
-                                     l2117 1C6C                                       l2109 1C54  
-                                     l2135 1DA0                                       l2231 1D72  
-                                     l2137 1DA2                                       l1441 1C44  
-                                     l2233 1D76                                       l2139 1DA4  
-                                     l1451 1DAA                                       l1443 1D88  
-                                     l2235 1D7A                                       l1437 1C1C  
-                                     l1445 1D94                                       l2237 1D7E  
-                                     l2503 14A0                                       l2511 1944  
-                                     l1439 1C2C                                       l1447 1D96  
-                                     l2239 1D82                                       l2441 1A0C  
-                                     l2433 1D5A                                       l2505 14C8  
-                                     l2513 194C                                       l2521 188E  
-                                     l2601 159E                                       l1449 1DCC  
-                                     l2443 1A18                                       l2435 19E8  
-                                     l2451 1B7E                                       l2507 14EA  
-                                     l2515 1980                                       l2531 18DC  
-                                     l2523 1894                                       l2603 15BC  
-                                     l2611 15F0                                       l2437 19FC  
-                                     l2445 1A1C                                       l2453 1B8C  
-                                     l2461 173A                                       l2541 17D8  
-                                     l2517 1982                                       l2525 18B4  
-                                     l2605 15C4                                       l2701 11FE  
-                                     l2621 1AE8                                       l2551 1D20  
-                                     l2439 1A08                                       l2455 1B90  
-                                     l2447 1B6E                                       l2471 1776  
-                                     l2463 174A                                       l2543 17EA  
-                                     l2535 17B6                                       l2527 18B8  
-                                     l2519 188A                                       l2607 15D0  
-                                     l2703 121E                                       l2631 1B1C  
-                                     l2623 1AF8                                       l2553 1D2C  
-                                     l2457 1B92                                       l2449 1B76  
-                                     l2481 17B2                                       l2473 1788  
-                                     l2465 1754                                       l2545 17F4  
-                                     l2537 17BC                                       l2561 1630  
-                                     l2529 18CA                                       l2609 15E6  
-                                     l2705 1234                                       l2641 1D42  
-                                     l2625 1AFC                                       l2617 1ADA  
-                                     l2633 1CE2                                       l2801 10D2  
-                                     l2721 12A4                                       l2713 1272  
-                                     l2459 1B94                                       l2475 179A  
-                                     l2467 175E                                       l2547 17FE  
-                                     l2539 17C6                                       l2483 144E  
-                                     l2571 1698                                       l2563 1650  
-                                     l2707 123E                                       l2651 1D04  
-                                     l2643 1D4A                                       l2627 1AFE  
-                                     l2619 1AE0                                       l2635 1CF4  
-                                     l2803 10E6                                       l2731 12D6  
-                                     l2723 12AE                                       l2715 1276  
-                                     l2477 17AA                                       l2469 1764  
-                                     l2549 181A                                       l2493 1476  
-                                     l2573 169C                                       l2565 1654  
-                                     l2557 1626                                       l2653 1D12  
-                                     l2645 1D52                                       l2581 1AA2  
-                                     l2629 1B10                                       l2661 1CC0  
-                                     l2637 1CF6                                       l2813 112C  
-                                     l2805 10F4                                       l2741 12FC  
-                                     l2733 12E0                                       l2725 12B8  
-                                     l2717 1288                                       l2479 17B0  
-                                     l2495 1478                                       l2567 1666  
-                                     l2559 162A                                       l2655 1D1A  
-                                     l2647 1D54                                       l2591 1ABC  
-                                     l2583 1AA4                                       l2663 1CD2  
-                                     l2639 1CFE                                       l2807 10FC  
-                                     l2751 1358                                       l2743 1300  
-                                     l2735 12EA                                       l2727 12C2  
-                                     l2719 129A                                       l2831 1C9A  
-                                     l2497 1488                                       l2489 1452  
-                                     l2569 1678                                       l2681 1868  
-                                     l2673 1828                                       l2657 1D1C  
-                                     l2593 1ABE                                       l2585 1AA6  
-                                     l2577 1A8A                                       l2665 1CDC  
-                                     l2809 110C                                       l2761 138A  
-                                     l2753 135E                                       l2745 1304  
-                                     l2737 12F4                                       l2729 12CC  
-                                     l2841 1CB6                                       l2833 1C9E  
-                                     l2499 149A                                       l2691 1162  
-                                     l2683 1884                                       l2675 185E  
-                                     l2667 1820                                       l2595 1AC4  
-                                     l2587 1AAC                                       l2579 1A94  
-                                     l2771 100C                                       l2763 138C  
-                                     l2747 1320                                       l2739 12F6  
-                                     l2835 1CA0                                       l2693 1184  
-                                     l2597 1AD2                                       l2589 1ABA  
-                                     l2765 1006                                       l2749 133C  
-                                     l2837 1CAE                                       l2599 1590  
-                                     l2695 1198                                       l2687 1140  
-                                     l2679 1864                                       l2791 1098  
-                                     l2783 1058                                       l2775 1030  
-                                     l2759 1362                                       l2839 1CB2  
-                                     l2697 11A8                                       l2689 1152  
-                                     l2793 10B0                                       l2785 1080  
-                                     l2777 1032                                       l2699 11C8  
-                                     l2795 10BA                                       l2787 1080  
-                                     l2779 1042                                       l2797 10CA  
-                                     l2789 108A                                       l2887 1252  
-                                     l2889 1604                       SuperMemCpy@destStart 001A  
+                                     l2021 1416                                       l2013 13A0  
+                                     l2023 144A                                       l2015 13AE  
+                                     l2111 1C54                                       l2017 13EE  
+                                     l2113 1C5C                                       l2019 13F2  
+                                     l2027 1DC2                                       l2115 1C5E  
+                                     l1149 1A36                                       l2117 1C60  
+                                     l2109 1C48                                       l2119 1C6C  
+                                     l2161 1DA4                                       l1441 1C2C  
+                                     l2241 1D82                                       l2233 1D72  
+                                     l2163 1DA6                                       l2155 1D9A  
+                                     l1451 1DCC                                       l1443 1C44  
+                                     l2235 1D76                                       l2501 149A  
+                                     l2157 1DA0                                       l1453 1DAA  
+                                     l1445 1D88                                       l2237 1D7A  
+                                     l2159 1DA2                                       l1439 1C1C  
+                                     l1447 1D94                                       l2239 1D7E  
+                                     l2441 1A08                                       l2521 17B6  
+                                     l2505 14A0                                       l2513 1944  
+                                     l2601 1AE8                                       l1449 1D96  
+                                     l2443 1A0C                                       l2435 1D5A  
+                                     l2451 174A                                       l2531 17F4  
+                                     l2523 17BC                                       l2507 14C8  
+                                     l2515 194C                                       l2611 1B1C  
+                                     l2603 1AF8                                       l2445 1A18  
+                                     l2437 19E8                                       l2461 1788  
+                                     l2453 1754                                       l2533 17FE  
+                                     l2525 17C6                                       l2509 14EA  
+                                     l2517 1980                                       l2701 11C8  
+                                     l2621 1AA6                                       l2613 1A8A  
+                                     l2605 1AFC                                       l2439 19FC  
+                                     l2447 1A1C                                       l2471 1B6E  
+                                     l2463 179A                                       l2455 175E  
+                                     l2535 181A                                       l2527 17D8  
+                                     l2519 1982                                       l2551 1654  
+                                     l2543 1626                                       l2703 11FE  
+                                     l2631 1AC4                                       l2623 1AAC  
+                                     l2615 1A94                                       l2607 1AFE  
+                                     l2537 1D20                                       l2481 1B92  
+                                     l2473 1B76                                       l2465 17AA  
+                                     l2457 1764                                       l2449 173A  
+                                     l2529 17EA                                       l2553 1666  
+                                     l2545 162A                                       l2705 121E  
+                                     l2641 1D54                                       l2633 1AD2  
+                                     l2625 1ABA                                       l2617 1AA2  
+                                     l2609 1B10                                       l2721 129A  
+                                     l2539 1D2C                                       l2475 1B7E  
+                                     l2483 1B94                                       l2459 1776  
+                                     l2467 17B0                                       l2491 1452  
+                                     l2555 1678                                       l2547 1630  
+                                     l2571 18B8                                       l2563 188A  
+                                     l2707 1234                                       l2651 1D1C  
+                                     l2635 1D42                                       l2627 1ABC  
+                                     l2619 1AA4                                       l2811 110C  
+                                     l2803 10D2                                       l2731 12CC  
+                                     l2723 12A4                                       l2715 1272  
+                                     l2477 1B8C                                       l2469 17B2  
+                                     l2485 144E                                       l2557 1698  
+                                     l2549 1650                                       l2573 18CA  
+                                     l2565 188E                                       l2581 159E  
+                                     l2709 123E                                       l2645 1D04  
+                                     l2637 1D4A                                       l2629 1ABE  
+                                     l2661 1CFE                                       l2805 10E6  
+                                     l2741 12F6                                       l2733 12D6  
+                                     l2725 12AE                                       l2717 1276  
+                                     l2479 1B90                                       l2495 1476  
+                                     l2559 169C                                       l2575 18DC  
+                                     l2567 1894                                       l2583 15BC  
+                                     l2591 15F0                                       l2647 1D12  
+                                     l2639 1D52                                       l2663 1CC0  
+                                     l2655 1CE2                                       l2815 112C  
+                                     l2807 10F4                                       l2751 133C  
+                                     l2743 12FC                                       l2735 12E0  
+                                     l2727 12B8                                       l2719 1288  
+                                     l2497 1478                                       l2569 18B4  
+                                     l2585 15C4                                       l2681 1864  
+                                     l2649 1D1A                                       l2665 1CD2  
+                                     l2657 1CF4                                       l2809 10FC  
+                                     l2761 1362                                       l2753 1358  
+                                     l2745 1300                                       l2737 12EA  
+                                     l2729 12C2                                       l2841 1CB2  
+                                     l2833 1C9A                                       l2499 1488  
+                                     l2587 15D0                                       l2579 1590  
+                                     l2691 1152                                       l2683 1868  
+                                     l2675 1828                                       l2667 1CDC  
+                                     l2659 1CF6                                       l2763 138A  
+                                     l2755 135E                                       l2747 1304  
+                                     l2739 12F4                                       l2843 1CB6  
+                                     l2835 1C9E                                       l2589 15E6  
+                                     l2693 1162                                       l2685 1884  
+                                     l2677 185E                                       l2669 1820  
+                                     l2597 1ADA                                       l2781 1042  
+                                     l2773 100C                                       l2765 138C  
+                                     l2749 1320                                       l2837 1CA0  
+                                     l2695 1184                                       l2599 1AE0  
+                                     l2791 108A                                       l2767 1006  
+                                     l2839 1CAE                                       l2697 1198  
+                                     l2689 1140                                       l2793 1098  
+                                     l2785 1058                                       l2777 1030  
+                                     l2891 1604                                       l2699 11A8  
+                                     l2795 10B0                                       l2787 1080  
+                                     l2779 1032                                       l2797 10BA  
+                                     l2789 1080                                       l2799 10CA  
+                                     l2889 1252                       SuperMemCpy@destStart 001A  
                                      u1000 1994                                       u1001 1990  
                                      u1010 15B6                                       u1011 15B2  
                                      u1020 1B10                                       u1100 10A6  
@@ -5611,12 +5615,12 @@ Symbol Table                                                                    
             __end_of_OSCILLATOR_Initialize 1DB8                                      ?_main 0001  
                  ProcessActionRequest@data 002C           SPI1_Open@spi1UniqueConfiguration 0019  
             nrf24_write_buff@mnemonic_addr 001C                                      _T1CON 000FCD  
-                          __end_of___llmod 1736                                      i2l313 1B68  
-                                    i2l156 1C98                                      i2l175 1DD0  
-                                    i2l169 1BE2                                      i2l362 19E6  
-                                    i2l356 1C1A                                      i2l293 158C  
-                                    i2l197 0058                                      i2l890 1724  
-                                    i2l897 1734                                      _TMR1H 000FCF  
+                          __end_of___llmod 1736                                      i2l156 1C98  
+                                    i2l175 1DD0                                      i2l416 158C  
+                                    i2l169 1BE2                                      i2l436 1B68  
+                                    i2l197 0058                                      i2l463 1C1A  
+                                    i2l469 19E6                                      i2l892 1724  
+                                    i2l899 1734                                      _TMR1H 000FCF  
                                     _TMR1L 000FCE                                      _TRISA 000F92  
                                     _TRISB 000F93                                      _TRISC 000F94  
                                i2memcpy@d1 0001                                 i2memcpy@s1 0003  
@@ -5639,31 +5643,31 @@ Symbol Table                                                                    
                        _nrf24_send_rf_data 1CE2                                     _ANSELA 000F38  
                                    _ANSELB 000F39                          i2SuperMemCpy@dest 0001  
                                    _ANSELC 000F3A                                     _T1GCON 000FCC  
-                  TMR1_WriteTimer@timerVal 0001                                     i2l2003 1996  
-                                   i2l2005 199E                                     i2l2101 1704  
-                                   i2l2007 19D2                                     i2l2103 1714  
-                                   i2l2121 1C80                                     i2l2009 19D4  
-                                   i2l2105 171E                                     i2l2131 1C94  
-                                   i2l2123 1C82                                     i2l1147 1A86  
-                                   i2l2051 1BEA                                     i2l2125 1C86  
-                                   i2l2053 1C0A                                     i2l2127 1C8A  
-                                   i2l2119 1C72                                     i2l2223 1B20  
-                                   i2l2129 1C90                                     i2l2049 1BE4  
-                                   i2l2225 1B2C                                     i2l2241 1BAA  
-                                   i2l2091 16AE                                     i2l2243 1BAC  
-                                   i2l2093 16C4                                     i2l2229 1B64  
-                                   i2l2245 1BB8                                     i2l2095 16CC  
-                                   i2l2247 1BCA                                     i2l2097 16D8  
-                                   i2l2099 16E6                                     i2l2371 0038  
-                                   i2l2373 0046                                     i2l1911 1A5C  
-                                   i2l2375 0054                                     i2l1913 1A68  
-                                   i2l1905 1A38                                     i2l2369 002A  
-                                   i2l1907 1A4C                                     i2l1915 1A6C  
-                                   i2l1909 1A58                                     i2l1981 14F2  
-                                   i2l1991 153A                                     i2l1975 14EE  
-                                   i2l1985 1516                                     i2l1995 1540  
-                                   i2l1987 1518                                     i2l1997 1568  
-                                   i2l1989 1528                                     i2l1999 158A  
+                  TMR1_WriteTimer@timerVal 0001                                     i2l2001 158A  
+                                   i2l2011 19D4                                     i2l2005 1996  
+                                   i2l2101 16E6                                     i2l2007 199E  
+                                   i2l2103 1704                                     i2l2121 1C72  
+                                   i2l2009 19D2                                     i2l2105 1714  
+                                   i2l2123 1C80                                     i2l2131 1C90  
+                                   i2l2107 171E                                     i2l2133 1C94  
+                                   i2l2125 1C82                                     i2l1149 1A86  
+                                   i2l2127 1C86                                     i2l2231 1B64  
+                                   i2l2129 1C8A                                     i2l2225 1B20  
+                                   i2l2227 1B2C                                     i2l2243 1BAA  
+                                   i2l2085 1BE4                                     i2l2093 16AE  
+                                   i2l2245 1BAC                                     i2l2087 1BEA  
+                                   i2l2095 16C4                                     i2l2247 1BB8  
+                                   i2l2089 1C0A                                     i2l2097 16CC  
+                                   i2l2249 1BCA                                     i2l2099 16D8  
+                                   i2l2371 002A                                     i2l2373 0038  
+                                   i2l1911 1A58                                     i2l2375 0046  
+                                   i2l1913 1A5C                                     i2l2377 0054  
+                                   i2l1915 1A68                                     i2l1907 1A38  
+                                   i2l1909 1A4C                                     i2l1917 1A6C  
+                                   i2l1991 1528                                     i2l1983 14F2  
+                                   i2l1993 153A                                     i2l1977 14EE  
+                                   i2l1987 1516                                     i2l1997 1540  
+                                   i2l1989 1518                                     i2l1999 1568  
                            ?i2_SuperMemCpy 0001                                     _OSCCON 000FD3  
                         i2QueueTXPacket@sz 000E                               SuperMemCpy@i 0023  
                       ?_nrf24_send_rf_data 001E                          __end_of_SPI1_Open 144E  
@@ -5777,7 +5781,7 @@ __end_of_nrf24_read_dynamic_payload_length 1D20        ??_nrf24_read_dynamic_pay
                                  _RCONbits 000FD0                 __end_of_nrf24_read_rf_data 1CE2  
                                  _SSP1CON1 000FC6                                   _SSP1CON2 000FC5  
                                  _TMR1_ISR 1BAA                                   _SSP1STAT 000FC7  
-                ProcessActionRequest@F6391 0041                           _HandlePacketLoop 1006  
+                ProcessActionRequest@F6201 0041                           _HandlePacketLoop 1006  
                      nrf24_read_buff@bytes 001B                          ??_TMR1_Initialize 001A  
                            SuperMemCpy@src 001B                             QueueTXPacket@i 0026  
                     _TimerInterruptHandler 1B20                      ProcessAckPayload@data 00B6  

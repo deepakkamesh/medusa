@@ -9447,11 +9447,91 @@ void SYSTEM_Initialize(void);
 void OSCILLATOR_Initialize(void);
 # 5 "main.c" 2
 
-# 1 "./handler.h" 1
-# 75 "./handler.h"
+# 1 "./../lib/nrf24_lib.h" 1
+
+
+
+
+
+
+
+
+# 1 "./../lib/master_exports.h.h" 1
+
+
+# 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
+# 3 "./../lib/master_exports.h.h" 2
+# 9 "./../lib/nrf24_lib.h" 2
+
+
+typedef enum {
+    RX_MODE = 1,
+    TX_MODE = 2
+}NRF24_OPERATION_MODE;
+# 72 "./../lib/nrf24_lib.h"
+void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
+# 82 "./../lib/nrf24_lib.h"
+uint8_t nrf24_read_register(uint8_t mnemonic_addr);
+# 92 "./../lib/nrf24_lib.h"
+void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
+# 102 "./../lib/nrf24_lib.h"
+void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
+
+
+
+
+
+
+void nrf24_rf_init(void);
+
+
+
+
+
+
+
+void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
+# 126 "./../lib/nrf24_lib.h"
+void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
+# 135 "./../lib/nrf24_lib.h"
+uint8_t nrf24_is_rf_data_available(void);
+# 144 "./../lib/nrf24_lib.h"
+void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
+# 154 "./../lib/nrf24_lib.h"
+void nrf24_set_channel_frq(uint8_t rf_channel);
+# 164 "./../lib/nrf24_lib.h"
+uint8_t nrf24_get_channel_frq(void);
+
+
+
+
+
+void nrf24_standby_I(void);
+
+
+
+
+
+void nrf24_flush_tx_rx(void);
+
+
+
+
+
+uint8_t nrf24_read_dynamic_payload_length(void) ;
+# 6 "main.c" 2
+
+# 1 "./../lib/handler_lib.h" 1
+# 1 "./../lib/master_exports.h.h" 1
+
+
+# 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
+# 3 "./../lib/master_exports.h.h" 2
+# 2 "./../lib/handler_lib.h" 2
+# 29 "./../lib/handler_lib.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 uint8_t PingInterval = 1;
-uint8_t BoardAddress[3] = {0xFF,0xFF,0xFF};
+uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF};
 
 void TimerInterruptHandler(void);
 void InitRadio(void);
@@ -9460,7 +9540,7 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 _Bool VerifyBoardAddress(uint8_t *bufferRX);
 void HandlePacketLoop(void);
 uint8_t SendError(uint8_t errorCode);
-uint8_t SendPing();
+uint8_t SendPing(void);
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
 uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
@@ -9482,71 +9562,22 @@ struct Config {
     uint8_t PipeAddr2[5];
     uint8_t ARD;
 };
-# 6 "main.c" 2
-
-# 1 "./../lib/nrf24_lib.h" 1
-# 10 "./../lib/nrf24_lib.h"
-# 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 10 "./../lib/nrf24_lib.h" 2
-
-
-
-typedef enum {
-    RX_MODE = 1,
-    TX_MODE = 2
-}NRF24_OPERATION_MODE;
-# 74 "./../lib/nrf24_lib.h"
-void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
-# 84 "./../lib/nrf24_lib.h"
-uint8_t nrf24_read_register(uint8_t mnemonic_addr);
-# 94 "./../lib/nrf24_lib.h"
-void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
-# 104 "./../lib/nrf24_lib.h"
-void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
-
-
-
-
-
-
-void nrf24_rf_init();
-
-
-
-
-
-
-
-void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
-# 128 "./../lib/nrf24_lib.h"
-void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
-# 137 "./../lib/nrf24_lib.h"
-uint8_t nrf24_is_rf_data_available(void);
-# 146 "./../lib/nrf24_lib.h"
-void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
-# 156 "./../lib/nrf24_lib.h"
-void nrf24_set_channel_frq(uint8_t rf_channel);
-# 166 "./../lib/nrf24_lib.h"
-uint8_t nrf24_get_channel_frq(void);
-
-
-
-
-
-void nrf24_standby_I(void);
-
-
-
-
-
-void nrf24_flush_tx_rx(void);
-
-
-
-
-
-uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 7 "main.c" 2
+
+# 1 "./../lib/dht11_lib.h" 1
+
+# 1 "./../lib/master_exports.h.h" 1
+
+
+# 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
+# 3 "./../lib/master_exports.h.h" 2
+# 3 "./../lib/dht11_lib.h" 2
+
+
+uint8_t GetmockTemp(void);
+uint8_t GetmockHumidity(void);
+uint8_t GetMockTempHumidity(uint8_t *temp);
+# 8 "main.c" 2
 
 
 
@@ -9577,5 +9608,27 @@ void main(void) {
     while (1) {
         HandlePacketLoop();
         __nop();
+    }
+}
+
+void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+    uint8_t tmpHumidity[] = {0, 0};
+
+    switch (actionID) {
+        case 0x13:
+            do { LATAbits.LATA1 = 0; } while(0);
+            if (data[0]) {
+                do { LATAbits.LATA1 = 1; } while(0);
+            }
+            break;
+        case 0x15:
+            ReloadConfig();
+            break;
+        case 0x02:
+            GetMockTempHumidity(tmpHumidity);
+            SendData(0x02, tmpHumidity, 2);
+            break;
+        default:
+            SendError(0x04);
     }
 }

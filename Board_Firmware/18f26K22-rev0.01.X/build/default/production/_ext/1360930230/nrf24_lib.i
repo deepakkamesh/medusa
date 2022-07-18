@@ -21,6 +21,11 @@
 
 
 
+# 1 "../lib/master_exports.h.h" 1
+
+
+# 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
+# 34 "../lib/../18f26K22-rev0.01.X/exports.h"
 # 1 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 1 3
 # 18 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 3
 extern const char __xc8_OPTIM_SPEED;
@@ -9231,10 +9236,7 @@ __attribute__((__unsupported__("The " "Write_b_eep" " routine is no longer suppo
 unsigned char __t1rd16on(void);
 unsigned char __t3rd16on(void);
 # 34 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 2 3
-# 9 "../lib/nrf24_lib.h" 2
-
-# 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 35 "../lib/../18f26K22-rev0.01.X/exports.h"
+# 35 "../lib/../18f26K22-rev0.01.X/exports.h" 2
 # 1 "./mcc_generated_files/mcc.h" 1
 # 50 "./mcc_generated_files/mcc.h"
 # 1 "./mcc_generated_files/device_config.h" 1
@@ -9458,21 +9460,21 @@ void SYSTEM_Initialize(void);
 # 85 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
 # 36 "../lib/../18f26K22-rev0.01.X/exports.h" 2
-# 10 "../lib/nrf24_lib.h" 2
-
+# 3 "../lib/master_exports.h.h" 2
+# 9 "../lib/nrf24_lib.h" 2
 
 
 typedef enum {
     RX_MODE = 1,
     TX_MODE = 2
 }NRF24_OPERATION_MODE;
-# 74 "../lib/nrf24_lib.h"
+# 72 "../lib/nrf24_lib.h"
 void nrf24_write_register(uint8_t mnemonic_addr, uint8_t value);
-# 84 "../lib/nrf24_lib.h"
+# 82 "../lib/nrf24_lib.h"
 uint8_t nrf24_read_register(uint8_t mnemonic_addr);
-# 94 "../lib/nrf24_lib.h"
+# 92 "../lib/nrf24_lib.h"
 void nrf24_write_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
-# 104 "../lib/nrf24_lib.h"
+# 102 "../lib/nrf24_lib.h"
 void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 
@@ -9480,7 +9482,7 @@ void nrf24_read_buff(uint8_t mnemonic_addr, uint8_t *buffer, uint8_t bytes);
 
 
 
-void nrf24_rf_init();
+void nrf24_rf_init(void);
 
 
 
@@ -9489,15 +9491,15 @@ void nrf24_rf_init();
 
 
 void nrf24_set_rf_mode(NRF24_OPERATION_MODE mode);
-# 128 "../lib/nrf24_lib.h"
+# 126 "../lib/nrf24_lib.h"
 void nrf24_send_rf_data(uint8_t *buffer, uint8_t sz);
-# 137 "../lib/nrf24_lib.h"
+# 135 "../lib/nrf24_lib.h"
 uint8_t nrf24_is_rf_data_available(void);
-# 146 "../lib/nrf24_lib.h"
+# 144 "../lib/nrf24_lib.h"
 void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
-# 156 "../lib/nrf24_lib.h"
+# 154 "../lib/nrf24_lib.h"
 void nrf24_set_channel_frq(uint8_t rf_channel);
-# 166 "../lib/nrf24_lib.h"
+# 164 "../lib/nrf24_lib.h"
 uint8_t nrf24_get_channel_frq(void);
 
 

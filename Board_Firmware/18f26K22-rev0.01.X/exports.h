@@ -45,6 +45,9 @@ extern "C" {
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 
+#define HW_REV_1
+
+#ifdef HW_REV_1
 /******************************************************************************/
 // SPI and GPIO Helper Function.
 /******************************************************************************/
@@ -62,3 +65,5 @@ extern "C" {
 #define SPI_WRITE_BYTE(dt)          SPI1_ExchangeByte(dt)
 #define SPI_READ_BYTE(dt)           SPI1_ExchangeByte(dt)
 #define SPI_INIT()                  SPI1_Open(SPI1_DEFAULT)
+
+#endif
