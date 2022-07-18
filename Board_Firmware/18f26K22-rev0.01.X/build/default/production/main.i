@@ -9486,7 +9486,7 @@ struct Config {
 
 # 1 "./../lib/nrf24_lib.h" 1
 # 10 "./../lib/nrf24_lib.h"
-# 1 "./../lib/../18f26K22-rev0.01.X/nRF24.h" 1
+# 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
 # 10 "./../lib/nrf24_lib.h" 2
 
 

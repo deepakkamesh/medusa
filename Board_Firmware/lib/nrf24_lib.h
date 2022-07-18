@@ -7,7 +7,7 @@
 #ifndef NRF24_LIB_H
 #define	NRF24_LIB_H
 #include <xc.h>
-#include "../18f26K22-rev0.01.X/nRF24.h"
+#include "../18f26K22-rev0.01.X/exports.h"
 
 // NRF24L01 Operation Modes
 typedef enum {

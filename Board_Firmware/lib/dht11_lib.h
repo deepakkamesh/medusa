@@ -1,5 +1,5 @@
 
-#include "../18f26K22-rev0.01.X/nRF24.h"
+#include "../18f26K22-rev0.01.X/exports.h"
 
 
 uint8_t GetmockTemp(void);

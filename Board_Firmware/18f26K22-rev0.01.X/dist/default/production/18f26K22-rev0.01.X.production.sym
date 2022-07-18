@@ -535,7 +535,7 @@ text11 1006 1DD1 CODE 1006 0
 %locals
 dist/default/production/18f26K22-rev0.01.X.production.o
 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
-/tmp/xcOLLyTMc.s
+/tmp/xc0r7s4L8.s
 4755 18EE 0 CODE 0
 4757 18EE 0 CODE 0
 4760 18EE 0 CODE 0
@@ -912,7 +912,7 @@ mcc_generated_files/spi1.c
 12 1D20 0 CODE 0
 13 1D2C 0 CODE 0
 15 1D3C 0 CODE 0
-/tmp/xcOLLyTMc.s
+/tmp/xc0r7s4L8.s
 9672 8 0 CODE 0
 mcc_generated_files/interrupt_manager.c
 58 8 0 CODE 0

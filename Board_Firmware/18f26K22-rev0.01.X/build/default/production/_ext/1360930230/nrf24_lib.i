@@ -9233,8 +9233,8 @@ unsigned char __t3rd16on(void);
 # 34 "/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/xc.h" 2 3
 # 9 "../lib/nrf24_lib.h" 2
 
-# 1 "../lib/../18f26K22-rev0.01.X/nRF24.h" 1
-# 35 "../lib/../18f26K22-rev0.01.X/nRF24.h"
+# 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
+# 35 "../lib/../18f26K22-rev0.01.X/exports.h"
 # 1 "./mcc_generated_files/mcc.h" 1
 # 50 "./mcc_generated_files/mcc.h"
 # 1 "./mcc_generated_files/device_config.h" 1
@@ -9457,7 +9457,7 @@ void TMR1_DefaultInterruptHandler(void);
 void SYSTEM_Initialize(void);
 # 85 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
-# 36 "../lib/../18f26K22-rev0.01.X/nRF24.h" 2
+# 36 "../lib/../18f26K22-rev0.01.X/exports.h" 2
 # 10 "../lib/nrf24_lib.h" 2
 
 
