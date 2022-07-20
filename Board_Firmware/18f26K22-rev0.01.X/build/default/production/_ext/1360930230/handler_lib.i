@@ -151,7 +151,7 @@ size_t strxfrm_l (char *restrict, const char *restrict, size_t, locale_t);
 void *memccpy (void *restrict, const void *restrict, int, size_t);
 # 10 "../lib/handler_lib.c" 2
 # 1 "../lib/handler_lib.h" 1
-# 1 "../lib/master_exports.h.h" 1
+# 1 "../lib/master_exports.h" 1
 
 
 # 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
@@ -9500,9 +9500,9 @@ void SYSTEM_Initialize(void);
 # 85 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
 # 36 "../lib/../18f26K22-rev0.01.X/exports.h" 2
-# 3 "../lib/master_exports.h.h" 2
+# 3 "../lib/master_exports.h" 2
 # 2 "../lib/handler_lib.h" 2
-# 29 "../lib/handler_lib.h"
+# 30 "../lib/handler_lib.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 uint8_t PingInterval = 1;
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF};
@@ -9547,11 +9547,11 @@ struct Config {
 
 
 
-# 1 "../lib/master_exports.h.h" 1
+# 1 "../lib/master_exports.h" 1
 
 
 # 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 3 "../lib/master_exports.h.h" 2
+# 3 "../lib/master_exports.h" 2
 # 9 "../lib/nrf24_lib.h" 2
 
 
@@ -9613,11 +9613,11 @@ uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 13 "../lib/handler_lib.c" 2
 # 1 "../lib/dht11_lib.h" 1
 
-# 1 "../lib/master_exports.h.h" 1
+# 1 "../lib/master_exports.h" 1
 
 
 # 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 3 "../lib/master_exports.h.h" 2
+# 3 "../lib/master_exports.h" 2
 # 3 "../lib/dht11_lib.h" 2
 
 
@@ -9716,9 +9716,11 @@ void HandlePacketLoop(void) {
     while (1) {
         status = nrf24_read_register(0x07);
         if ((status & 0x20) || (status & 0x10)) {
+            do { LATAbits.LATA1 = 0; } while(0);
             break;
         }
         _delay((unsigned long)((10)*(1000000/4000000.0)));
+        do { LATAbits.LATA1 = 1; } while(0);
     }
 
     nrf24_write_register(0x07, 0x70);

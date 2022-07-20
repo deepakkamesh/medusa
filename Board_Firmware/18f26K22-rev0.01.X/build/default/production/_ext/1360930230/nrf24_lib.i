@@ -21,7 +21,7 @@
 
 
 
-# 1 "../lib/master_exports.h.h" 1
+# 1 "../lib/master_exports.h" 1
 
 
 # 1 "../lib/../18f26K22-rev0.01.X/exports.h" 1
@@ -9460,7 +9460,7 @@ void SYSTEM_Initialize(void);
 # 85 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
 # 36 "../lib/../18f26K22-rev0.01.X/exports.h" 2
-# 3 "../lib/master_exports.h.h" 2
+# 3 "../lib/master_exports.h" 2
 # 9 "../lib/nrf24_lib.h" 2
 
 

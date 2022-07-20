@@ -1,10 +1,10 @@
 Version 4.0 HI-TECH Software Intermediate Code
-"53 ../lib/handler_lib.h
-[; ;../lib/handler_lib.h: 53: struct Config {
+"54 ../lib/handler_lib.h
+[; ;../lib/handler_lib.h: 54: struct Config {
 [s S833 `a 1 `uc -> 3 `i `uc 1 `uc 1 `uc -> 5 `i `uc -> 5 `i `uc 1 ]
 [n S833 Config IsConfigured Address PingInterval RFChannel PipeAddr1 PipeAddr2 ARD ]
-"45
-[; ;../lib/handler_lib.h: 45: typedef struct {
+"46
+[; ;../lib/handler_lib.h: 46: typedef struct {
 [s S832 `uc -> 32 `i `a 1 `uc 1 ]
 [n S832 . packet free size ]
 "109 ../lib/nrf24_lib.h
@@ -29,7 +29,22 @@ Version 4.0 HI-TECH Software Intermediate Code
 "82
 [; ;../lib/nrf24_lib.h: 82: uint8_t nrf24_read_register(uint8_t mnemonic_addr);
 [v _nrf24_read_register `(uc ~T0 @X0 0 ef1`uc ]
-"176
+"7251 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
+[; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7251:     struct {
+[s S372 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S372 . LATA0 LATA1 LATA2 LATA3 LATA4 LATA5 LATA6 LATA7 ]
+"7261
+[; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7261:     struct {
+[s S373 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S373 . LA0 LA1 LA2 LA3 LA4 LA5 LA6 LA7 ]
+"7250
+[; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7250: typedef union {
+[u S371 `S372 1 `S373 1 ]
+[n S371 . . . ]
+"7272
+[; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 7272: extern volatile LATAbits_t LATAbits __attribute__((address(0xF89)));
+[v _LATAbits `VS371 ~T0 @X0 0 e@3977 ]
+"176 ../lib/nrf24_lib.h
 [; ;../lib/nrf24_lib.h: 176: void nrf24_flush_tx_rx(void);
 [v _nrf24_flush_tx_rx `(v ~T0 @X0 0 ef ]
 "182
@@ -38,23 +53,23 @@ Version 4.0 HI-TECH Software Intermediate Code
 "144
 [; ;../lib/nrf24_lib.h: 144: void nrf24_read_rf_data(uint8_t *buffer, uint8_t sz);
 [v _nrf24_read_rf_data `(v ~T0 @X0 0 ef2`*uc`uc ]
-"37 ../lib/handler_lib.h
-[; ;../lib/handler_lib.h: 37: _Bool VerifyBoardAddress(uint8_t *bufferRX);
+"38 ../lib/handler_lib.h
+[; ;../lib/handler_lib.h: 38: _Bool VerifyBoardAddress(uint8_t *bufferRX);
 [v _VerifyBoardAddress `(a ~T0 @X0 0 ef1`*uc ]
-"35
-[; ;../lib/handler_lib.h: 35: void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
-[v _ProcessAckPayload `(v ~T0 @X0 0 ef2`*uc`uc ]
-"40
-[; ;../lib/handler_lib.h: 40: uint8_t SendPing(void);
-[v _SendPing `(uc ~T0 @X0 0 ef ]
-"41
-[; ;../lib/handler_lib.h: 41: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
-[v _SuperMemCpy `(v ~T0 @X0 0 ef5`*uc`uc`*uc`uc`uc ]
 "36
-[; ;../lib/handler_lib.h: 36: void ProcessActionRequest(uint8_t actionID, uint8_t * data);
+[; ;../lib/handler_lib.h: 36: void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
+[v _ProcessAckPayload `(v ~T0 @X0 0 ef2`*uc`uc ]
+"41
+[; ;../lib/handler_lib.h: 41: uint8_t SendPing(void);
+[v _SendPing `(uc ~T0 @X0 0 ef ]
+"42
+[; ;../lib/handler_lib.h: 42: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
+[v _SuperMemCpy `(v ~T0 @X0 0 ef5`*uc`uc`*uc`uc`uc ]
+"37
+[; ;../lib/handler_lib.h: 37: void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 [v _ProcessActionRequest `(v ~T0 @X0 0 ef2`uc`*uc ]
-"39
-[; ;../lib/handler_lib.h: 39: uint8_t SendError(uint8_t errorCode);
+"40
+[; ;../lib/handler_lib.h: 40: uint8_t SendError(uint8_t errorCode);
 [v _SendError `(uc ~T0 @X0 0 ef1`uc ]
 "55 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 55: __asm("ANSELA equ 0F38h");
@@ -791,8 +806,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 "16610
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 16610: __asm("TOSU equ 0FFFh");
 [; <" TOSU equ 0FFFh ;# ">
-"29 ../lib/handler_lib.h
-[; ;../lib/handler_lib.h: 29: uint8_t DEFAULT_PIPE_ADDR[] = "hello";
+"30 ../lib/handler_lib.h
+[; ;../lib/handler_lib.h: 30: uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 [v _DEFAULT_PIPE_ADDR `uc ~T0 @X0 -> 6 `i e ]
 [i _DEFAULT_PIPE_ADDR
 :U ..
@@ -804,14 +819,14 @@ Version 4.0 HI-TECH Software Intermediate Code
 -> 0 `c
 ..
 ]
-"30
-[; ;../lib/handler_lib.h: 30: uint8_t PingInterval = 1;
+"31
+[; ;../lib/handler_lib.h: 31: uint8_t PingInterval = 1;
 [v _PingInterval `uc ~T0 @X0 1 e ]
 [i _PingInterval
 -> -> 1 `i `uc
 ]
-"31
-[; ;../lib/handler_lib.h: 31: uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF};
+"32
+[; ;../lib/handler_lib.h: 32: uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF};
 [v _BoardAddress `uc ~T0 @X0 -> 3 `i e ]
 [i _BoardAddress
 :U ..
@@ -1061,302 +1076,316 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $ ! || != & -> _status `i -> 32 `i -> 0 `i != & -> _status `i -> 16 `i -> 0 `i 853  ]
 {
 "105
-[; ;../lib/handler_lib.c: 105:             break;
-[e $U 852  ]
+[; ;../lib/handler_lib.c: 105:             do { LATAbits.LATA1 = 0; } while(0);
+[e :U 856 ]
+{
+[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
+}
+[e :U 855 ]
 "106
-[; ;../lib/handler_lib.c: 106:         }
+[; ;../lib/handler_lib.c: 106:             break;
+[e $U 852  ]
+"107
+[; ;../lib/handler_lib.c: 107:         }
 }
 [e :U 853 ]
-"107
-[; ;../lib/handler_lib.c: 107:         _delay((unsigned long)((10)*(1000000/4000000.0)));
-[e ( __delay (1 -> * -> -> 10 `i `d / -> -> 1000000 `l `d .4000000.0 `ul ]
 "108
-[; ;../lib/handler_lib.c: 108:     }
+[; ;../lib/handler_lib.c: 108:         _delay((unsigned long)((10)*(1000000/4000000.0)));
+[e ( __delay (1 -> * -> -> 10 `i `d / -> -> 1000000 `l `d .4000000.0 `ul ]
+"109
+[; ;../lib/handler_lib.c: 109:         do { LATAbits.LATA1 = 1; } while(0);
+[e :U 859 ]
+{
+[e = . . _LATAbits 0 1 -> -> 1 `i `uc ]
+}
+[e :U 858 ]
+"110
+[; ;../lib/handler_lib.c: 110:     }
 }
 [e :U 850 ]
 [e $U 851  ]
 [e :U 852 ]
-"110
-[; ;../lib/handler_lib.c: 110:     nrf24_write_register(0x07, 0x70);
+"112
+[; ;../lib/handler_lib.c: 112:     nrf24_write_register(0x07, 0x70);
 [e ( _nrf24_write_register (2 , -> -> 7 `i `uc -> -> 112 `i `uc ]
-"113
-[; ;../lib/handler_lib.c: 113:     if (status & 0x10) {
-[e $ ! != & -> _status `i -> 16 `i -> 0 `i 854  ]
-{
-"114
-[; ;../lib/handler_lib.c: 114:         nrf24_flush_tx_rx();
-[e ( _nrf24_flush_tx_rx ..  ]
 "115
-[; ;../lib/handler_lib.c: 115:         return;
-[e $UE 844  ]
-"118
-[; ;../lib/handler_lib.c: 118:     }
-}
-[e :U 854 ]
-"121
-[; ;../lib/handler_lib.c: 121:     packetsTX[i].free = 1;
-[e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 -> -> 1 `i `a ]
-"124
-[; ;../lib/handler_lib.c: 124:     if (status & 0x40) {
-[e $ ! != & -> _status `i -> 64 `i -> 0 `i 855  ]
+[; ;../lib/handler_lib.c: 115:     if (status & 0x10) {
+[e $ ! != & -> _status `i -> 16 `i -> 0 `i 860  ]
 {
-"125
-[; ;../lib/handler_lib.c: 125:         uint8_t sz = nrf24_read_dynamic_payload_length();
+"116
+[; ;../lib/handler_lib.c: 116:         nrf24_flush_tx_rx();
+[e ( _nrf24_flush_tx_rx ..  ]
+"117
+[; ;../lib/handler_lib.c: 117:         return;
+[e $UE 844  ]
+"120
+[; ;../lib/handler_lib.c: 120:     }
+}
+[e :U 860 ]
+"123
+[; ;../lib/handler_lib.c: 123:     packetsTX[i].free = 1;
+[e = . *U + &U _packetsTX * -> _i `ux -> -> # *U &U _packetsTX `ui `ux 1 -> -> 1 `i `a ]
+"126
+[; ;../lib/handler_lib.c: 126:     if (status & 0x40) {
+[e $ ! != & -> _status `i -> 64 `i -> 0 `i 861  ]
+{
+"127
+[; ;../lib/handler_lib.c: 127:         uint8_t sz = nrf24_read_dynamic_payload_length();
 [v _sz `uc ~T0 @X0 1 a ]
 [e = _sz ( _nrf24_read_dynamic_payload_length ..  ]
-"126
-[; ;../lib/handler_lib.c: 126:         nrf24_read_rf_data(bufferRX, sz);
-[e ( _nrf24_read_rf_data (2 , &U _bufferRX _sz ]
-"127
-[; ;../lib/handler_lib.c: 127:         if (!VerifyBoardAddress(bufferRX)) {
-[e $ ! ! != -> ( _VerifyBoardAddress (1 &U _bufferRX `i -> 0 `i 856  ]
-{
 "128
-[; ;../lib/handler_lib.c: 128:             return;
-[e $UE 844  ]
+[; ;../lib/handler_lib.c: 128:         nrf24_read_rf_data(bufferRX, sz);
+[e ( _nrf24_read_rf_data (2 , &U _bufferRX _sz ]
 "129
-[; ;../lib/handler_lib.c: 129:         }
-}
-[e :U 856 ]
+[; ;../lib/handler_lib.c: 129:         if (!VerifyBoardAddress(bufferRX)) {
+[e $ ! ! != -> ( _VerifyBoardAddress (1 &U _bufferRX `i -> 0 `i 862  ]
+{
 "130
-[; ;../lib/handler_lib.c: 130:         ProcessAckPayload(bufferRX, sz);
-[e ( _ProcessAckPayload (2 , &U _bufferRX _sz ]
+[; ;../lib/handler_lib.c: 130:             return;
+[e $UE 844  ]
 "131
-[; ;../lib/handler_lib.c: 131:     }
+[; ;../lib/handler_lib.c: 131:         }
 }
-[e :U 855 ]
+[e :U 862 ]
 "132
-[; ;../lib/handler_lib.c: 132: }
+[; ;../lib/handler_lib.c: 132:         ProcessAckPayload(bufferRX, sz);
+[e ( _ProcessAckPayload (2 , &U _bufferRX _sz ]
+"133
+[; ;../lib/handler_lib.c: 133:     }
+}
+[e :U 861 ]
+"134
+[; ;../lib/handler_lib.c: 134: }
 [e :UE 844 ]
 }
-"134
-[; ;../lib/handler_lib.c: 134: void TimerInterruptHandler(void) {
+"136
+[; ;../lib/handler_lib.c: 136: void TimerInterruptHandler(void) {
 [v _TimerInterruptHandler `(v ~T0 @X0 1 ef ]
 {
 [e :U _TimerInterruptHandler ]
 [f ]
-"135
-[; ;../lib/handler_lib.c: 135:     Ticks++;
+"137
+[; ;../lib/handler_lib.c: 137:     Ticks++;
 [e ++ _Ticks -> -> -> 1 `i `l `ul ]
-"138
-[; ;../lib/handler_lib.c: 138:     if (Ticks % PingInterval != 0) {
-[e $ ! != % _Ticks -> _PingInterval `ul -> -> -> 0 `i `l `ul 858  ]
-{
-"139
-[; ;../lib/handler_lib.c: 139:         return;
-[e $UE 857  ]
 "140
-[; ;../lib/handler_lib.c: 140:     }
-}
-[e :U 858 ]
+[; ;../lib/handler_lib.c: 140:     if (Ticks % PingInterval != 0) {
+[e $ ! != % _Ticks -> _PingInterval `ul -> -> -> 0 `i `l `ul 864  ]
+{
 "141
-[; ;../lib/handler_lib.c: 141:     SendPing();
-[e ( _SendPing ..  ]
+[; ;../lib/handler_lib.c: 141:         return;
+[e $UE 863  ]
 "142
-[; ;../lib/handler_lib.c: 142: }
-[e :UE 857 ]
+[; ;../lib/handler_lib.c: 142:     }
 }
+[e :U 864 ]
+"143
+[; ;../lib/handler_lib.c: 143:     SendPing();
+[e ( _SendPing ..  ]
 "144
-[; ;../lib/handler_lib.c: 144: _Bool VerifyBoardAddress(uint8_t *bufferRX) {
+[; ;../lib/handler_lib.c: 144: }
+[e :UE 863 ]
+}
+"146
+[; ;../lib/handler_lib.c: 146: _Bool VerifyBoardAddress(uint8_t *bufferRX) {
 [v _VerifyBoardAddress `(a ~T0 @X0 1 ef1`*uc ]
 {
 [e :U _VerifyBoardAddress ]
 [v _bufferRX `*uc ~T0 @X0 1 r1 ]
 [f ]
-"145
-[; ;../lib/handler_lib.c: 145:     for (int i = 0; i < 3; i++) {
+"147
+[; ;../lib/handler_lib.c: 147:     for (int i = 0; i < 3; i++) {
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $ < _i -> 3 `i 860  ]
-[e $U 861  ]
-[e :U 860 ]
+[e $ < _i -> 3 `i 866  ]
+[e $U 867  ]
+[e :U 866 ]
 {
-"146
-[; ;../lib/handler_lib.c: 146:         if (BoardAddress[i] != bufferRX[i + 1]) {
-[e $ ! != -> *U + &U _BoardAddress * -> -> _i `ui `ux -> -> # *U &U _BoardAddress `ui `ux `i -> *U + _bufferRX * -> + _i -> 1 `i `x -> -> # *U _bufferRX `i `x `i 863  ]
-{
-"147
-[; ;../lib/handler_lib.c: 147:             return 0;
-[e ) -> -> 0 `i `a ]
-[e $UE 859  ]
 "148
-[; ;../lib/handler_lib.c: 148:         }
-}
-[e :U 863 ]
+[; ;../lib/handler_lib.c: 148:         if (BoardAddress[i] != bufferRX[i + 1]) {
+[e $ ! != -> *U + &U _BoardAddress * -> -> _i `ui `ux -> -> # *U &U _BoardAddress `ui `ux `i -> *U + _bufferRX * -> + _i -> 1 `i `x -> -> # *U _bufferRX `i `x `i 869  ]
+{
 "149
-[; ;../lib/handler_lib.c: 149:     }
+[; ;../lib/handler_lib.c: 149:             return 0;
+[e ) -> -> 0 `i `a ]
+[e $UE 865  ]
+"150
+[; ;../lib/handler_lib.c: 150:         }
+}
+[e :U 869 ]
+"151
+[; ;../lib/handler_lib.c: 151:     }
 }
 [e ++ _i -> 1 `i ]
-[e $ < _i -> 3 `i 860  ]
-[e :U 861 ]
+[e $ < _i -> 3 `i 866  ]
+[e :U 867 ]
 }
-"150
-[; ;../lib/handler_lib.c: 150:     return 1;
+"152
+[; ;../lib/handler_lib.c: 152:     return 1;
 [e ) -> -> 1 `i `a ]
-[e $UE 859  ]
-"151
-[; ;../lib/handler_lib.c: 151: }
-[e :UE 859 ]
-}
+[e $UE 865  ]
 "153
-[; ;../lib/handler_lib.c: 153: void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
+[; ;../lib/handler_lib.c: 153: }
+[e :UE 865 ]
+}
+"155
+[; ;../lib/handler_lib.c: 155: void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 [v _ProcessAckPayload `(v ~T0 @X0 1 ef2`*uc`uc ]
 {
 [e :U _ProcessAckPayload ]
 [v _buffer `*uc ~T0 @X0 1 r1 ]
 [v _sz `uc ~T0 @X0 1 r2 ]
 [f ]
-"154
-[; ;../lib/handler_lib.c: 154:     uint8_t data[32];
+"156
+[; ;../lib/handler_lib.c: 156:     uint8_t data[32];
 [v _data `uc ~T0 @X0 -> 32 `i a ]
-"155
-[; ;../lib/handler_lib.c: 155:     uint8_t actionID;
-[v _actionID `uc ~T0 @X0 1 a ]
 "157
-[; ;../lib/handler_lib.c: 157:     uint8_t pktType = buffer[0];
+[; ;../lib/handler_lib.c: 157:     uint8_t actionID;
+[v _actionID `uc ~T0 @X0 1 a ]
+"159
+[; ;../lib/handler_lib.c: 159:     uint8_t pktType = buffer[0];
 [v _pktType `uc ~T0 @X0 1 a ]
 [e = _pktType *U + _buffer * -> -> 0 `i `x -> -> # *U _buffer `i `x ]
-"158
-[; ;../lib/handler_lib.c: 158:     switch (pktType) {
-[e $U 866  ]
-{
-"159
-[; ;../lib/handler_lib.c: 159:         case 0x10:
-[e :U 867 ]
 "160
-[; ;../lib/handler_lib.c: 160:             actionID = buffer[4];
-[e = _actionID *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
+[; ;../lib/handler_lib.c: 160:     switch (pktType) {
+[e $U 872  ]
+{
 "161
-[; ;../lib/handler_lib.c: 161:             SuperMemCpy(data, 0, buffer, 5, sz - 5);
-[e ( _SuperMemCpy (4 , , , , &U _data -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> - -> _sz `i -> 5 `i `uc ]
+[; ;../lib/handler_lib.c: 161:         case 0x10:
+[e :U 873 ]
 "162
-[; ;../lib/handler_lib.c: 162:             ProcessActionRequest(actionID, data);
-[e ( _ProcessActionRequest (2 , _actionID &U _data ]
+[; ;../lib/handler_lib.c: 162:             actionID = buffer[4];
+[e = _actionID *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
 "163
-[; ;../lib/handler_lib.c: 163:             break;
-[e $U 865  ]
+[; ;../lib/handler_lib.c: 163:             SuperMemCpy(data, 0, buffer, 5, sz - 5);
+[e ( _SuperMemCpy (4 , , , , &U _data -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> - -> _sz `i -> 5 `i `uc ]
 "164
-[; ;../lib/handler_lib.c: 164:         case 0x03:
-[e :U 868 ]
+[; ;../lib/handler_lib.c: 164:             ProcessActionRequest(actionID, data);
+[e ( _ProcessActionRequest (2 , _actionID &U _data ]
 "165
-[; ;../lib/handler_lib.c: 165:             config.RFChannel = buffer[4];
-[e = . _config 3 *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
+[; ;../lib/handler_lib.c: 165:             break;
+[e $U 871  ]
 "166
-[; ;../lib/handler_lib.c: 166:             SuperMemCpy(config.PipeAddr1, 0, buffer, 5, 5);
-[e ( _SuperMemCpy (4 , , , , &U . _config 4 -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> -> 5 `i `uc ]
+[; ;../lib/handler_lib.c: 166:         case 0x03:
+[e :U 874 ]
 "167
-[; ;../lib/handler_lib.c: 167:             SuperMemCpy(config.PipeAddr2, 0, buffer, 10, 5);
-[e ( _SuperMemCpy (4 , , , , &U . _config 5 -> -> 0 `i `uc _buffer -> -> 10 `i `uc -> -> 5 `i `uc ]
+[; ;../lib/handler_lib.c: 167:             config.RFChannel = buffer[4];
+[e = . _config 3 *U + _buffer * -> -> 4 `i `x -> -> # *U _buffer `i `x ]
 "168
-[; ;../lib/handler_lib.c: 168:             config.ARD = buffer[15];
-[e = . _config 6 *U + _buffer * -> -> 15 `i `x -> -> # *U _buffer `i `x ]
+[; ;../lib/handler_lib.c: 168:             SuperMemCpy(config.PipeAddr1, 0, buffer, 5, 5);
+[e ( _SuperMemCpy (4 , , , , &U . _config 4 -> -> 0 `i `uc _buffer -> -> 5 `i `uc -> -> 5 `i `uc ]
 "169
-[; ;../lib/handler_lib.c: 169:             break;
-[e $U 865  ]
+[; ;../lib/handler_lib.c: 169:             SuperMemCpy(config.PipeAddr2, 0, buffer, 10, 5);
+[e ( _SuperMemCpy (4 , , , , &U . _config 5 -> -> 0 `i `uc _buffer -> -> 10 `i `uc -> -> 5 `i `uc ]
 "170
-[; ;../lib/handler_lib.c: 170:         case 0x04:
-[e :U 869 ]
+[; ;../lib/handler_lib.c: 170:             config.ARD = buffer[15];
+[e = . _config 6 *U + _buffer * -> -> 15 `i `x -> -> # *U _buffer `i `x ]
 "171
-[; ;../lib/handler_lib.c: 171:             SuperMemCpy(config.Address, 0, buffer, 4, 3);
-[e ( _SuperMemCpy (4 , , , , &U . _config 1 -> -> 0 `i `uc _buffer -> -> 4 `i `uc -> -> 3 `i `uc ]
+[; ;../lib/handler_lib.c: 171:             break;
+[e $U 871  ]
 "172
-[; ;../lib/handler_lib.c: 172:             config.PingInterval = buffer[7];
-[e = . _config 2 *U + _buffer * -> -> 7 `i `x -> -> # *U _buffer `i `x ]
+[; ;../lib/handler_lib.c: 172:         case 0x04:
+[e :U 875 ]
 "173
-[; ;../lib/handler_lib.c: 173:             break;
-[e $U 865  ]
+[; ;../lib/handler_lib.c: 173:             SuperMemCpy(config.Address, 0, buffer, 4, 3);
+[e ( _SuperMemCpy (4 , , , , &U . _config 1 -> -> 0 `i `uc _buffer -> -> 4 `i `uc -> -> 3 `i `uc ]
 "174
-[; ;../lib/handler_lib.c: 174:         default:
-[e :U 870 ]
+[; ;../lib/handler_lib.c: 174:             config.PingInterval = buffer[7];
+[e = . _config 2 *U + _buffer * -> -> 7 `i `x -> -> # *U _buffer `i `x ]
 "175
-[; ;../lib/handler_lib.c: 175:             SendError(0x04);
-[e ( _SendError (1 -> -> 4 `i `uc ]
+[; ;../lib/handler_lib.c: 175:             break;
+[e $U 871  ]
 "176
-[; ;../lib/handler_lib.c: 176:     }
-}
-[e $U 865  ]
-[e :U 866 ]
-[e [\ -> _pktType `i , $ -> 16 `i 867
- , $ -> 3 `i 868
- , $ -> 4 `i 869
- 870 ]
-[e :U 865 ]
+[; ;../lib/handler_lib.c: 176:         default:
+[e :U 876 ]
 "177
-[; ;../lib/handler_lib.c: 177: }
-[e :UE 864 ]
+[; ;../lib/handler_lib.c: 177:             SendError(0x04);
+[e ( _SendError (1 -> -> 4 `i `uc ]
+"178
+[; ;../lib/handler_lib.c: 178:     }
 }
-"180
-[; ;../lib/handler_lib.c: 180: void ReloadConfig(void) {
+[e $U 871  ]
+[e :U 872 ]
+[e [\ -> _pktType `i , $ -> 16 `i 873
+ , $ -> 3 `i 874
+ , $ -> 4 `i 875
+ 876 ]
+[e :U 871 ]
+"179
+[; ;../lib/handler_lib.c: 179: }
+[e :UE 870 ]
+}
+"182
+[; ;../lib/handler_lib.c: 182: void ReloadConfig(void) {
 [v _ReloadConfig `(v ~T0 @X0 1 ef ]
 {
 [e :U _ReloadConfig ]
 [f ]
-"181
-[; ;../lib/handler_lib.c: 181:     config.IsConfigured = 1;
+"183
+[; ;../lib/handler_lib.c: 183:     config.IsConfigured = 1;
 [e = . _config 0 -> -> 1 `i `a ]
-"182
-[; ;../lib/handler_lib.c: 182:     nrf24_write_register(0x05, config.RFChannel);
-[e ( _nrf24_write_register (2 , -> -> 5 `i `uc . _config 3 ]
 "184
-[; ;../lib/handler_lib.c: 184:     nrf24_write_buff(0x10, config.PipeAddr1, 5);
+[; ;../lib/handler_lib.c: 184:     nrf24_write_register(0x05, config.RFChannel);
+[e ( _nrf24_write_register (2 , -> -> 5 `i `uc . _config 3 ]
+"186
+[; ;../lib/handler_lib.c: 186:     nrf24_write_buff(0x10, config.PipeAddr1, 5);
 [e ( _nrf24_write_buff (3 , , -> -> 16 `i `uc &U . _config 4 -> -> 5 `i `uc ]
-"185
-[; ;../lib/handler_lib.c: 185:     nrf24_write_buff(0x0A, config.PipeAddr1, 5);
-[e ( _nrf24_write_buff (3 , , -> -> 10 `i `uc &U . _config 4 -> -> 5 `i `uc ]
 "187
-[; ;../lib/handler_lib.c: 187:     uint8_t ard = (config.ARD << 4) | 0xF;
+[; ;../lib/handler_lib.c: 187:     nrf24_write_buff(0x0A, config.PipeAddr1, 5);
+[e ( _nrf24_write_buff (3 , , -> -> 10 `i `uc &U . _config 4 -> -> 5 `i `uc ]
+"189
+[; ;../lib/handler_lib.c: 189:     uint8_t ard = (config.ARD << 4) | 0xF;
 [v _ard `uc ~T0 @X0 1 a ]
 [e = _ard -> | << -> . _config 6 `i -> 4 `i -> 15 `i `uc ]
-"188
-[; ;../lib/handler_lib.c: 188:     nrf24_write_register(0x04, ard);
-[e ( _nrf24_write_register (2 , -> -> 4 `i `uc _ard ]
 "190
-[; ;../lib/handler_lib.c: 190:     memcpy(BoardAddress, config.Address, 3);
-[e ( _memcpy (3 , , -> &U _BoardAddress `*v -> &U . _config 1 `*Cv -> -> 3 `i `ui ]
-"191
-[; ;../lib/handler_lib.c: 191:     PingInterval = config.PingInterval;
-[e = _PingInterval . _config 2 ]
+[; ;../lib/handler_lib.c: 190:     nrf24_write_register(0x04, ard);
+[e ( _nrf24_write_register (2 , -> -> 4 `i `uc _ard ]
 "192
-[; ;../lib/handler_lib.c: 192: }
-[e :UE 871 ]
-}
+[; ;../lib/handler_lib.c: 192:     memcpy(BoardAddress, config.Address, 3);
+[e ( _memcpy (3 , , -> &U _BoardAddress `*v -> &U . _config 1 `*Cv -> -> 3 `i `ui ]
+"193
+[; ;../lib/handler_lib.c: 193:     PingInterval = config.PingInterval;
+[e = _PingInterval . _config 2 ]
 "194
-[; ;../lib/handler_lib.c: 194: uint8_t SendError(uint8_t errorCode) {
+[; ;../lib/handler_lib.c: 194: }
+[e :UE 877 ]
+}
+"196
+[; ;../lib/handler_lib.c: 196: uint8_t SendError(uint8_t errorCode) {
 [v _SendError `(uc ~T0 @X0 1 ef1`uc ]
 {
 [e :U _SendError ]
 [v _errorCode `uc ~T0 @X0 1 r1 ]
 [f ]
-"195
-[; ;../lib/handler_lib.c: 195:     uint8_t i = 0;
+"197
+[; ;../lib/handler_lib.c: 197:     uint8_t i = 0;
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-"196
-[; ;../lib/handler_lib.c: 196:     bufferTX[i] = 0x01;
-[e = *U + &U _bufferTX * -> _i `ux -> -> # *U &U _bufferTX `ui `ux -> -> 1 `i `uc ]
-"197
-[; ;../lib/handler_lib.c: 197:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
-[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
 "198
-[; ;../lib/handler_lib.c: 198:     i += 3;
-[e =+ _i -> -> 3 `i `uc ]
+[; ;../lib/handler_lib.c: 198:     bufferTX[i] = 0x01;
+[e = *U + &U _bufferTX * -> _i `ux -> -> # *U &U _bufferTX `ui `ux -> -> 1 `i `uc ]
 "199
-[; ;../lib/handler_lib.c: 199:     bufferTX[++i] = 0;
-[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux -> -> 0 `i `uc ]
+[; ;../lib/handler_lib.c: 199:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
 "200
-[; ;../lib/handler_lib.c: 200:     bufferTX[++i] = errorCode;
-[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux _errorCode ]
+[; ;../lib/handler_lib.c: 200:     i += 3;
+[e =+ _i -> -> 3 `i `uc ]
 "201
-[; ;../lib/handler_lib.c: 201:     return QueueTXPacket(bufferTX, (i + 1));
-[e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> _i `i -> 1 `i `uc ]
-[e $UE 872  ]
+[; ;../lib/handler_lib.c: 201:     bufferTX[++i] = 0;
+[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux -> -> 0 `i `uc ]
 "202
-[; ;../lib/handler_lib.c: 202: }
-[e :UE 872 ]
-}
+[; ;../lib/handler_lib.c: 202:     bufferTX[++i] = errorCode;
+[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux _errorCode ]
+"203
+[; ;../lib/handler_lib.c: 203:     return QueueTXPacket(bufferTX, (i + 1));
+[e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> _i `i -> 1 `i `uc ]
+[e $UE 878  ]
 "204
-[; ;../lib/handler_lib.c: 204: uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
+[; ;../lib/handler_lib.c: 204: }
+[e :UE 878 ]
+}
+"206
+[; ;../lib/handler_lib.c: 206: uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
 [v _SendData `(uc ~T0 @X0 1 ef3`uc`*uc`uc ]
 {
 [e :U _SendData ]
@@ -1364,61 +1393,61 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _data `*uc ~T0 @X0 1 r2 ]
 [v _dataSz `uc ~T0 @X0 1 r3 ]
 [f ]
-"205
-[; ;../lib/handler_lib.c: 205:     uint8_t i = 0;
+"207
+[; ;../lib/handler_lib.c: 207:     uint8_t i = 0;
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-"206
-[; ;../lib/handler_lib.c: 206:     bufferTX[i] = 0x01;
-[e = *U + &U _bufferTX * -> _i `ux -> -> # *U &U _bufferTX `ui `ux -> -> 1 `i `uc ]
-"207
-[; ;../lib/handler_lib.c: 207:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
-[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
 "208
-[; ;../lib/handler_lib.c: 208:     i += 3;
-[e =+ _i -> -> 3 `i `uc ]
+[; ;../lib/handler_lib.c: 208:     bufferTX[i] = 0x01;
+[e = *U + &U _bufferTX * -> _i `ux -> -> # *U &U _bufferTX `ui `ux -> -> 1 `i `uc ]
 "209
-[; ;../lib/handler_lib.c: 209:     bufferTX[++i] = actionID;
-[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux _actionID ]
+[; ;../lib/handler_lib.c: 209:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
 "210
-[; ;../lib/handler_lib.c: 210:     bufferTX[++i] = 0x00;
-[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux -> -> 0 `i `uc ]
+[; ;../lib/handler_lib.c: 210:     i += 3;
+[e =+ _i -> -> 3 `i `uc ]
 "211
-[; ;../lib/handler_lib.c: 211:     SuperMemCpy(bufferTX, i + 1, data, 0, dataSz);
-[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> + -> _i `i -> 1 `i `uc _data -> -> 0 `i `uc _dataSz ]
+[; ;../lib/handler_lib.c: 211:     bufferTX[++i] = actionID;
+[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux _actionID ]
 "212
-[; ;../lib/handler_lib.c: 212:     i += dataSz;
-[e =+ _i -> _dataSz `uc ]
+[; ;../lib/handler_lib.c: 212:     bufferTX[++i] = 0x00;
+[e = *U + &U _bufferTX * -> =+ _i -> -> 1 `i `uc `ux -> -> # *U &U _bufferTX `ui `ux -> -> 0 `i `uc ]
 "213
-[; ;../lib/handler_lib.c: 213:     return QueueTXPacket(bufferTX, (i + 1));
-[e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> _i `i -> 1 `i `uc ]
-[e $UE 873  ]
+[; ;../lib/handler_lib.c: 213:     SuperMemCpy(bufferTX, i + 1, data, 0, dataSz);
+[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> + -> _i `i -> 1 `i `uc _data -> -> 0 `i `uc _dataSz ]
 "214
-[; ;../lib/handler_lib.c: 214: }
-[e :UE 873 ]
-}
+[; ;../lib/handler_lib.c: 214:     i += dataSz;
+[e =+ _i -> _dataSz `uc ]
+"215
+[; ;../lib/handler_lib.c: 215:     return QueueTXPacket(bufferTX, (i + 1));
+[e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> _i `i -> 1 `i `uc ]
+[e $UE 879  ]
 "216
-[; ;../lib/handler_lib.c: 216: uint8_t SendPing(void) {
+[; ;../lib/handler_lib.c: 216: }
+[e :UE 879 ]
+}
+"218
+[; ;../lib/handler_lib.c: 218: uint8_t SendPing(void) {
 [v _SendPing `(uc ~T0 @X0 1 ef ]
 {
 [e :U _SendPing ]
 [f ]
-"217
-[; ;../lib/handler_lib.c: 217:     bufferTX[0] = 0x02;
-[e = *U + &U _bufferTX * -> -> -> 0 `i `ui `ux -> -> # *U &U _bufferTX `ui `ux -> -> 2 `i `uc ]
-"218
-[; ;../lib/handler_lib.c: 218:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
-[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
 "219
-[; ;../lib/handler_lib.c: 219:     return QueueTXPacket(bufferTX, (3 + 1));
-[e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> 3 `i -> 1 `i `uc ]
-[e $UE 874  ]
+[; ;../lib/handler_lib.c: 219:     bufferTX[0] = 0x02;
+[e = *U + &U _bufferTX * -> -> -> 0 `i `ui `ux -> -> # *U &U _bufferTX `ui `ux -> -> 2 `i `uc ]
 "220
-[; ;../lib/handler_lib.c: 220: }
-[e :UE 874 ]
-}
+[; ;../lib/handler_lib.c: 220:     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
+[e ( _SuperMemCpy (4 , , , , &U _bufferTX -> -> 1 `i `uc &U _BoardAddress -> -> 0 `i `uc -> -> 3 `i `uc ]
+"221
+[; ;../lib/handler_lib.c: 221:     return QueueTXPacket(bufferTX, (3 + 1));
+[e ) ( _QueueTXPacket (2 , &U _bufferTX -> + -> 3 `i -> 1 `i `uc ]
+[e $UE 880  ]
 "222
-[; ;../lib/handler_lib.c: 222: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
+[; ;../lib/handler_lib.c: 222: }
+[e :UE 880 ]
+}
+"224
+[; ;../lib/handler_lib.c: 224: void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
 [v _SuperMemCpy `(v ~T0 @X0 1 ef5`*uc`uc`*uc`uc`uc ]
 {
 [e :U _SuperMemCpy ]
@@ -1428,26 +1457,26 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _srcStart `uc ~T0 @X0 1 r4 ]
 [v _sz `uc ~T0 @X0 1 r5 ]
 [f ]
-"223
-[; ;../lib/handler_lib.c: 223:     for (uint8_t i = 0; i < sz; i++) {
+"225
+[; ;../lib/handler_lib.c: 225:     for (uint8_t i = 0; i < sz; i++) {
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-[e $U 879  ]
-[e :U 876 ]
+[e $U 885  ]
+[e :U 882 ]
 {
-"224
-[; ;../lib/handler_lib.c: 224:         dest[i + destStart] = src[i + srcStart];
+"226
+[; ;../lib/handler_lib.c: 226:         dest[i + destStart] = src[i + srcStart];
 [e = *U + _dest * -> + -> _i `i -> _destStart `i `x -> -> # *U _dest `i `x *U + _src * -> + -> _i `i -> _srcStart `i `x -> -> # *U _src `i `x ]
-"225
-[; ;../lib/handler_lib.c: 225:     }
+"227
+[; ;../lib/handler_lib.c: 227:     }
 }
 [e ++ _i -> -> 1 `i `uc ]
-[e :U 879 ]
-[e $ < -> _i `i -> _sz `i 876  ]
-[e :U 877 ]
+[e :U 885 ]
+[e $ < -> _i `i -> _sz `i 882  ]
+[e :U 883 ]
 }
-"226
-[; ;../lib/handler_lib.c: 226: }
-[e :UE 875 ]
+"228
+[; ;../lib/handler_lib.c: 228: }
+[e :UE 881 ]
 }

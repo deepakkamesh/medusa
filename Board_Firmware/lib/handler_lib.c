@@ -63,7 +63,7 @@ void InitRadio(void) {
 
 // QueueTXPacket queues a packet to be transmitted. 
 // returns 1 if success or 0 if no free slot.
-
+// TODO: Discard old packets if buffer full.
 uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
     uint8_t i;
     for (i = 0; i < MAX_TX_QUEUE_SZ; i++) {
@@ -102,9 +102,11 @@ void HandlePacketLoop(void) {
     while (1) {
         status = nrf24_read_register(NRF24_MEM_STATUSS);
         if ((status & 0x20) || (status & 0x10)) {
+            LED_SetLow();
             break;
         }
         __delay_us(10);
+        LED_SetHigh();
     }
     // Clear status register.
     nrf24_write_register(NRF24_MEM_STATUSS, 0x70);

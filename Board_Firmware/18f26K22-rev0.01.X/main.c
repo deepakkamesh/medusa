@@ -55,6 +55,9 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             GetMockTempHumidity(tmpHumidity);
             SendData(ACTION_GET_TEMP_HUMIDITY, tmpHumidity, 2);
             break;
+        case ACTION_RESET_DEVICE:
+            RESET();
+            break;
         default:
             SendError(ERR_NOT_IMPL);
     }

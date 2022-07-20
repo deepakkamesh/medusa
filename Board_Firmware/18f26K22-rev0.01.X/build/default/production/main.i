@@ -9456,11 +9456,11 @@ void OSCILLATOR_Initialize(void);
 
 
 
-# 1 "./../lib/master_exports.h.h" 1
+# 1 "./../lib/master_exports.h" 1
 
 
 # 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 3 "./../lib/master_exports.h.h" 2
+# 3 "./../lib/master_exports.h" 2
 # 9 "./../lib/nrf24_lib.h" 2
 
 
@@ -9522,13 +9522,13 @@ uint8_t nrf24_read_dynamic_payload_length(void) ;
 # 6 "main.c" 2
 
 # 1 "./../lib/handler_lib.h" 1
-# 1 "./../lib/master_exports.h.h" 1
+# 1 "./../lib/master_exports.h" 1
 
 
 # 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 3 "./../lib/master_exports.h.h" 2
+# 3 "./../lib/master_exports.h" 2
 # 2 "./../lib/handler_lib.h" 2
-# 29 "./../lib/handler_lib.h"
+# 30 "./../lib/handler_lib.h"
 uint8_t DEFAULT_PIPE_ADDR[] = "hello";
 uint8_t PingInterval = 1;
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF};
@@ -9566,11 +9566,11 @@ struct Config {
 
 # 1 "./../lib/dht11_lib.h" 1
 
-# 1 "./../lib/master_exports.h.h" 1
+# 1 "./../lib/master_exports.h" 1
 
 
 # 1 "./../lib/../18f26K22-rev0.01.X/exports.h" 1
-# 3 "./../lib/master_exports.h.h" 2
+# 3 "./../lib/master_exports.h" 2
 # 3 "./../lib/dht11_lib.h" 2
 
 
@@ -9627,6 +9627,9 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
         case 0x02:
             GetMockTempHumidity(tmpHumidity);
             SendData(0x02, tmpHumidity, 2);
+            break;
+        case 0x14:
+            __asm("reset");
             break;
         default:
             SendError(0x04);
