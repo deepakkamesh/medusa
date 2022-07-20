@@ -60,11 +60,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;./../lib/dht11_lib.h: 7: uint8_t GetMockTempHumidity(uint8_t *temp);
 [v _GetMockTempHumidity `(uc ~T0 @X0 0 ef1`*uc ]
 "44 ./../lib/handler_lib.h
-[; ;./../lib/handler_lib.h: 44: uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
-[v _SendData `(uc ~T0 @X0 0 ef3`uc`*uc`uc ]
+[; ;./../lib/handler_lib.h: 44: void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
+[v _SendData `(v ~T0 @X0 0 ef3`uc`*uc`uc ]
 "40
-[; ;./../lib/handler_lib.h: 40: uint8_t SendError(uint8_t errorCode);
-[v _SendError `(uc ~T0 @X0 0 ef1`uc ]
+[; ;./../lib/handler_lib.h: 40: void SendError(uint8_t errorCode);
+[v _SendError `(v ~T0 @X0 0 ef1`uc ]
 "55 /Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h
 [; ;/Applications/microchip/mplabx/v6.00/packs/Microchip/PIC18F-K_DFP/1.5.114/xc8/pic/include/proc/pic18f26k22.h: 55: __asm("ANSELA equ 0F38h");
 [; <" ANSELA equ 0F38h ;# ">
@@ -879,8 +879,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _actionID `uc ~T0 @X0 1 r1 ]
 [v _data `*uc ~T0 @X0 1 r2 ]
 [f ]
-[v F6201 `uc ~T0 @X0 -> 2 `i s ]
-[i F6201
+[v F6202 `uc ~T0 @X0 -> 2 `i s ]
+[i F6202
 :U ..
 "42
 [; ;main.c: 42:     uint8_t tmpHumidity[] = {0, 0};
@@ -889,7 +889,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 ..
 ]
 [v _tmpHumidity `uc ~T0 @X0 -> 2 `i a ]
-[e = _tmpHumidity F6201 ]
+[e = _tmpHumidity F6202 ]
 "44
 [; ;main.c: 44:     switch (actionID) {
 [e $U 839  ]

@@ -62,22 +62,27 @@ void InitRadio(void) {
 }
 
 // QueueTXPacket queues a packet to be transmitted. 
-// returns 1 if success or 0 if no free slot.
-// TODO: Discard old packets if buffer full.
-uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
-    uint8_t i;
+void QueueTXPacket(uint8_t *buffer, uint8_t sz) {
+    uint8_t i, oldestPkt = 0;
+    uint32_t oldestTime = Ticks;
     for (i = 0; i < MAX_TX_QUEUE_SZ; i++) {
+        // Find the oldest packet in queue.
+        if (packetsTX[i].tmpstmp < oldestTime) {
+            oldestTime = packetsTX[i].tmpstmp;
+            oldestPkt = i;
+        }
         if (packetsTX[i].free) {
             break;
         }
     }
+    // Use the oldest packet slot in queue.
     if (i == MAX_TX_QUEUE_SZ) {
-        return 0;
+        i = oldestPkt;
     }
     packetsTX[i].free = false;
     packetsTX[i].size = sz;
     memcpy(packetsTX[i].packet, buffer, sz);
-    return 1;
+    packetsTX[i].tmpstmp = Ticks;
 }
 
 // Sends packets 1 at a time.
@@ -193,17 +198,17 @@ void ReloadConfig(void) {
     PingInterval = config.PingInterval;
 }
 
-uint8_t SendError(uint8_t errorCode) {
+void SendError(uint8_t errorCode) {
     uint8_t i = 0;
     bufferTX[i] = PKT_DATA;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     i += ADDR_LEN;
     bufferTX[++i] = 0; // ActionID.
     bufferTX[++i] = errorCode;
-    return QueueTXPacket(bufferTX, (i + 1));
+    QueueTXPacket(bufferTX, (i + 1));
 }
 
-uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
+void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
     uint8_t i = 0;
     bufferTX[i] = PKT_DATA;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
@@ -212,13 +217,13 @@ uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
     bufferTX[++i] = ERR_NA;
     SuperMemCpy(bufferTX, i + 1, data, 0, dataSz);
     i += dataSz;
-    return QueueTXPacket(bufferTX, (i + 1));
+    QueueTXPacket(bufferTX, (i + 1));
 }
 
-uint8_t SendPing(void) {
+void SendPing(void) {
     bufferTX[0] = PKT_PING;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
-    return QueueTXPacket(bufferTX, (ADDR_LEN + 1));
+    QueueTXPacket(bufferTX, (ADDR_LEN + 1));
 }
 
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {

@@ -9539,16 +9539,17 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
 void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 _Bool VerifyBoardAddress(uint8_t *bufferRX);
 void HandlePacketLoop(void);
-uint8_t SendError(uint8_t errorCode);
-uint8_t SendPing(void);
+void SendError(uint8_t errorCode);
+void SendPing(void);
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
-uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
+void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 
 typedef struct {
     uint8_t packet[32];
     _Bool free;
     uint8_t size;
+    uint32_t tmpstmp;
 } Packet;
 
 

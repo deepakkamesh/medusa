@@ -9513,16 +9513,17 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
 void ProcessActionRequest(uint8_t actionID, uint8_t * data);
 _Bool VerifyBoardAddress(uint8_t *bufferRX);
 void HandlePacketLoop(void);
-uint8_t SendError(uint8_t errorCode);
-uint8_t SendPing(void);
+void SendError(uint8_t errorCode);
+void SendPing(void);
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
-uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
+void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 
 typedef struct {
     uint8_t packet[32];
     _Bool free;
     uint8_t size;
+    uint32_t tmpstmp;
 } Packet;
 
 
@@ -9676,22 +9677,27 @@ void InitRadio(void) {
 }
 
 
-
-
-uint8_t QueueTXPacket(uint8_t *buffer, uint8_t sz) {
-    uint8_t i;
+void QueueTXPacket(uint8_t *buffer, uint8_t sz) {
+    uint8_t i, oldestPkt = 0;
+    uint32_t oldestTime = Ticks;
     for (i = 0; i < 8; i++) {
+
+        if (packetsTX[i].tmpstmp < oldestTime) {
+            oldestTime = packetsTX[i].tmpstmp;
+            oldestPkt = i;
+        }
         if (packetsTX[i].free) {
             break;
         }
     }
+
     if (i == 8) {
-        return 0;
+        i = oldestPkt;
     }
     packetsTX[i].free = 0;
     packetsTX[i].size = sz;
     memcpy(packetsTX[i].packet, buffer, sz);
-    return 1;
+    packetsTX[i].tmpstmp = Ticks;
 }
 
 
@@ -9807,17 +9813,17 @@ void ReloadConfig(void) {
     PingInterval = config.PingInterval;
 }
 
-uint8_t SendError(uint8_t errorCode) {
+void SendError(uint8_t errorCode) {
     uint8_t i = 0;
     bufferTX[i] = 0x01;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
     i += 3;
     bufferTX[++i] = 0;
     bufferTX[++i] = errorCode;
-    return QueueTXPacket(bufferTX, (i + 1));
+    QueueTXPacket(bufferTX, (i + 1));
 }
 
-uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
+void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
     uint8_t i = 0;
     bufferTX[i] = 0x01;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
@@ -9826,13 +9832,13 @@ uint8_t SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
     bufferTX[++i] = 0x00;
     SuperMemCpy(bufferTX, i + 1, data, 0, dataSz);
     i += dataSz;
-    return QueueTXPacket(bufferTX, (i + 1));
+    QueueTXPacket(bufferTX, (i + 1));
 }
 
-uint8_t SendPing(void) {
+void SendPing(void) {
     bufferTX[0] = 0x02;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, 3);
-    return QueueTXPacket(bufferTX, (3 + 1));
+    QueueTXPacket(bufferTX, (3 + 1));
 }
 
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
