@@ -35,6 +35,7 @@ void main(void) {
     while (1) {
         HandlePacketLoop();
         NOP();
+        ClrWdt();
     }
 }
 

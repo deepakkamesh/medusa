@@ -62,6 +62,7 @@ void InitRadio(void) {
 }
 
 // QueueTXPacket queues a packet to be transmitted. 
+// If the q is full kick out the oldest packet.
 void QueueTXPacket(uint8_t *buffer, uint8_t sz) {
     uint8_t i, oldestPkt = 0;
     uint32_t oldestTime = Ticks;
@@ -97,6 +98,7 @@ void HandlePacketLoop(void) {
         }
     }
     if (i == MAX_TX_QUEUE_SZ) {
+        Sleep(); // Sleep and timer/interrupt will wake you up every PING_INT;
         return; // Nothing to do.
     }
 
@@ -107,11 +109,9 @@ void HandlePacketLoop(void) {
     while (1) {
         status = nrf24_read_register(NRF24_MEM_STATUSS);
         if ((status & 0x20) || (status & 0x10)) {
-            LED_SetLow();
             break;
         }
         __delay_us(10);
-        LED_SetHigh();
     }
     // Clear status register.
     nrf24_write_register(NRF24_MEM_STATUSS, 0x70);

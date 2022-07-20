@@ -288,7 +288,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="INTERNAL OSCILLATOR" registerAlias="OSCCON"/>
-         <value>48</value>
+         <value>176</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="INTERNAL OSCILLATOR" registerAlias="OSCCON2"/>
@@ -304,7 +304,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="INTERNAL OSCILLATOR" registerAlias="OSCCON" settingAlias="IDLEN"/>
-         <value>disabled</value>
+         <value>enabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="INTERNAL OSCILLATOR" registerAlias="OSCCON" settingAlias="IRCF"/>
@@ -3252,7 +3252,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="System Module" registerAlias="CONFIG2H"/>
-         <value>60</value>
+         <value>61</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="System Module" registerAlias="CONFIG2L"/>
@@ -3312,7 +3312,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="System Module" registerAlias="CONFIG2H" settingAlias="WDTEN"/>
-         <value>OFF</value>
+         <value>NOSLP</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="System Module" registerAlias="CONFIG2H" settingAlias="WDTPS"/>
@@ -3769,12 +3769,12 @@
          <hash>9184dadde4991d447dc71077a4a46dc7d503900f188b4403805499fa9ecb10cc</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/pin_manager.h</file>
-         <hash>2a9dc0081e06f62cfa9b52422233ca2bfcd5cf413aa2fd6966e4ac6a2c7cdbe3</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files/spi1.c</file>
          <hash>c4a414fc6f9c94219fd7b5bfabdebeb3e76981f536127038d2527501d1dad09a</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/pin_manager.h</file>
+         <hash>2a9dc0081e06f62cfa9b52422233ca2bfcd5cf413aa2fd6966e4ac6a2c7cdbe3</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/tmr1.c</file>
@@ -3802,7 +3802,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/device_config.c</file>
-         <hash>5a694afe9e0636bd72f10380b990b4a18c021becf14ecdd1571bdaad3748b52d</hash>
+         <hash>f5ad1cab5d4914fd9496827c53fe472db460ba1630db7f70ae4861d6195bedf0</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/interrupt_manager.c</file>
@@ -3810,7 +3810,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/mcc.c</file>
-         <hash>ab50e8400673e3dce6628aef92a07b0ad1bf2e71d68bdcbd55c58d082de49c49</hash>
+         <hash>46e134aa69d6afe0b88bf70148bd6daad4f4b2e5e0261098f53c40edaa958f44</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/pin_manager.c</file>
