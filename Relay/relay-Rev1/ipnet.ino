@@ -23,6 +23,8 @@ uint8_t bufferTX[255];
 // TODO: get from wifimanager.
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
+//const char* ssid = "Utopian";
+//const char* password = "moretti308!!";
 char* controllerHost = "192.168.1.111";
 uint16_t controllerPort = 6000;
 
@@ -169,30 +171,6 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
   }
 }
 
-unsigned long previousMillis = 0;
-unsigned long interval = 30000;
-
-void WifiKeepAlive(void) {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    if (WiFi.status() != WL_CONNECTED) {
-      delay(1000);
-      ESP.restart();
-    }
-    previousMillis = currentMillis;
-  }
-}
-
-void PrintPkt(char *str, uint8_t buff[], int len) {
-#ifdef DEBUG
-  Serial.print(str);
-  for (int i = 0; i < len; i++) {
-    Serial.printf(" %02X,", buff[i]);
-  }
-  Serial.println();
-#endif
-}
-
 int SendError(uint8_t errorCode) {
   // Send config packet request.
   bufferTX[0] = PKT_TYPE_RELAY_ERROR;
@@ -225,4 +203,38 @@ int SendRadioPacket(uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
     return 0;
   }
   return 1;
+}
+
+/************* Utility Functions *********************/
+
+
+void PrintPkt(char *str, uint8_t buff[], int len) {
+#ifdef DEBUG
+  Serial.print(str);
+  for (int i = 0; i < len; i++) {
+    Serial.printf(" %02X,", buff[i]);
+  }
+  Serial.println();
+#endif
+}
+
+unsigned long previousMillis = 0;
+unsigned long interval = 30000;
+
+void WifiKeepAlive(void) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    if (WiFi.status() != WL_CONNECTED) {
+      delay(1000);
+      ESP.restart();
+    }
+    previousMillis = currentMillis;
+  }
+}
+
+
+void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
+    for (uint8_t i = 0; i < sz; i++) {
+        dest[i + destStart] = src[i + srcStart];
+    }
 }

@@ -31,9 +31,9 @@ struct RelayConfig Config = {
 void setup() {
   Serial.begin(9600);
   pinMode(LED_ONBOARD, OUTPUT);
-
+  int ok ;
   WifiConnect();
-  int ok = RelaySetup();
+  ok = RelaySetup();
   if (!ok) {
     digitalWrite(LED_ONBOARD, false); // false turns it on?.
     delay(1000);
@@ -48,7 +48,9 @@ void setup() {
 }
 
 void loop() {
-  RadioLoop();
+  RadioRcvLoop();
   IpLoop();
+  RadioSendLoop();
   WifiKeepAlive();
+
 }
