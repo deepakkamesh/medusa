@@ -21,6 +21,7 @@
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_RELOAD_CONFIG 0x15
+#define ACTION_TEST 0x16
 #define ACTION_GET_TEMP_HUMIDITY 0x02
 #define ACTION_GET_LIGHT 0x03
 
@@ -28,7 +29,7 @@
 #define DEFAULT_RF_CHANNEL 115
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
 uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
-uint8_t PingInterval = 1; // Default ping interval.
+uint8_t PingInterval = 10; // Default ping interval.
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
 
 void TimerInterruptHandler(void);
@@ -42,16 +43,27 @@ void SendPing(void);
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
 void ReloadConfig(void);
 void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
+void TestFunc(void);
+void HandleTimeLoop(void);
 
+// Queue Functions.
 typedef struct {
     uint8_t packet[MAX_PKT_SZ];
-    bool free;
     uint8_t size; // Size of packet.
-    uint32_t tmpstmp; // Time stamp of when packet was queued.
 } Packet;
 
-// Config stores the configuration of the board.
+typedef struct {
+  Packet packets[MAX_TX_QUEUE_SZ];
+  uint8_t readPtr;
+  uint8_t writePtr;
+  uint8_t overflow;
+} Queue;
 
+void initQ(Queue *q);
+void enQueue(uint8_t *buf, uint8_t sz, Queue *q);
+uint8_t deQueue(uint8_t *buff, Queue *q) ;
+
+// Config stores the configuration of the board.
 struct Config {
     bool IsConfigured; // True if board is configured.
     uint8_t Address[3]; // Address of the board.

@@ -12,13 +12,14 @@
 #include "nrf24_lib.h"
 #include "dht11_lib.h"
 
+uint32_t prevTicks = 0;
 uint32_t Ticks = 0; // Ticks of timer.
 struct Config config; // Board config.
 
 uint8_t bufferTX[32];
 uint8_t bufferRX[32];
 
-Packet packetsTX[MAX_TX_QUEUE_SZ]; // Transmit buffer.
+Queue TXQueue; //Transmit Queue;
 
 void InitRadio(void) {
     nrf24_rf_init();
@@ -55,54 +56,39 @@ void InitRadio(void) {
     config.ARD = DEFAULT_ARD;
 
     // Initialize Transmit buffer.
-    for (uint8_t i = 0; i < MAX_TX_QUEUE_SZ; i++) {
-        packetsTX[i].free = true;
-        packetsTX[i].size = 0;
-    }
+    initQ(&TXQueue);
 }
 
-// QueueTXPacket queues a packet to be transmitted. 
-// If the q is full kick out the oldest packet.
-void QueueTXPacket(uint8_t *buffer, uint8_t sz) {
-    uint8_t i, oldestPkt = 0;
-    uint32_t oldestTime = Ticks;
-    for (i = 0; i < MAX_TX_QUEUE_SZ; i++) {
-        // Find the oldest packet in queue.
-        if (packetsTX[i].tmpstmp < oldestTime) {
-            oldestTime = packetsTX[i].tmpstmp;
-            oldestPkt = i;
-        }
-        if (packetsTX[i].free) {
-            break;
-        }
+void HandleTimeLoop(void) {
+
+    uint32_t currTicks = Ticks;
+    if (currTicks == prevTicks) {
+        return;
     }
-    // Use the oldest packet slot in queue.
-    if (i == MAX_TX_QUEUE_SZ) {
-        i = oldestPkt;
+    prevTicks = currTicks;
+
+    // Perform any timed activity here.
+    if (currTicks % PingInterval == 0) {
+        SendPing();
     }
-    packetsTX[i].free = false;
-    packetsTX[i].size = sz;
-    memcpy(packetsTX[i].packet, buffer, sz);
-    packetsTX[i].tmpstmp = Ticks;
 }
 
 // Sends packets 1 at a time.
 
 void HandlePacketLoop(void) {
     uint8_t i;
+    uint8_t TXPacket[MAX_PKT_SZ];
+    uint8_t TXPktSz = 0;
 
-    // Check if there are any packets to send.
-    for (i = 0; i < MAX_TX_QUEUE_SZ; i++) {
-        if (!packetsTX[i].free) {
-            break;
-        }
-    }
-    if (i == MAX_TX_QUEUE_SZ) {
-        Sleep(); // Sleep and timer/interrupt will wake you up every PING_INT;
-        return; // Nothing to do.
+    TXPktSz = deQueue(TXPacket, &TXQueue);
+    
+    // Check queue; if nothing sleep.
+    if (TXPktSz == 0) {
+        Sleep();
+        return;
     }
 
-    nrf24_send_rf_data(packetsTX[i].packet, packetsTX[i].size);
+    nrf24_send_rf_data(TXPacket, TXPktSz);
 
     // Wait for successful TX or MAX_RT assertion.
     uint8_t status = 0;
@@ -119,38 +105,29 @@ void HandlePacketLoop(void) {
     // MAX_RT exceeded. 
     if (status & 0x10) {
         nrf24_flush_tx_rx();
+        enQueue(TXPacket, TXPktSz,&TXQueue); // Send failed so enqueue packet.
         return;
-        // TODO: Update primary address to another pipe address.
-        // after x retries shutdown to conserve battery.
+        // TODO: Exponential back off on failures.
     }
-
-    // Free up the slot since packet was transmitted successfully.
-    packetsTX[i].free = true;
 
     // Check for ack payload. 
     if (status & 0x40) {
         uint8_t sz = nrf24_read_dynamic_payload_length();
         nrf24_read_rf_data(bufferRX, sz);
-        if (!VerifyBoardAddress(bufferRX)) { // Address does not match.
-            return;
-        }
+        /* if (!VerifyBoardAddress(bufferRX)) { // Address does not match.
+             return;
+         }*/
         ProcessAckPayload(bufferRX, sz);
     }
 }
 
 void TimerInterruptHandler(void) {
     Ticks++;
-
-    // Send ping packets. 
-    if (Ticks % PingInterval != 0) {
-        return;
-    }
-    SendPing();
 }
 
-bool VerifyBoardAddress(uint8_t *bufferRX) {
+bool VerifyBoardAddress(uint8_t *buffer) {
     for (int i = 0; i < ADDR_LEN; i++) {
-        if (BoardAddress[i] != bufferRX[i + 1]) {
+        if (BoardAddress[i] != buffer[i + 1]) {
             return false;
         }
     }
@@ -205,7 +182,7 @@ void SendError(uint8_t errorCode) {
     i += ADDR_LEN;
     bufferTX[++i] = 0; // ActionID.
     bufferTX[++i] = errorCode;
-    QueueTXPacket(bufferTX, (i + 1));
+    enQueue(bufferTX, (i + 1), &TXQueue);
 }
 
 void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
@@ -217,17 +194,65 @@ void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
     bufferTX[++i] = ERR_NA;
     SuperMemCpy(bufferTX, i + 1, data, 0, dataSz);
     i += dataSz;
-    QueueTXPacket(bufferTX, (i + 1));
+    enQueue(bufferTX, (i + 1), &TXQueue);
 }
 
 void SendPing(void) {
     bufferTX[0] = PKT_PING;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
-    QueueTXPacket(bufferTX, (ADDR_LEN + 1));
+    enQueue(bufferTX, (ADDR_LEN + 1), &TXQueue);
 }
+
+/***************************** Utility Functions *****************************/
 
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
     for (uint8_t i = 0; i < sz; i++) {
         dest[i + destStart] = src[i + srcStart];
     }
+}
+
+void TestFunc(void) {
+    uint8_t buff[] = {0};
+    SendData(ACTION_TEST, buff, 1);
+}
+
+/***************************** Queuing Functions *****************************/
+
+void initQ(Queue *q) {
+    q->readPtr = 0;
+    q->writePtr = 0;
+    q->overflow = 0;
+    uint8_t i = 0;
+    for (i = 0; i < MAX_TX_QUEUE_SZ; i++) {
+        q->packets[i].size = 0;
+    }
+}
+
+void enQueue(uint8_t *buf, uint8_t sz, Queue *q) {
+    memcpy(q->packets[q->writePtr].packet, buf, sz);
+    q->packets[q->writePtr].size = sz;
+    q->writePtr++;
+    if (q->writePtr == MAX_TX_QUEUE_SZ) {
+        q->writePtr = 0;
+        q->overflow = 1;
+    }
+}
+
+uint8_t deQueue(uint8_t *buff, Queue *q) {
+    if (!q->overflow && q->readPtr == q->writePtr) {
+        return 0;
+    }
+    if (q->overflow && q->readPtr < q->writePtr) {
+        q->readPtr = q->writePtr;
+    }
+
+    memcpy(buff, q->packets[q->readPtr].packet, q->packets[q->readPtr].size);
+    uint8_t sz = q->packets[q->readPtr].size;
+    q->readPtr++;
+
+    if (q->readPtr == MAX_TX_QUEUE_SZ) {
+        q->readPtr = 0;
+        q->overflow = 0;
+    }
+    return sz;
 }

@@ -34,10 +34,11 @@ void main(void) {
 
     while (1) {
         HandlePacketLoop();
+        HandleTimeLoop();
         NOP();
         ClrWdt();
+        }
     }
-}
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
     uint8_t tmpHumidity[] = {0, 0};
@@ -58,6 +59,9 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             break;
         case ACTION_RESET_DEVICE:
             RESET();
+            break;
+        case ACTION_TEST:
+            TestFunc();
             break;
         default:
             SendError(ERR_NOT_IMPL);
