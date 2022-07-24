@@ -7,8 +7,6 @@
 #include "../lib/handler_lib.h"
 #include "../lib/dht11_lib.h"
 
-
-
 void main(void) {
     // Initialize the device
     SYSTEM_Initialize();
@@ -29,7 +27,7 @@ void main(void) {
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
-
+    LoadAddrFromEE();
     InitRadio();
 
     while (1) {
@@ -37,8 +35,8 @@ void main(void) {
         HandleTimeLoop();
         NOP();
         ClrWdt();
-        }
     }
+}
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
     uint8_t tmpHumidity[] = {0, 0};

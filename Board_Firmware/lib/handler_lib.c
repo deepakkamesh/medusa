@@ -79,7 +79,7 @@ void HandlePacketLoop(void) {
     uint8_t TXPktSz = 0;
 
     TXPktSz = deQueue(TXPacket, &TXQueue);
-    
+
     // Check queue; if nothing sleep.
     if (TXPktSz == 0) {
         Sleep();
@@ -103,7 +103,7 @@ void HandlePacketLoop(void) {
     // MAX_RT exceeded. 
     if (status & 0x10) {
         nrf24_flush_tx_rx();
-        enQueue(TXPacket, TXPktSz,&TXQueue); // Send failed so enqueue packet.
+        enQueue(TXPacket, TXPktSz, &TXQueue); // Send failed so enqueue packet.
         return;
         // TODO: Exponential back off on failures.
     }
@@ -169,6 +169,7 @@ void ReloadConfig(void) {
     nrf24_write_register(NRF24_MEM_SETUP_RETR, ard);
 
     memcpy(BoardAddress, config.Address, ADDR_LEN);
+    WriteAddrToEE(); // Save the address to EEPROM.
     PingInterval = config.PingInterval;
 }
 
@@ -198,6 +199,18 @@ void SendPing(void) {
     bufferTX[0] = PKT_PING;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     enQueue(bufferTX, (ADDR_LEN + 1), &TXQueue);
+}
+
+void LoadAddrFromEE(void) {
+    for (uint8_t i = 0; i < ADDR_LEN; i++) {
+        BoardAddress[i] = DATAEE_ReadByte(EEPROM_ADDR + i);
+    }
+}
+
+void WriteAddrToEE(void) {
+    for (uint8_t i = 0; i < ADDR_LEN; i++) {
+        DATAEE_WriteByte(EEPROM_ADDR + i, BoardAddress[i]);
+    }
 }
 
 /***************************** Utility Functions *****************************/

@@ -46,6 +46,11 @@ void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 void TestFunc(void);
 void HandleTimeLoop(void);
 
+// EEPROM stuff.
+#define EEPROM_ADDR 0x10
+void LoadAddrFromEE(void);
+void WriteAddrToEE(void);
+
 // Queue Functions.
 typedef struct {
     uint8_t packet[MAX_PKT_SZ];
