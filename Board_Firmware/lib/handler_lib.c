@@ -112,9 +112,9 @@ void HandlePacketLoop(void) {
     if (status & 0x40) {
         uint8_t sz = nrf24_read_dynamic_payload_length();
         nrf24_read_rf_data(bufferRX, sz);
-        /* if (!VerifyBoardAddress(bufferRX)) { // Address does not match.
-             return;
-         }*/
+        if (!VerifyBoardAddress(bufferRX)) { // Address does not match.
+            return;
+        }
         ProcessAckPayload(bufferRX, sz);
     }
 }
@@ -153,7 +153,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
             config.PingInterval = buffer[7];
             break;
         default:
-            SendError(ERR_NOT_IMPL);
+            SendError(ERR_UNKNOWN_PKT_TYPE);
     }
 }
 

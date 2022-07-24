@@ -51,6 +51,9 @@ int RadioSetup() {
   radio.openReadingPipe(4, Config.pipe_addr_p4);
   radio.openReadingPipe(5, Config.pipe_addr_p5);
 
+  radio.flush_tx();
+  radio.flush_rx();
+
   radio.startListening();
 
   // Init. AckPacketQ.
@@ -95,6 +98,7 @@ void RadioSendLoop() {
   if (!ok) {
     enQueue(AckPkt, AckPktSz, pipeNum, &qTX);
   }
+  delay(10); // This delay is needed to prevent packet corruption!!.
 }
 
 int SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz) {

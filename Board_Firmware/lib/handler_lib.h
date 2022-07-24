@@ -16,6 +16,7 @@
 // Error Types.
 #define ERR_NA 0x00
 #define ERR_NOT_IMPL 0x04
+#define ERR_UNKNOWN_PKT_TYPE 0x05
 
 // Action Types.
 #define ACTION_STATUS_LED 0x13
@@ -29,7 +30,7 @@
 #define DEFAULT_RF_CHANNEL 115
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
 uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
-uint8_t PingInterval = 1; // Default ping interval.
+uint8_t PingInterval = 2; // Default ping interval.
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
 
 void TimerInterruptHandler(void);
