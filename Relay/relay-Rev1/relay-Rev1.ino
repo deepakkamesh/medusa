@@ -28,6 +28,9 @@ struct RelayConfig Config = {
   .nrf24Channel = 115,
 };
 
+RF24 radio(5, 4); // CE, CSN.
+
+
 void setup() {
   Serial.begin(9600);
   pinMode(LED_ONBOARD, OUTPUT);

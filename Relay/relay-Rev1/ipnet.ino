@@ -2,6 +2,7 @@
 
 #define RELAY_CONFIG_ANS_LEN 16 // Length of  Relay Get Answer
 #define PIPE_ADDR_LEN 5 // Address length of pipe.
+#define MAC_ADDR_LEN 6
 
 #define PKT_TYPE_RELAY_GET_CONFIG 0xAA // Packet type for Relay Get Config
 #define PKT_TYPE_RELAY_CONFIG_ANS 0xAB // Packet type for Relay Get Answer
@@ -15,6 +16,7 @@
 
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
+#define ACTION_FLUSH_TX_FIFO 0x17
 
 WiFiUDP Udp;
 uint8_t bufferRX[255];
@@ -23,8 +25,6 @@ uint8_t bufferTX[255];
 // TODO: get from wifimanager.
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
-//const char* ssid = "Utopian";
-//const char* password = "moretti308!!";
 char* controllerHost = "192.168.1.111";
 uint16_t controllerPort = 6000;
 
@@ -60,10 +60,7 @@ int RelaySetup(void) {
   bufferTX[0] = PKT_TYPE_RELAY_GET_CONFIG;
   uint8_t mac[6];
   WiFi.macAddress(mac);
-  for (int i = 0; i < 6; i++) {
-    bufferTX[i + 1] = mac[i];
-  }
-
+  SuperMemCpy(bufferTX, 1, mac, 0, MAC_ADDR_LEN);
   while (1) {
     delay(1000);
     // Send config packet request.
@@ -92,12 +89,8 @@ int RelaySetup(void) {
     }
 
     // Parse config packet and store in Config struct.
-    for (int i = 0; i < PIPE_ADDR_LEN; i++) {
-      Config.pipe_addr_p0[i] = bufferRX[i + 1];
-    }
-    for (int i = 0; i < PIPE_ADDR_LEN; i++) {
-      Config.pipe_addr_p1[i] = bufferRX[i + 6];
-    }
+    SuperMemCpy(Config.pipe_addr_p0, 0, bufferRX, 1, PIPE_ADDR_LEN);
+    SuperMemCpy(Config.pipe_addr_p1, 0, bufferRX, 6, PIPE_ADDR_LEN);
     Config.pipe_addr_p2[0] = bufferRX[11];
     Config.pipe_addr_p3[0] = bufferRX[12];
     Config.pipe_addr_p4[0] = bufferRX[13];
@@ -133,38 +126,41 @@ void IpLoop(void) {
   uint8_t buffer[32];
   switch (bufferRX[0]) {
     case PKT_TYPE_RELAY_DATA:
-    {
-      for (int i = 0; i < sz - 2 ; i++) {
-        buffer[i] = bufferRX[i + 2];
+      {
+        SuperMemCpy(buffer, 0, bufferRX, 2, sz - 2);
+        uint8_t pipeNum = bufferRX[1];
+        int ok = SendNetPacket(pipeNum, buffer, sz - 2) ;
+        if (!ok) {
+          SendError(ERROR_RELAY_ACK_PAYLOAD_LOAD);
+        }
+        break;
       }
-      uint8_t pipeNum = bufferRX[1];
-      int ok = SendNetPacket(pipeNum, buffer, sz - 2) ;
-      if (!ok) {
-        SendError(ERROR_RELAY_ACK_PAYLOAD_LOAD);
-      }
-      break;
-    }
     case PKT_TYPE_RELAY_ACTION:
-    {
-      for (int i = 0; i < sz - 2 ; i++) {
-        buffer[i] = bufferRX[i + 2];
+      {
+        SuperMemCpy(buffer, 0, bufferRX, 2, sz - 2);
+        uint8_t actionID = bufferRX[1];
+        ProcessAction(actionID, buffer);
+        break;
       }
-      uint8_t actionID = bufferRX[1];
-      ProcessAction(actionID, buffer);
-      break;
-    }
     default:
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);
   }
 }
 
 void ProcessAction(uint8_t actionID, uint8_t * data) {
+#ifdef DEBUG
+  Serial.printf("Got Relay Action Request:%d\n", actionID);
+#endif
+
   switch (actionID) {
     case ACTION_RESET_DEVICE:
       ESP.restart();
       break;
     case ACTION_STATUS_LED:
       digitalWrite(LED_ONBOARD, data[0]);
+      break;
+    case ACTION_FLUSH_TX_FIFO:
+      radio.flush_tx();
       break;
     default:
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);
@@ -190,9 +186,7 @@ int SendError(uint8_t errorCode) {
 int SendRadioPacket(uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   bufferTX[0] = PKT_TYPE_RELAY_DATA;
   bufferTX[1] = pipeNum;
-  for (int i = 0; i < sz; i++) {
-    bufferTX[i + 2] = buff[i];
-  }
+  SuperMemCpy(bufferTX,2,buff,0,sz);
   int ok = Udp.beginPacket(controllerHost, controllerPort);
   if (!ok) {
     return 0;
@@ -203,38 +197,4 @@ int SendRadioPacket(uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
     return 0;
   }
   return 1;
-}
-
-/************* Utility Functions *********************/
-
-
-void PrintPkt(char *str, uint8_t buff[], int len) {
-#ifdef DEBUG
-  Serial.print(str);
-  for (int i = 0; i < len; i++) {
-    Serial.printf(" %02X,", buff[i]);
-  }
-  Serial.println();
-#endif
-}
-
-unsigned long previousMillis = 0;
-unsigned long interval = 30000;
-
-void WifiKeepAlive(void) {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    if (WiFi.status() != WL_CONNECTED) {
-      delay(1000);
-      ESP.restart();
-    }
-    previousMillis = currentMillis;
-  }
-}
-
-
-void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
-    for (uint8_t i = 0; i < sz; i++) {
-        dest[i + destStart] = src[i + srcStart];
-    }
 }
