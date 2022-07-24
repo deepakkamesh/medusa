@@ -51,7 +51,6 @@ void InitRadio(void) {
     config.PingInterval = PingInterval;
     config.RFChannel = DEFAULT_RF_CHANNEL;
     memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
-    memcpy(config.PipeAddr2, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
     memcpy(config.Address, BoardAddress, ADDR_LEN);
     config.ARD = DEFAULT_ARD;
 
@@ -76,7 +75,6 @@ void HandleTimeLoop(void) {
 // Sends packets 1 at a time.
 
 void HandlePacketLoop(void) {
-    uint8_t i;
     uint8_t TXPacket[MAX_PKT_SZ];
     uint8_t TXPktSz = 0;
 
@@ -148,8 +146,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
         case PKT_CFG_1:
             config.RFChannel = buffer[4];
             SuperMemCpy(config.PipeAddr1, 0, buffer, 5, PIPE_ADDR_LEN);
-            SuperMemCpy(config.PipeAddr2, 0, buffer, 10, PIPE_ADDR_LEN);
-            config.ARD = buffer[15];
+            config.ARD = buffer[10];
             break;
         case PKT_CFG_2:
             SuperMemCpy(config.Address, 0, buffer, 4, ADDR_LEN);

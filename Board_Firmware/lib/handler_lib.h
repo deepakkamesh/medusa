@@ -29,7 +29,7 @@
 #define DEFAULT_RF_CHANNEL 115
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
 uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
-uint8_t PingInterval = 10; // Default ping interval.
+uint8_t PingInterval = 1; // Default ping interval.
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
 
 void TimerInterruptHandler(void);
@@ -70,6 +70,5 @@ struct Config {
     uint8_t PingInterval; // Ping interval in seconds
     uint8_t RFChannel; // Frequency channel.
     uint8_t PipeAddr1[5];
-    uint8_t PipeAddr2[5]; // Backup Pipe Address.
     uint8_t ARD; // Auto Retry Duration. 
 };
