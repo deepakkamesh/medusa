@@ -26,42 +26,8 @@ void main(void) {
 
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
-    TMR1_SetInterruptHandler(TimerInterruptHandler);
-    LoadAddrFromEE();
-    InitRadio();
-
+    InitHandlerLib();
     while (1) {
-        HandlePacketLoop();
-        HandleTimeLoop();
-        NOP();
-        ClrWdt();
-    }
-}
-
-void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
-    uint8_t tmpHumidity[] = {0, 0};
-
-    switch (actionID) {
-        case ACTION_STATUS_LED:
-            LED_SetLow();
-            if (data[0]) {
-                LED_SetHigh();
-            }
-            break;
-        case ACTION_RELOAD_CONFIG:
-            ReloadConfig();
-            break;
-        case ACTION_GET_TEMP_HUMIDITY:
-            GetMockTempHumidity(tmpHumidity);
-            SendData(ACTION_GET_TEMP_HUMIDITY, tmpHumidity, 2);
-            break;
-        case ACTION_RESET_DEVICE:
-            RESET();
-            break;
-        case ACTION_TEST:
-            TestFunc();
-            break;
-        default:
-            SendError(ERR_NOT_IMPL);
+        HandlerLoop();
     }
 }

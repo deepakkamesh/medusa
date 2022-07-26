@@ -21,6 +21,20 @@ uint8_t bufferRX[32];
 
 Queue TXQueue; //Transmit Queue;
 
+void InitHandlerLib(void) {
+    LoadAddrFromEE();
+    InitRadio();
+    TMR1_SetInterruptHandler(TimerInterruptHandler);
+
+}
+
+void HandlerLoop(void) {
+    HandlePacketLoop();
+    HandleTimeLoop();
+    NOP();
+    CLRWDT();
+}
+
 void InitRadio(void) {
     nrf24_rf_init();
 
@@ -82,7 +96,7 @@ void HandlePacketLoop(void) {
 
     // Check queue; if nothing sleep.
     if (TXPktSz == 0) {
-        Sleep();
+        SLEEP();
         return;
     }
 
@@ -154,6 +168,42 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
             break;
         default:
             SendError(ERR_UNKNOWN_PKT_TYPE);
+    }
+}
+
+void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+    uint8_t tmpHumidity[] = {0, 0};
+
+    switch (actionID) {
+        case ACTION_STATUS_LED:
+#ifdef DEV_STATUS_LED
+            LED_SetLow();
+            if (data[0]) {
+                LED_SetHigh();
+            }
+            break;
+#else
+            SendError(ERR_NOT_IMPL);
+#endif
+        case ACTION_GET_TEMP_HUMIDITY:
+#ifdef DEV_TEMP_HUMIDITY
+            GetMockTempHumidity(tmpHumidity);
+            SendData(ACTION_GET_TEMP_HUMIDITY, tmpHumidity, 2);
+            break;
+#else
+            SendError(ERR_NOT_IMPL);
+#endif
+        case ACTION_RELOAD_CONFIG:
+            ReloadConfig();
+            break;
+        case ACTION_RESET_DEVICE:
+            RESET();
+            break;
+        case ACTION_TEST:
+            TestFunc();
+            break;
+        default:
+            SendError(ERR_NOT_IMPL);
     }
 }
 

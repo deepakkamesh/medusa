@@ -46,6 +46,8 @@ void ReloadConfig(void);
 void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 void TestFunc(void);
 void HandleTimeLoop(void);
+void InitHandlerLib(void); // Main Library init routine. To be called in setup.
+void HandlerLoop(void); // Main loop. To be called in loop.
 
 // EEPROM stuff.
 #define EEPROM_ADDR 0x10
@@ -59,15 +61,15 @@ typedef struct {
 } Packet;
 
 typedef struct {
-  Packet packets[MAX_TX_QUEUE_SZ];
-  uint8_t readPtr;
-  uint8_t writePtr;
-  uint8_t overflow;
+    Packet packets[MAX_TX_QUEUE_SZ];
+    uint8_t readPtr;
+    uint8_t writePtr;
+    uint8_t overflow;
 } Queue;
 
 void initQ(Queue *q);
 void enQueue(uint8_t *buf, uint8_t sz, Queue *q);
-uint8_t deQueue(uint8_t *buff, Queue *q) ;
+uint8_t deQueue(uint8_t *buff, Queue *q);
 
 // Config stores the configuration of the board.
 struct Config {
