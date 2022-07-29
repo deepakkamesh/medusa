@@ -18,7 +18,8 @@ struct Config config; // Board config.
 
 uint8_t bufferTX[32];
 uint8_t bufferRX[32];
-
+uint8_t sentPktCnt = 0;
+uint8_t failedPktCnt = 0;
 Queue TXQueue; //Transmit Queue;
 
 void InitHandlerLib(void) {
@@ -100,8 +101,21 @@ void HandlePacketLoop(void) {
         return;
     }
 
-    nrf24_send_rf_data(TXPacket, TXPktSz);
+    // If in the last FAILURE_SAMPLE_RATE packet the failure exceeds FAILED_PERCENT
+    // Relay availability is marked down. Only ping packets are sent until it 
+    // becomes < FAILED_PERCENT.
+    if (sentPktCnt == FAILURE_SAMPLE_RATE) {
+        isRelayAvail = true;
+        if ((float) failedPktCnt / (float) sentPktCnt >= FAILED_PERCENT) {
+            isRelayAvail = false;
+        }
+        failedPktCnt = 0;
+        sentPktCnt = 0;
+    }
 
+    nrf24_send_rf_data(TXPacket, TXPktSz);
+    sentPktCnt++;
+    __delay_us(10);
     // Wait for successful TX or MAX_RT assertion.
     uint8_t status = 0;
     while (1) {
@@ -117,9 +131,13 @@ void HandlePacketLoop(void) {
     // MAX_RT exceeded. 
     if (status & 0x10) {
         nrf24_flush_tx_rx();
-        enQueue(TXPacket, TXPktSz, &TXQueue); // Send failed so enqueue packet.
+        failedPktCnt++;
+        // Only retry packets if the packet failure rate is within limits to avoid
+        // continuous running loop preventing sleep.
+        if (isRelayAvail) {
+            enQueue(TXPacket, TXPktSz, &TXQueue); // Send failed so enqueue packet.
+        }
         return;
-        // TODO: Exponential back off on failures.
     }
 
     // Check for ack payload. 
@@ -137,7 +155,7 @@ void TimerInterruptHandler(void) {
     Ticks++;
 }
 
-bool VerifyBoardAddress(uint8_t *buffer) {
+bool VerifyBoardAddress(uint8_t * buffer) {
     for (int i = 0; i < ADDR_LEN; i++) {
         if (BoardAddress[i] != buffer[i + 1]) {
             return false;
@@ -278,7 +296,7 @@ void TestFunc(void) {
 
 /***************************** Queuing Functions *****************************/
 
-void initQ(Queue *q) {
+void initQ(Queue * q) {
     q->readPtr = 0;
     q->writePtr = 0;
     q->overflow = 0;
@@ -288,7 +306,7 @@ void initQ(Queue *q) {
     }
 }
 
-void enQueue(uint8_t *buf, uint8_t sz, Queue *q) {
+void enQueue(uint8_t *buf, uint8_t sz, Queue * q) {
     memcpy(q->packets[q->writePtr].packet, buf, sz);
     q->packets[q->writePtr].size = sz;
     q->writePtr++;
@@ -298,7 +316,7 @@ void enQueue(uint8_t *buf, uint8_t sz, Queue *q) {
     }
 }
 
-uint8_t deQueue(uint8_t *buff, Queue *q) {
+uint8_t deQueue(uint8_t *buff, Queue * q) {
     if (!q->overflow && q->readPtr == q->writePtr) {
         return 0;
     }

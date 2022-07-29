@@ -25,7 +25,7 @@ uint8_t bufferTX[255];
 // TODO: get from wifimanager.
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
-char* controllerHost = "192.168.1.128";
+char* controllerHost = "192.168.1.108";
 uint16_t controllerPort = 6000;
 
 /* WifiConnect establishes connection to the specified access point*/

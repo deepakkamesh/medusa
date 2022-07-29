@@ -29,10 +29,12 @@
 #define PIPE_ADDR_LEN 5 
 #define DEFAULT_RF_CHANNEL 115
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
+#define FAILURE_SAMPLE_RATE 10 // Number of packets to count.
+#define FAILED_PERCENT 0.80 // Percent of failed packets. 
 uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
 uint8_t PingInterval = 2; // Default ping interval.
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
-
+bool isRelayAvail = true; // Relay comms. If false dont sent any but ping packets.
 void TimerInterruptHandler(void);
 void InitRadio(void);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
