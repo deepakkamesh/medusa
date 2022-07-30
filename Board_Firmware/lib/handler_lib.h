@@ -12,6 +12,7 @@
 #define PKT_CFG_1 0x03
 #define PKT_CFG_2 0x04
 #define PKT_ACTION 0x10
+#define PKT_NOOP 0xFF
 
 // Error Types.
 #define ERR_NA 0x00
@@ -27,7 +28,7 @@
 #define ACTION_GET_LIGHT 0x03
 
 #define PIPE_ADDR_LEN 5 
-#define DEFAULT_RF_CHANNEL 115
+#define DEFAULT_RF_CHANNEL 0
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
 #define FAILURE_SAMPLE_RATE 10 // Number of packets to count.
 #define FAILED_PERCENT 0.80 // Percent of failed packets. 
@@ -50,6 +51,7 @@ void TestFunc(void);
 void HandleTimeLoop(void);
 void InitHandlerLib(void); // Main Library init routine. To be called in setup.
 void HandlerLoop(void); // Main loop. To be called in loop.
+uint8_t DiscoverRFChannel(void); // Discover RF Channel.
 
 // EEPROM stuff.
 #define EEPROM_ADDR 0x10

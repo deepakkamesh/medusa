@@ -26,6 +26,8 @@ void InitHandlerLib(void) {
     LoadAddrFromEE();
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
+    uint8_t rfChan = DiscoverRFChannel();
+    config.RFChannel = rfChan;
 
 }
 
@@ -52,7 +54,7 @@ void InitRadio(void) {
     // Retry Settings. 
     nrf24_write_register(NRF24_MEM_SETUP_RETR, 0b11011111);
     // RF channel.
-    nrf24_write_register(NRF24_MEM_RF_CH, 115);
+    nrf24_write_register(NRF24_MEM_RF_CH, DEFAULT_RF_CHANNEL);
     // RF_PWR=0bDm, RF_DR_HIGH=2Mbps.
     nrf24_write_register(NRF24_MEM_RF_SETUP, 0b1110);
     // EN_DPL, EN_ACK_PAY.
@@ -71,6 +73,40 @@ void InitRadio(void) {
 
     // Initialize Transmit buffer.
     initQ(&TXQueue);
+}
+// DiscoverRFChannel iterates through the list of RF channels and attempts to 
+// send a packet. If there is a response on the default pipe address it returns
+// the RF channel.
+uint8_t DiscoverRFChannel(void) {
+    bufferTX[0] = PKT_NOOP;
+    SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
+
+    for (uint8_t rf = 0; rf < 125; rf++) {
+        nrf24_write_register(NRF24_MEM_RF_CH, rf);
+
+        nrf24_send_rf_data(bufferTX, ADDR_LEN + 1);
+        __delay_us(10);
+
+        // Wait for successful TX or MAX_RT assertion.
+        uint8_t status = 0;
+        while (1) {
+            status = nrf24_read_register(NRF24_MEM_STATUSS);
+            if ((status & 0x20) || (status & 0x10)) {
+                break;
+            }
+            __delay_us(10);
+        }
+        // Clear status register.
+        nrf24_write_register(NRF24_MEM_STATUSS, 0x70);
+
+        // MAX_RT exceeded. 
+        if (status & 0x10) {
+            nrf24_flush_tx_rx();
+            continue;
+        }
+        return rf;
+    }
+    return DEFAULT_RF_CHANNEL; // Channel not found.
 }
 
 void HandleTimeLoop(void) {
