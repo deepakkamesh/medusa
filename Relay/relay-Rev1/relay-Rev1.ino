@@ -2,6 +2,7 @@
 #include <RF24.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 #define DEBUG 1
 #define LED_ONBOARD 16
@@ -36,6 +37,7 @@ void setup() {
   pinMode(LED_ONBOARD, OUTPUT);
   int ok ;
   WifiConnect();
+  OTAInit();
   ok = RelaySetup();
   if (!ok) {
     digitalWrite(LED_ONBOARD, false); // false turns it on?.
@@ -51,6 +53,7 @@ void setup() {
 }
 
 void loop() {
+  ArduinoOTA.handle();
   RadioRcvLoop();
   IpLoop();
   RadioSendLoop();

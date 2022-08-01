@@ -33,9 +33,11 @@ void WifiConnect(void) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect
-    delay(1000);
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Connection Failed! Rebooting...");
     digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
+    delay(3000);
+    ESP.restart();
   }
   digitalWrite(LED_ONBOARD, true); // For some reason true turns this off.
 
@@ -186,7 +188,7 @@ int SendError(uint8_t errorCode) {
 int SendRadioPacket(uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   bufferTX[0] = PKT_TYPE_RELAY_DATA;
   bufferTX[1] = pipeNum;
-  SuperMemCpy(bufferTX,2,buff,0,sz);
+  SuperMemCpy(bufferTX, 2, buff, 0, sz);
   int ok = Udp.beginPacket(controllerHost, controllerPort);
   if (!ok) {
     return 0;
