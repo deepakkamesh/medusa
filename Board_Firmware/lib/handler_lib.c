@@ -26,7 +26,7 @@ void InitHandlerLib(void) {
     LoadAddrFromEE();
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
-    uint8_t rfChan = DiscoverRFChannel();
+    uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
 
 }
@@ -77,6 +77,7 @@ void InitRadio(void) {
 // DiscoverRFChannel iterates through the list of RF channels and attempts to 
 // send a packet. If there is a response on the default pipe address it returns
 // the RF channel.
+
 uint8_t DiscoverRFChannel(void) {
     bufferTX[0] = PKT_NOOP;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
@@ -106,7 +107,9 @@ uint8_t DiscoverRFChannel(void) {
         }
         return rf;
     }
-    return DEFAULT_RF_CHANNEL; // Channel not found.
+    // Channel not found. retry.
+    __delay_ms(1000);
+    RESET();
 }
 
 void HandleTimeLoop(void) {

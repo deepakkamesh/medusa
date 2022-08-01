@@ -4,19 +4,7 @@
 #define PIPE_ADDR_LEN 5 // Address length of pipe.
 #define MAC_ADDR_LEN 6
 
-#define PKT_TYPE_RELAY_GET_CONFIG 0xAA // Packet type for Relay Get Config
-#define PKT_TYPE_RELAY_CONFIG_ANS 0xAB // Packet type for Relay Get Answer
-#define PKT_TYPE_RELAY_ERROR 0xAC // Packet type for Relay  error. 
-#define PKT_TYPE_RELAY_DATA 0xAD // Packet type for Relay  data packet. 
-#define PKT_TYPE_RELAY_ACTION 0xAE // Packet type for relay action.
 
-#define ERROR_RELAY_RADIO_INIT_FAILED 0x02
-#define ERROR_RELAY_ACK_PAYLOAD_LOAD 0x03
-#define ERROR_RELAY_NOT_IMPLEMENTED 0x04
-
-#define ACTION_STATUS_LED 0x13
-#define ACTION_RESET_DEVICE 0x14
-#define ACTION_FLUSH_TX_FIFO 0x17
 
 WiFiUDP Udp;
 uint8_t bufferRX[255];
