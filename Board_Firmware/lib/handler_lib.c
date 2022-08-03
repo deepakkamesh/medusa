@@ -55,8 +55,8 @@ void InitRadio(void) {
     nrf24_write_register(NRF24_MEM_SETUP_RETR, 0b11011111);
     // RF channel.
     nrf24_write_register(NRF24_MEM_RF_CH, DEFAULT_RF_CHANNEL);
-    // RF_PWR=0bDm, RF_DR_HIGH=2Mbps.
-    nrf24_write_register(NRF24_MEM_RF_SETUP, 0b1110);
+    // RF_PWR=0bDm, RF_DR_HIGH=250kbps.
+    nrf24_write_register(NRF24_MEM_RF_SETUP, 0b00100110);
     // EN_DPL, EN_ACK_PAY.
     nrf24_write_register(NRF24_MEM_FEATURE, 0b110); // Enable Dynamic payload, ack payload.
     // DPL_P0.
@@ -108,7 +108,7 @@ uint8_t DiscoverRFChannel(void) {
         return rf;
     }
     // Channel not found. retry.
-    __delay_ms(1000);
+    __delay_ms(5000);
     RESET();
 }
 

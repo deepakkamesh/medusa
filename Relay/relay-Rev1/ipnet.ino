@@ -173,15 +173,16 @@ int SendError(uint8_t errorCode) {
   return 1;
 }
 
-int SendRadioPacket(uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
+int SendRadioPacket(bool okSign, uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   bufferTX[0] = PKT_TYPE_RELAY_DATA;
   bufferTX[1] = pipeNum;
-  SuperMemCpy(bufferTX, 2, buff, 0, sz);
+  bufferTX[2] = okSign;
+  SuperMemCpy(bufferTX, 3, buff, 0, sz);
   int ok = Udp.beginPacket(controllerHost, controllerPort);
   if (!ok) {
     return 0;
   }
-  Udp.write(bufferTX, sz + 2);
+  Udp.write(bufferTX, sz + 3);
   ok = Udp.endPacket();
   if (!ok) {
     return 0;

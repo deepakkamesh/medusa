@@ -34,7 +34,7 @@ int RadioSetup() {
   // Set default radio params.
   radio.setPALevel(RF24_PA_MAX);
   radio.setAddressWidth(5);
-  radio.setDataRate(RF24_2MBPS);
+  radio.setDataRate(RF24_250KBPS);
   radio.setCRCLength(RF24_CRC_8);
 
   // Other Enhanced Shockburt.
@@ -71,7 +71,8 @@ void RadioRcvLoop() {
   int sz = radio.getDynamicPayloadSize();
   radio.read(&bufferRX, sizeof(bufferRX));
 
-  int ok =  SendRadioPacket(pipeNum, bufferRX, sz);
+  bool okSig = radio.testRPD(); // returns true is strength > -64bdM.
+  int ok =  SendRadioPacket(okSig, pipeNum, bufferRX, sz);
   // Try restart if network comms is broken.
   if (!ok) {
     delay(1000);
