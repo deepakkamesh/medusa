@@ -26,7 +26,13 @@ void InitHandlerLib(void) {
     LoadAddrFromEE();
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
+#ifdef DEV_STATUS_LED
+    LED_SetHigh();
+#endif
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
+#ifdef DEV_STATUS_LED
+    LED_SetLow();
+#endif
     config.RFChannel = rfChan;
 
 }
