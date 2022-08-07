@@ -6,39 +6,42 @@
 
 #define DEBUG 1
 #define LED_ONBOARD 16
+#define ADDR_LEN 3
+#define PIPE_ADDR_LEN 5
+#define PIPE_ADDR_NUM 7 // number of address. 6 + 1 virtual pipe addr. 
+#define VIRT_PIPE 6 // number of virtual pipe.
+#define PING_INT 2000 // ping interval in ms.
+
 #define PKT_TYPE_RELAY_GET_CONFIG 0xAA // Packet type for Relay Get Config
 #define PKT_TYPE_RELAY_CONFIG_ANS 0xAB // Packet type for Relay Get Answer
 #define PKT_TYPE_RELAY_ERROR 0xAC // Packet type for Relay  error. 
-#define PKT_TYPE_RELAY_DATA 0xAD // Packet type for Relay  data packet. 
-#define PKT_TYPE_RELAY_ACTION 0xAE // Packet type for relay action.
+#define PKT_TYPE_BOARD_DATA_RELAY 0xAD // Packet type for Relay  data packet. 
+#define PKT_TYPE_PING 0x02
+#define PKT_TYPE_ACTION 0x10
 
 #define ERROR_RELAY_RADIO_INIT_FAILED 0x02
 #define ERROR_RELAY_ACK_PAYLOAD_LOAD 0x03
 #define ERROR_RELAY_NOT_IMPLEMENTED 0x04
+#define ERROR_PIPE_ADDR_404 0x06
+#define ERROR_UNKNOWN_PKT 0x05
 
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_FLUSH_TX_FIFO 0x17
+
+uint8_t pipe_addr_6[PIPE_ADDR_LEN] = {0,0,0,0,0}; // pipe address of virtual pipe addr;
+
 struct RelayConfig {
-  uint8_t pipe_addr_p0[5];
-  uint8_t pipe_addr_p1[5];
-  uint8_t pipe_addr_p2[1];
-  uint8_t pipe_addr_p3[1];
-  uint8_t pipe_addr_p4[1];
-  uint8_t pipe_addr_p5[1];
+  uint8_t pipe_addr[PIPE_ADDR_NUM][PIPE_ADDR_LEN];
   bool isConfigured;
   uint8_t nrf24Channel;
+  uint8_t vboard_addr[3];
 };
 
 struct RelayConfig Config = {
-  .pipe_addr_p0 = {'h', 'e', 'l', 'l', 'o'},
-  .pipe_addr_p1 = {'w', 'o', 'r', 'l', 'd'},
-  .pipe_addr_p2 = {'1'},
-  .pipe_addr_p3 = {'2'},
-  .pipe_addr_p4 = {'3'},
-  .pipe_addr_p5 = {'4'},
   .isConfigured = false,
   .nrf24Channel = 115,
+  .vboard_addr = {0xA,0xB,0xC},
 };
 
 RF24 radio(5, 4); // CE, CSN.
@@ -71,5 +74,5 @@ void loop() {
   IpLoop();
   RadioSendLoop();
   WifiKeepAlive();
-
+  PingLoop();
 }

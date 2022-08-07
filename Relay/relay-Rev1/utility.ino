@@ -11,6 +11,7 @@ void PrintPkt(char *str, uint8_t buff[], int len) {
 #endif
 }
 
+/* Handle Wifi Disconnects */
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;
 
@@ -25,11 +26,31 @@ void WifiKeepAlive(void) {
   }
 }
 
-
+/* SuperMemCpy copies arrays with start index and size */
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz) {
   for (uint8_t i = 0; i < sz; i++) {
     dest[i + destStart] = src[i + srcStart];
   }
+}
+
+/* FindPipeNum returns the pipe number associated with the address. -1 if none found */
+int FindPipeNum(uint8_t *pipe_addr, uint8_t pipe_addr_sz) {
+  for (uint8_t i = 0 ; i < PIPE_ADDR_NUM ; i++) {
+    if (CompareArray(pipe_addr, Config.pipe_addr[i], pipe_addr_sz)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/* CompareArray returns 1 if src == dst otherwise 0 */
+uint8_t CompareArray(uint8_t *src, uint8_t *dst, uint8_t sz) {
+  for (uint8_t i = 0; i < sz; i++) {
+    if (src[i] != dst[i]) {
+      return 0;
+    }
+  }
+  return 1;
 }
 
 /***************************** Queuing Functions *****************************/

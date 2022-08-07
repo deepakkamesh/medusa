@@ -37,19 +37,17 @@ int RadioSetup() {
   radio.setDataRate(RF24_250KBPS);
   radio.setCRCLength(RF24_CRC_8);
 
-  // Other Enhanced Shockburt.
+  // Other: Enhanced Shockburt.
   radio.setAutoAck(true);
   radio.enableDynamicPayloads();
   radio.enableAckPayload();
 
   // Set params from config struct.
   radio.setChannel(Config.nrf24Channel);
-  radio.openReadingPipe(0, Config.pipe_addr_p0);
-  radio.openReadingPipe(1, Config.pipe_addr_p1);
-  radio.openReadingPipe(2, Config.pipe_addr_p2);
-  radio.openReadingPipe(3, Config.pipe_addr_p3);
-  radio.openReadingPipe(4, Config.pipe_addr_p4);
-  radio.openReadingPipe(5, Config.pipe_addr_p5);
+
+  for (uint8_t ch = 0; ch < 6 ; ch++) {
+    radio.openReadingPipe(ch, Config.pipe_addr[ch]);
+  }
 
   radio.flush_tx();
   radio.flush_rx();
@@ -62,6 +60,7 @@ int RadioSetup() {
   return 1;
 }
 
+/* RadioRcvLoop() */
 void RadioRcvLoop() {
   uint8_t pipeNum;
   if (!radio.available(&pipeNum)) {
@@ -71,8 +70,7 @@ void RadioRcvLoop() {
   int sz = radio.getDynamicPayloadSize();
   radio.read(&bufferRX, sizeof(bufferRX));
 
-  bool okSig = radio.testRPD(); // returns true is strength > -64bdM.
-  int ok =  SendRadioPacket(okSig, pipeNum, bufferRX, sz);
+  int ok =  SendRadioPacket(pipeNum, bufferRX, sz);
   // Try restart if network comms is broken.
   if (!ok) {
     delay(1000);
@@ -82,6 +80,7 @@ void RadioRcvLoop() {
   PrintPkt("RadioPkt", bufferRX, sz);
 }
 
+/* RadioSendLoop() */
 void RadioSendLoop() {
   uint8_t AckPkt[MAX_RF_PKT_SZ];
   uint8_t AckPktSz = 0;
@@ -103,5 +102,6 @@ void RadioSendLoop() {
 }
 
 int SendNetPacket(uint8_t pipeNum, uint8_t * data, uint8_t sz) {
+  PrintPkt("Sending to Radio", data, sz);
   return enQueue(data, sz, pipeNum, &qTX);
 }
