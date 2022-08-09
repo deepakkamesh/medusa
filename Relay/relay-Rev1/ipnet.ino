@@ -73,49 +73,15 @@ int RelaySetup(void) {
     }
 
     int len = Udp.read(bufferRX, 255);
-    // Valid packet?
-    if (!(bufferRX[0] == PKT_TYPE_RELAY_CONFIG_ANS && len == RELAY_CONFIG_ANS_LEN)) {
+    if (!ParseConfigPkt(bufferRX, len)) {
       continue;
     }
-
-    // Parse config packet and store in Config struct.
-    /* Copy pipe address into config */
-    SuperMemCpy(Config.pipe_addr[0], 0, bufferRX, 1, PIPE_ADDR_LEN);
-    SuperMemCpy(Config.pipe_addr[1], 0, bufferRX, 6, PIPE_ADDR_LEN);
-
-    Config.pipe_addr[2][0] = bufferRX[11];
-    SuperMemCpy(Config.pipe_addr[2], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
-
-    Config.pipe_addr[3][0] = bufferRX[12];
-    SuperMemCpy(Config.pipe_addr[3], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
-
-    Config.pipe_addr[4][0] = bufferRX[13];
-    SuperMemCpy(Config.pipe_addr[4], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
-
-    Config.pipe_addr[5][0] = bufferRX[14];
-    SuperMemCpy(Config.pipe_addr[5], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
-
-    SuperMemCpy(Config.pipe_addr[6], 0, pipe_addr_6, 0, PIPE_ADDR_LEN); // Virtual pipe address #6.
-
-    /* Copy pipe address into config */
-    Config.nrf24Channel = bufferRX[15];
-
-    /* Copy vBoard address into config */
-    SuperMemCpy(Config.vboard_addr, 0, bufferRX, 16, PIPE_ADDR_LEN);
-
-#ifdef DEBUG
-    Serial.printf("Mac: %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-    for (int i = 0; i < PIPE_ADDR_NUM; i++) {
-      PrintPkt("Addr:", Config.pipe_addr[i], PIPE_ADDR_LEN);
-    }
-    Serial.printf("CHANNEL: %02X\n", Config.nrf24Channel);
-    PrintPkt("vBoard:", Config.vboard_addr, ADDR_LEN);
-#endif
     return 1;
   }
 }
 
-/* IpLoop parses UDP packets and sends it over Radio or locally for vboard */
+
+/******* IpLoop parses UDP packets and sends it over Radio or locally for vboard **********/
 void IpLoop(void) {
 
   int packetSize = Udp.parsePacket(); // check if there is a packet.
@@ -126,16 +92,25 @@ void IpLoop(void) {
   int sz = Udp.read(bufferRX, 255);
   PrintPkt("Ctrl pkt:", bufferRX, sz);
 
-  uint8_t radioPkt[32];
-  uint8_t pipe_addr[PIPE_ADDR_LEN];
-
   // Process packets and send to radio or process locally if pipe_addr is for virtual pipe #6.
   uint8_t pktType = bufferRX[0];
-  if (pktType !=  PKT_TYPE_BOARD_DATA_RELAY)
-  {
-    SendError(ERROR_UNKNOWN_PKT);
-    return;
+  switch (pktType) {
+    case PKT_TYPE_BOARD_DATA_RELAY:
+      ProcessBoardDataRelay(bufferRX, sz);
+      break;
+    case PKT_TYPE_RELAY_CONFIG_ANS:
+      ParseConfigPkt(bufferRX, sz);
+      RadioSetup();
+      break;
+    default:
+      SendError(ERROR_UNKNOWN_PKT);
+      break;
   }
+}
+
+void ProcessBoardDataRelay(uint8_t *bufferRX, uint8_t sz) {
+  uint8_t radioPkt[32];
+  uint8_t pipe_addr[PIPE_ADDR_LEN];
 
   SuperMemCpy(pipe_addr, 0, bufferRX, 1, PIPE_ADDR_LEN);
   uint8_t radioPktSz = sz - 1 - PIPE_ADDR_LEN;
@@ -175,7 +150,7 @@ int SendError(uint8_t errorCode) {
   return 1;
 }
 
-/* SendRadioPacket sends the Radio packet on UDP */
+/********** SendRadioPacket sends the Radio packet on UDP *****************/
 int SendRadioPacket( uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   uint8_t i = 0;
   bufferTX[i] = PKT_TYPE_BOARD_DATA_RELAY;

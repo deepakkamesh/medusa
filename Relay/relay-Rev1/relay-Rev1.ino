@@ -10,7 +10,7 @@
 #define PIPE_ADDR_LEN 5
 #define PIPE_ADDR_NUM 7 // number of address. 6 + 1 virtual pipe addr. 
 #define VIRT_PIPE 6 // number of virtual pipe.
-#define PING_INT 2000 // ping interval in ms.
+#define PING_INT 30000 // ping interval in ms.
 
 #define PKT_TYPE_RELAY_GET_CONFIG 0xAA // Packet type for Relay Get Config
 #define PKT_TYPE_RELAY_CONFIG_ANS 0xAB // Packet type for Relay Get Answer

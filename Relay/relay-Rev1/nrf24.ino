@@ -20,16 +20,18 @@ void initQueue(Queue *q) ;
 uint8_t enQueue(uint8_t *buf, uint8_t sz, uint8_t pipeNum, Queue *q);
 uint8_t deQueue(uint8_t *buff, uint8_t *pipeNum, Queue *q) ;
 
-
+/************ RadioSetup *****************/
 int RadioSetup() {
 
   if (!radio.begin()) {
     return 0;
   }
 
+
   if (!radio.isChipConnected()) {
     return 0;
   }
+  radio.stopListening();
 
   // Set default radio params.
   radio.setPALevel(RF24_PA_MAX);
@@ -60,7 +62,7 @@ int RadioSetup() {
   return 1;
 }
 
-/* RadioRcvLoop() */
+/***************** RadioRcvLoop() *************/
 void RadioRcvLoop() {
   uint8_t pipeNum;
   if (!radio.available(&pipeNum)) {
@@ -80,7 +82,7 @@ void RadioRcvLoop() {
   PrintPkt("RadioPkt", bufferRX, sz);
 }
 
-/* RadioSendLoop() */
+/********** RadioSendLoop() ****************/
 void RadioSendLoop() {
   uint8_t AckPkt[MAX_RF_PKT_SZ];
   uint8_t AckPktSz = 0;

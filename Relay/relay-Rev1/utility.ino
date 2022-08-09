@@ -1,5 +1,47 @@
 /************* Utility Functions *********************/
 
+/********** ParseConfigPkt() - Parses config response into the Config ***************/
+uint8_t  ParseConfigPkt(uint8_t * bufferRX, uint8_t len) {
+  // Valid packet?
+  if (!(bufferRX[0] == PKT_TYPE_RELAY_CONFIG_ANS && len == RELAY_CONFIG_ANS_LEN)) {
+    return 0;
+  }
+  // Parse config packet and store in Config struct.
+  /* Copy pipe address into config */
+  SuperMemCpy(Config.pipe_addr[0], 0, bufferRX, 1, PIPE_ADDR_LEN);
+  SuperMemCpy(Config.pipe_addr[1], 0, bufferRX, 6, PIPE_ADDR_LEN);
+
+  Config.pipe_addr[2][0] = bufferRX[11];
+  SuperMemCpy(Config.pipe_addr[2], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
+
+  Config.pipe_addr[3][0] = bufferRX[12];
+  SuperMemCpy(Config.pipe_addr[3], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
+
+  Config.pipe_addr[4][0] = bufferRX[13];
+  SuperMemCpy(Config.pipe_addr[4], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
+
+  Config.pipe_addr[5][0] = bufferRX[14];
+  SuperMemCpy(Config.pipe_addr[5], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
+
+  SuperMemCpy(Config.pipe_addr[6], 0, pipe_addr_6, 0, PIPE_ADDR_LEN); // Virtual pipe address #6.
+
+  /* Copy pipe address into config */
+  Config.nrf24Channel = bufferRX[15];
+
+  /* Copy vBoard address into config */
+  SuperMemCpy(Config.vboard_addr, 0, bufferRX, 16, PIPE_ADDR_LEN);
+
+#ifdef DEBUG
+    for (int i = 0; i < PIPE_ADDR_NUM; i++) {
+      PrintPkt("Addr:", Config.pipe_addr[i], PIPE_ADDR_LEN);
+    }
+    Serial.printf("CHANNEL: %02X\n", Config.nrf24Channel);
+    PrintPkt("vBoard:", Config.vboard_addr, ADDR_LEN);
+#endif
+
+  return 1;
+}
+
 
 void PrintPkt(char *str, uint8_t buff[], int len) {
 #ifdef DEBUG
