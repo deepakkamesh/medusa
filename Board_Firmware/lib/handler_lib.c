@@ -23,18 +23,11 @@ uint8_t failedPktCnt = 0;
 Queue TXQueue; //Transmit Queue;
 
 void InitHandlerLib(void) {
-    LoadAddrFromEE();
+    LoadConfigFromEE();
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
-#ifdef DEV_STATUS_LED
-    LED_SetHigh();
-#endif
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
-#ifdef DEV_STATUS_LED
-    LED_SetLow();
-#endif
     config.RFChannel = rfChan;
-
 }
 
 void HandlerLoop(void) {
@@ -47,8 +40,8 @@ void HandlerLoop(void) {
 void InitRadio(void) {
     nrf24_rf_init();
 
-    nrf24_write_buff(NRF24_MEM_TX_ADDR, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
-    nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+    nrf24_write_buff(NRF24_MEM_TX_ADDR, config.PipeAddr1, PIPE_ADDR_LEN);
+    nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, config.PipeAddr1, PIPE_ADDR_LEN);
     // Mask all interrupts, EN_CRC,CRCO=1byte,PWR_UP,PTX, 
     nrf24_write_register(NRF24_MEM_CONFIG, 0b1111010);
     // ENAA_P0. 
@@ -67,15 +60,13 @@ void InitRadio(void) {
     nrf24_write_register(NRF24_MEM_FEATURE, 0b110); // Enable Dynamic payload, ack payload.
     // DPL_P0.
     nrf24_write_register(NRF24_MEM_DYNPD, 0b1); // Dynamic payload on Pipe 0.
+    // Setup ARD.
+    uint8_t ard = (config.ARD << 4) | 0xF;
+    nrf24_write_register(NRF24_MEM_SETUP_RETR, ard);
     __delay_us(10);
 
-    // Setup defaults in Config.
-    config.IsConfigured = false;
-    config.PingInterval = PingInterval;
-    config.RFChannel = DEFAULT_RF_CHANNEL;
-    memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
-    memcpy(config.Address, BoardAddress, ADDR_LEN);
-    config.ARD = DEFAULT_ARD;
+    PingInterval = config.PingInterval;
+    memcpy(BoardAddress, config.Address, ADDR_LEN);
 
     // Initialize Transmit buffer.
     initQ(&TXQueue);
@@ -89,8 +80,10 @@ uint8_t DiscoverRFChannel(void) {
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
 
     for (uint8_t rf = 0; rf < 125; rf++) {
+#ifdef DEV_STATUS_LED
+        LED_Toggle();
+#endif
         nrf24_write_register(NRF24_MEM_RF_CH, rf);
-
         nrf24_send_rf_data(bufferTX, ADDR_LEN + 1);
         __delay_us(10);
 
@@ -111,11 +104,15 @@ uint8_t DiscoverRFChannel(void) {
             nrf24_flush_tx_rx();
             continue;
         }
+#ifdef DEV_STATUS_LED
+        LED_SetLow();
+#endif
         return rf;
     }
     // Channel not found. retry.
     __delay_ms(5000);
     RESET();
+    return 0;
 }
 
 void HandleTimeLoop(void) {
@@ -148,10 +145,13 @@ void HandlePacketLoop(void) {
 
     // If in the last FAILURE_SAMPLE_RATE packet the failure exceeds FAILED_PERCENT
     // Relay availability is marked down. Only ping packets are sent until it 
-    // becomes < FAILED_PERCENT.
+    // becomes < FAILED_PERCENT. If fail rate is 1.0 reset.  
     if (sentPktCnt == FAILURE_SAMPLE_RATE) {
         isRelayAvail = true;
-        if ((float) failedPktCnt / (float) sentPktCnt >= FAILED_PERCENT) {
+        float failedRate = (float) failedPktCnt / (float) sentPktCnt;
+        if (failedRate == 1.0) {
+            RESET();
+        } else if (failedRate >= FAILED_PERCENT) {
             isRelayAvail = false;
         }
         failedPktCnt = 0;
@@ -220,14 +220,12 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
             SuperMemCpy(data, 0, buffer, 5, sz - 5);
             ProcessActionRequest(actionID, data);
             break;
-        case PKT_CFG_1:
-            config.RFChannel = buffer[4];
-            SuperMemCpy(config.PipeAddr1, 0, buffer, 5, PIPE_ADDR_LEN);
-            config.ARD = buffer[10];
-            break;
-        case PKT_CFG_2:
-            SuperMemCpy(config.Address, 0, buffer, 4, ADDR_LEN);
-            config.PingInterval = buffer[7];
+        case PKT_CFG:
+            config.ARD = buffer[4];
+            config.PingInterval = buffer[5];
+            SuperMemCpy(config.PipeAddr1, 0, buffer, 6, PIPE_ADDR_LEN);
+            SuperMemCpy(config.Address, 0, buffer, 11, ADDR_LEN);
+            WriteConfigToEE();
             break;
         default:
             SendError(ERR_UNKNOWN_PKT_TYPE);
@@ -256,9 +254,6 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 #else
             SendError(ERR_NOT_IMPL);
 #endif
-        case ACTION_RELOAD_CONFIG:
-            ReloadConfig();
-            break;
         case ACTION_RESET_DEVICE:
             RESET();
             break;
@@ -268,22 +263,6 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
         default:
             SendError(ERR_NOT_IMPL);
     }
-}
-
-/* ReloadConfig loads the config in the config struct and makes it active */
-void ReloadConfig(void) {
-    config.IsConfigured = true;
-    nrf24_write_register(NRF24_MEM_RF_CH, config.RFChannel);
-
-    nrf24_write_buff(NRF24_MEM_TX_ADDR, config.PipeAddr1, PIPE_ADDR_LEN);
-    nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, config.PipeAddr1, PIPE_ADDR_LEN);
-
-    uint8_t ard = (config.ARD << 4) | 0xF;
-    nrf24_write_register(NRF24_MEM_SETUP_RETR, ard);
-
-    memcpy(BoardAddress, config.Address, ADDR_LEN);
-    WriteAddrToEE(); // Save the address to EEPROM.
-    PingInterval = config.PingInterval;
 }
 
 void SendError(uint8_t errorCode) {
@@ -314,15 +293,52 @@ void SendPing(void) {
     enQueue(bufferTX, (ADDR_LEN + 1), &TXQueue);
 }
 
-void LoadAddrFromEE(void) {
+void ResetEE(void) {
+    unsigned int idx = EEPROM_ADDR + CONFIG_OFFSET;
+    DATAEE_WriteByte(idx, 0xFF);
+}
+
+/* LoadConfigFromEE loads the configuration from memory. If none found default loaded*/
+void LoadConfigFromEE(void) {
+    unsigned int idx = EEPROM_ADDR + CONFIG_OFFSET;
+    uint8_t isConfigured = DATAEE_ReadByte(idx);
+    if (isConfigured != IS_CONFIGURED) {
+        config.ARD = DEFAULT_ARD;
+        config.PingInterval = PingInterval;
+        memcpy(config.PipeAddr1, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+        memcpy(config.Address, BoardAddress, ADDR_LEN);
+        config.IsConfigured = false;
+        return;
+    }
+    config.IsConfigured = true;
+    idx++;
+    config.ARD = DATAEE_ReadByte(idx);
+    idx++;
+    config.PingInterval = DATAEE_ReadByte(idx);
+    idx++;
+    for (uint8_t i = 0; i < PIPE_ADDR_LEN; i++) {
+        config.PipeAddr1[i] = DATAEE_ReadByte(idx + i);
+    }
+    idx += PIPE_ADDR_LEN;
     for (uint8_t i = 0; i < ADDR_LEN; i++) {
-        BoardAddress[i] = DATAEE_ReadByte(EEPROM_ADDR + i);
+        config.Address[i] = DATAEE_ReadByte(idx + i);
     }
 }
 
-void WriteAddrToEE(void) {
+void WriteConfigToEE(void) {
+    unsigned int idx = EEPROM_ADDR + CONFIG_OFFSET;
+    DATAEE_WriteByte(idx, IS_CONFIGURED);
+    idx++;
+    DATAEE_WriteByte(idx, config.ARD);
+    idx++;
+    DATAEE_WriteByte(idx, config.PingInterval);
+    idx++;
+    for (uint8_t i = 0; i < PIPE_ADDR_LEN; i++) {
+        DATAEE_WriteByte(i + idx, config.PipeAddr1[i]);
+    }
+    idx += PIPE_ADDR_LEN;
     for (uint8_t i = 0; i < ADDR_LEN; i++) {
-        DATAEE_WriteByte(EEPROM_ADDR + i, BoardAddress[i]);
+        DATAEE_WriteByte(i + idx, config.Address[i]);
     }
 }
 
@@ -335,8 +351,10 @@ void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStar
 }
 
 void TestFunc(void) {
-    uint8_t buff[] = {0};
-    SendData(ACTION_TEST, buff, 1);
+    LoadConfigFromEE();
+    memcpy(DEFAULT_PIPE_ADDR, BoardAddress, ADDR_LEN);
+
+    SendData(ACTION_TEST, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
 }
 
 /***************************** Queuing Functions *****************************/

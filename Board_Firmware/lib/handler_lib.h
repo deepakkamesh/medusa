@@ -11,6 +11,7 @@
 #define PKT_PING 0x02
 #define PKT_CFG_1 0x03
 #define PKT_CFG_2 0x04
+#define PKT_CFG 0x05
 #define PKT_ACTION 0x10
 #define PKT_NOOP 0xFF
 
@@ -22,7 +23,6 @@
 // Action Types.
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
-#define ACTION_RELOAD_CONFIG 0x15
 #define ACTION_TEST 0x16
 #define ACTION_GET_TEMP_HUMIDITY 0x02
 #define ACTION_GET_LIGHT 0x03
@@ -45,7 +45,6 @@ void HandlePacketLoop(void);
 void SendError(uint8_t errorCode);
 void SendPing(void);
 void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStart, uint8_t sz);
-void ReloadConfig(void);
 void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz);
 void TestFunc(void);
 void HandleTimeLoop(void);
@@ -54,11 +53,14 @@ void HandlerLoop(void); // Main loop. To be called in loop.
 uint8_t DiscoverRFChannel(void); // Discover RF Channel.
 
 // EEPROM stuff.
-#define EEPROM_ADDR 0x10
-void LoadAddrFromEE(void);
-void WriteAddrToEE(void);
+#define IS_CONFIGURED 0x69 // Denotes if config is written on eeprom. 
+#define EEPROM_ADDR 0xf010
+#define CONFIG_OFFSET 5
+void LoadConfigFromEE(void);
+void WriteConfigToEE(void);
 
 // Queue Functions.
+
 typedef struct {
     uint8_t packet[MAX_PKT_SZ];
     uint8_t size; // Size of packet.
@@ -76,6 +78,7 @@ void enQueue(uint8_t *buf, uint8_t sz, Queue *q);
 uint8_t deQueue(uint8_t *buff, Queue *q);
 
 // Config stores the configuration of the board.
+
 struct Config {
     bool IsConfigured; // True if board is configured.
     uint8_t Address[3]; // Address of the board.
