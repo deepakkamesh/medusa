@@ -32,16 +32,30 @@ uint8_t  ParseConfigPkt(uint8_t * bufferRX, uint8_t len) {
   SuperMemCpy(Config.vboard_addr, 0, bufferRX, 16, PIPE_ADDR_LEN);
 
 #ifdef DEBUG
-    for (int i = 0; i < PIPE_ADDR_NUM; i++) {
-      PrintPkt("Addr:", Config.pipe_addr[i], PIPE_ADDR_LEN);
-    }
-    Serial.printf("CHANNEL: %02X\n", Config.nrf24Channel);
-    PrintPkt("vBoard:", Config.vboard_addr, ADDR_LEN);
+  for (int i = 0; i < PIPE_ADDR_NUM; i++) {
+    PrintPkt("Addr:", Config.pipe_addr[i], PIPE_ADDR_LEN);
+  }
+  Serial.printf("CHANNEL: %02X\n", Config.nrf24Channel);
+  PrintPkt("vBoard:", Config.vboard_addr, ADDR_LEN);
 #endif
 
   return 1;
 }
 
+
+// NetSend sends the buff of size sz over the network.
+int NetSend(uint8_t *buff, uint8_t sz) {
+  int ok = Udp.beginPacket(controllerHost, controllerPort);
+  if (!ok) {
+    return 0;
+  }
+  Udp.write(buff, sz);
+  ok = Udp.endPacket();
+  if (!ok) {
+    return 0;
+  }
+  return 1;
+}
 
 void PrintPkt(char *str, uint8_t buff[], int len) {
 #ifdef DEBUG

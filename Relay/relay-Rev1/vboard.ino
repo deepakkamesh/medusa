@@ -2,7 +2,7 @@
 
 
 int SendPing() {
-  
+
   uint8_t i = 0;
 
   bufferTX[i] = PKT_TYPE_BOARD_DATA_RELAY;
@@ -13,16 +13,7 @@ int SendPing() {
   i++;
   SuperMemCpy(bufferTX, i, Config.vboard_addr, 0, ADDR_LEN);
   i += ADDR_LEN;
-  int ok = Udp.beginPacket(controllerHost, controllerPort);
-  if (!ok) {
-    return 0;
-  }
-  Udp.write(bufferTX, i);
-  ok = Udp.endPacket();
-  if (!ok) {
-    return 0;
-  }
-  return 1;
+  return NetSend(bufferTX, i);
 }
 
 unsigned long prevTicks = 0;

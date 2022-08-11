@@ -78,7 +78,6 @@ void RadioRcvLoop() {
     delay(1000);
     ESP.restart();
   }
-
   PrintPkt("RadioPkt", bufferRX, sz);
 }
 

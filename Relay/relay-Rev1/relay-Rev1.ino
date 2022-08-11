@@ -29,7 +29,7 @@
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_FLUSH_TX_FIFO 0x17
 
-uint8_t pipe_addr_6[PIPE_ADDR_LEN] = {0,0,0,0,0}; // pipe address of virtual pipe addr;
+uint8_t pipe_addr_6[PIPE_ADDR_LEN] = {0, 0, 0, 0, 0}; // pipe address of virtual pipe addr;
 
 struct RelayConfig {
   uint8_t pipe_addr[PIPE_ADDR_NUM][PIPE_ADDR_LEN];
@@ -41,7 +41,7 @@ struct RelayConfig {
 struct RelayConfig Config = {
   .isConfigured = false,
   .nrf24Channel = 115,
-  .vboard_addr = {0xA,0xB,0xC},
+  .vboard_addr = {0xA, 0xB, 0xC},
 };
 
 RF24 radio(5, 4); // CE, CSN.

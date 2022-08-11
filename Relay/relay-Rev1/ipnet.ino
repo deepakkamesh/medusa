@@ -12,7 +12,10 @@ uint8_t bufferTX[255];
 // TODO: get from wifimanager.
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
-char* controllerHost = "192.168.1.108";
+//const char* ssid     = "Utopian";         // The SSID (name) of the Wi-Fi network you want to connect to
+//const char* password = "moretti308!!";     // The password of the Wi-Fi network
+
+char* controllerHost = "192.168.1.255";
 uint16_t controllerPort = 6000;
 
 /* WifiConnect establishes connection to the specified access point*/
@@ -54,16 +57,11 @@ int RelaySetup(void) {
   while (1) {
     delay(1000);
     // Send config packet request.
-    int ok = Udp.beginPacket(controllerHost, controllerPort);
-    if (!ok) {
-      return 0;
-    }
-    Udp.write(bufferTX, 7);
-    ok = Udp.endPacket();
-    if (!ok) {
-      return 0;
-    }
 
+    int ok = NetSend(bufferTX, 7);
+    if (!ok) {
+      return 0;
+    }
     delay(10);
 
     // See if we got a response.
@@ -106,6 +104,7 @@ void IpLoop(void) {
       SendError(ERROR_UNKNOWN_PKT);
       break;
   }
+  yield();
 }
 
 void ProcessBoardDataRelay(uint8_t *bufferRX, uint8_t sz) {
@@ -138,16 +137,8 @@ int SendError(uint8_t errorCode) {
   // Send config packet request.
   bufferTX[0] = PKT_TYPE_RELAY_ERROR;
   bufferTX[1] = errorCode;
-  int ok = Udp.beginPacket(controllerHost, controllerPort);
-  if (!ok) {
-    return 0;
-  }
-  Udp.write(bufferTX, 2);
-  ok = Udp.endPacket();
-  if (!ok) {
-    return 0;
-  }
-  return 1;
+
+  return NetSend(bufferTX,2);
 }
 
 /********** SendRadioPacket sends the Radio packet on UDP *****************/
@@ -159,14 +150,6 @@ int SendRadioPacket( uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   i += PIPE_ADDR_LEN;
   SuperMemCpy(bufferTX, i, buff, 0, sz);
   i += sz;
-  int ok = Udp.beginPacket(controllerHost, controllerPort);
-  if (!ok) {
-    return 0;
-  }
-  Udp.write(bufferTX, i);
-  ok = Udp.endPacket();
-  if (!ok) {
-    return 0;
-  }
-  return 1;
+
+  return NetSend(bufferTX,i);
 }
