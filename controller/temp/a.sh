@@ -2,7 +2,7 @@
 
 case $1 in
  init)
-   export IP=`cat relayIP.dat`
+   export IP="192.168.1.104"
    export PADDR="68,65,6C,6C,6F"
    export ADDR="FF,FF,FF"
    ;;
