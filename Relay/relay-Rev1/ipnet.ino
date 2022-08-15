@@ -4,7 +4,7 @@
 #define MAC_ADDR_LEN 6
 
 
-
+WiFiClient clientConn;
 WiFiUDP Udp;
 uint8_t bufferRX[255];
 uint8_t bufferTX[255];
@@ -15,8 +15,9 @@ const char* password = "0d9f48a148";     // The password of the Wi-Fi network
 //const char* ssid     = "Utopian";         // The SSID (name) of the Wi-Fi network you want to connect to
 //const char* password = "moretti308!!";     // The password of the Wi-Fi network
 
-char* controllerHost = "192.168.1.255";
-uint16_t controllerPort = 6000;
+uint16_t ctrPort = 3334;
+IPAddress ctrIP;
+
 
 /* WifiConnect establishes connection to the specified access point*/
 void WifiConnect(void) {
@@ -48,6 +49,7 @@ int RelaySetup(void) {
   if (Config.isConfigured) {
     return 1;
   }
+  IPAddress bcastIP = GetBroadcastIP();
 
   // Build Relay Get Config Packet.
   bufferTX[0] = PKT_TYPE_RELAY_GET_CONFIG;
@@ -56,9 +58,8 @@ int RelaySetup(void) {
   SuperMemCpy(bufferTX, 1, mac, 0, MAC_ADDR_LEN);
   while (1) {
     delay(1000);
-    // Send config packet request.
 
-    int ok = NetSend(bufferTX, 7);
+    int ok = NetSendUDP(bufferTX, 7, bcastIP, ctrPort);
     if (!ok) {
       return 0;
     }
@@ -74,22 +75,34 @@ int RelaySetup(void) {
     if (!ParseConfigPkt(bufferRX, len)) {
       continue;
     }
+    // Get the controller IP.
+    ctrIP = Udp.remoteIP();
     return 1;
   }
 }
 
 
 /******* IpLoop parses UDP packets and sends it over Radio or locally for vboard **********/
-void IpLoop(void) {
+void IpLoop(void)  {
+  // reconnect if connection is broken.
+  if (!clientConn.connected()) {
+    clientConn.stop();
+    if (!clientConn.connect(ctrIP, ctrPort)) {
+      // Restart if unable to connect to controller.
+#ifdef DEBUG
+      Serial.println("Failed trying to reconnect to controller.");
+#endif
+      delay(1000);
+      ESP.restart();
+    }
+  }
 
-  int packetSize = Udp.parsePacket(); // check if there is a packet.
-  if (!packetSize) {
+  if (!clientConn.available()) {
     return;
   }
 
-  int sz = Udp.read(bufferRX, 255);
+  uint8_t  sz = clientConn.read(bufferRX, 255);
   PrintPkt("Ctrl pkt:", bufferRX, sz);
-
   // Process packets and send to radio or process locally if pipe_addr is for virtual pipe #6.
   uint8_t pktType = bufferRX[0];
   switch (pktType) {
@@ -104,8 +117,8 @@ void IpLoop(void) {
       SendError(ERROR_UNKNOWN_PKT);
       break;
   }
-  yield();
 }
+
 
 void ProcessBoardDataRelay(uint8_t *bufferRX, uint8_t sz) {
   uint8_t radioPkt[32];
@@ -138,7 +151,7 @@ int SendError(uint8_t errorCode) {
   bufferTX[0] = PKT_TYPE_RELAY_ERROR;
   bufferTX[1] = errorCode;
 
-  return NetSend(bufferTX,2);
+  return NetSend(bufferTX, 2);
 }
 
 /********** SendRadioPacket sends the Radio packet on UDP *****************/
@@ -151,5 +164,5 @@ int SendRadioPacket( uint8_t pipeNum, uint8_t  buff[], uint8_t sz) {
   SuperMemCpy(bufferTX, i, buff, 0, sz);
   i += sz;
 
-  return NetSend(bufferTX,i);
+  return NetSend(bufferTX, i);
 }

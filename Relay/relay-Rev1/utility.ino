@@ -42,10 +42,25 @@ uint8_t  ParseConfigPkt(uint8_t * bufferRX, uint8_t len) {
   return 1;
 }
 
+IPAddress GetBroadcastIP() {
+  // Find the broadcast IP.
+  IPAddress mask = WiFi.subnetMask();
+  IPAddress ip = WiFi.gatewayIP();
+  IPAddress bcastIP;
+  for (int i = 0; i < 4; i++) {
+    mask[i] = ~mask[i];
+    bcastIP[i] = ip[i] | mask[i];
+  }
+  return bcastIP;
+}
+
+int NetSend(uint8_t *buff, uint8_t sz) {
+  return clientConn.write(buff, sz);
+}
 
 // NetSend sends the buff of size sz over the network.
-int NetSend(uint8_t *buff, uint8_t sz) {
-  int ok = Udp.beginPacket(controllerHost, controllerPort);
+int NetSendUDP(uint8_t *buff, uint8_t sz, IPAddress ip, uint16_t port) {
+  int ok = Udp.beginPacket(ip, port);
   if (!ok) {
     return 0;
   }
