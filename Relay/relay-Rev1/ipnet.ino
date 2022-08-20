@@ -12,8 +12,6 @@ uint8_t bufferTX[255];
 // TODO: get from wifimanager.
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
-//const char* ssid     = "Utopian";         // The SSID (name) of the Wi-Fi network you want to connect to
-//const char* password = "moretti308!!";     // The password of the Wi-Fi network
 
 uint16_t ctrPort = 3334;
 IPAddress ctrIP;
@@ -92,7 +90,7 @@ void IpLoop(void)  {
 #ifdef DEBUG
       Serial.println("Failed trying to reconnect to controller.");
 #endif
-      delay(1000);
+      delay(3000);
       ESP.restart();
     }
   }

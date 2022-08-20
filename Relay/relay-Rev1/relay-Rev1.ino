@@ -56,14 +56,14 @@ void setup() {
   ok = RelaySetup();
   if (!ok) {
     digitalWrite(LED_ONBOARD, false); // false turns it on?.
-    delay(1000);
+    delay(3000);
     ESP.restart();
   }
   ok = RadioSetup();
   if (!ok) {
     SendError(ERROR_RELAY_RADIO_INIT_FAILED);
     digitalWrite(LED_ONBOARD, false); // false turns it on?.
-    delay(1000);
+    delay(3000);
     ESP.restart();
   }
 }

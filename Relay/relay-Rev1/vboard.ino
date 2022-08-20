@@ -47,9 +47,6 @@ void ProcessVBoardPacket(uint8_t *pkt, uint8_t sz) {
 }
 
 void ProcessAction(uint8_t actionID, uint8_t * data) {
-#ifdef DEBUG
-  Serial.printf("Got Relay Action Request:%d\n", actionID);
-#endif
 
   switch (actionID) {
     case ACTION_RESET_DEVICE:
