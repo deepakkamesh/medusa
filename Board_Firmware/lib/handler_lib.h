@@ -5,6 +5,7 @@
 #define MIN_PKT_SZ 4
 #define MAX_PKT_SZ 32
 #define MAX_TX_QUEUE_SZ 8 
+#define MAX_CONNECT_RETRIES 5
 
 // Packet Types.
 #define PKT_DATA 0x01
@@ -52,11 +53,14 @@ void HandleTimeLoop(void);
 void InitHandlerLib(void); // Main Library init routine. To be called in setup.
 void HandlerLoop(void); // Main loop. To be called in loop.
 uint8_t DiscoverRFChannel(void); // Discover RF Channel.
+void FlipPipeAddress(void);
+void ResetFlipCounter(void);
 
 // EEPROM stuff.
 #define IS_CONFIGURED 0x69 // Denotes if config is written on eeprom. 
 #define EEPROM_ADDR 0xf010
-#define CONFIG_OFFSET 5
+#define EE_RETRY_OFFSET 2
+#define EE_CONFIG_OFFSET 5
 void LoadConfigFromEE(void);
 void WriteConfigToEE(void);
 

@@ -72,13 +72,18 @@ void InitRadio(void) {
     initQ(&TXQueue);
 }
 // DiscoverRFChannel iterates through the list of RF channels and attempts to 
-// send a packet. If there is a response on the default pipe address it returns
-// the RF channel.
+// send a packet. If no response after set retries it tries the default pipe address.
 
 uint8_t DiscoverRFChannel(void) {
     bufferTX[0] = PKT_NOOP;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
 
+    // If board not configured no point in trying to flip addresses. 
+    if (config.IsConfigured) {
+        FlipPipeAddress();
+    }
+
+    // Cycle through available channels. 
     for (uint8_t rf = 0; rf < 125; rf++) {
 #ifdef DEV_STATUS_LED
         LED_Toggle();
@@ -107,12 +112,38 @@ uint8_t DiscoverRFChannel(void) {
 #ifdef DEV_STATUS_LED
         LED_SetLow();
 #endif
+        // Found the channel. Reset Flip counter. 
+        ResetFlipCounter();
         return rf;
     }
     // Channel not found. retry.
     __delay_ms(5000);
     RESET();
     return 0;
+}
+
+// FlipPipeAddress flips the pipe address between whats in memory to the default
+// pipe address after MAX_CONNECT_RETRIES. 
+
+void FlipPipeAddress(void) {
+    uint8_t n = DATAEE_ReadByte(EEPROM_ADDR + EE_RETRY_OFFSET);
+    DATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, n + 1);
+
+    if (n < MAX_CONNECT_RETRIES) {
+        return;
+    }
+
+    if (n % 2 == 0) {
+        nrf24_write_buff(NRF24_MEM_TX_ADDR, config.PipeAddr1, PIPE_ADDR_LEN);
+        nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, config.PipeAddr1, PIPE_ADDR_LEN);
+    } else {
+        nrf24_write_buff(NRF24_MEM_TX_ADDR, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+        nrf24_write_buff(NRF24_MEM_RX_ADDR_P0, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+    }
+}
+
+void ResetFlipCounter(void) {
+    DATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, 0);
 }
 
 void HandleTimeLoop(void) {
@@ -267,11 +298,11 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             buff[1] = volts >> 8;
             SendData(ACTION_GET_VOLTS, buff, 2);
             break;
-            
+
         case ACTION_TEST:
             TestFunc();
             break;
-            
+
         default:
             SendError(ERR_NOT_IMPL);
     }
@@ -306,13 +337,13 @@ void SendPing(void) {
 }
 
 void ResetEE(void) {
-    unsigned int idx = EEPROM_ADDR + CONFIG_OFFSET;
+    unsigned int idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     DATAEE_WriteByte(idx, 0xFF);
 }
 
 /* LoadConfigFromEE loads the configuration from memory. If none found default loaded*/
 void LoadConfigFromEE(void) {
-    unsigned int idx = EEPROM_ADDR + CONFIG_OFFSET;
+    unsigned int idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     uint8_t isConfigured = DATAEE_ReadByte(idx);
     if (isConfigured != IS_CONFIGURED) {
         config.ARD = DEFAULT_ARD;
@@ -338,7 +369,7 @@ void LoadConfigFromEE(void) {
 }
 
 void WriteConfigToEE(void) {
-    unsigned int idx = EEPROM_ADDR + CONFIG_OFFSET;
+    unsigned int idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     DATAEE_WriteByte(idx, IS_CONFIGURED);
     idx++;
     DATAEE_WriteByte(idx, config.ARD);
