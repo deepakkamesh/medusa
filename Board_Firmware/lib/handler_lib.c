@@ -233,7 +233,8 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 }
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
-    uint8_t tmpHumidity[] = {0, 0};
+    uint8_t buff[2] = {0, 0};
+    adc_result_t volts;
 
     switch (actionID) {
         case ACTION_STATUS_LED:
@@ -246,20 +247,31 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 #else
             SendError(ERR_NOT_IMPL);
 #endif
+
         case ACTION_GET_TEMP_HUMIDITY:
 #ifdef DEV_TEMP_HUMIDITY
-            GetMockTempHumidity(tmpHumidity);
-            SendData(ACTION_GET_TEMP_HUMIDITY, tmpHumidity, 2);
+            GetMockTempHumidity(buff);
+            SendData(ACTION_GET_TEMP_HUMIDITY, buff, 2);
             break;
 #else
             SendError(ERR_NOT_IMPL);
 #endif
+
         case ACTION_RESET_DEVICE:
             RESET();
             break;
+
+        case ACTION_GET_VOLTS:
+            volts = ADC_GetConversion(channel_FVR);
+            buff[0] = volts & 0x00FF;
+            buff[1] = volts >> 8;
+            SendData(ACTION_GET_VOLTS, buff, 2);
+            break;
+            
         case ACTION_TEST:
             TestFunc();
             break;
+            
         default:
             SendError(ERR_NOT_IMPL);
     }
@@ -351,10 +363,13 @@ void SuperMemCpy(uint8_t *dest, uint8_t destStart, uint8_t *src, uint8_t srcStar
 }
 
 void TestFunc(void) {
-    LoadConfigFromEE();
-    memcpy(DEFAULT_PIPE_ADDR, BoardAddress, ADDR_LEN);
-
-    SendData(ACTION_TEST, DEFAULT_PIPE_ADDR, PIPE_ADDR_LEN);
+    //LoadConfigFromEE();
+    //memcpy(DEFAULT_PIPE_ADDR, BoardAddress, ADDR_LEN);
+    uint8_t buff[2] = {0, 0};
+    adc_result_t volts = ADC_GetConversion(channel_FVR);
+    buff[0] = volts & 0x00FF;
+    buff[1] = volts >> 8;
+    SendData(ACTION_TEST, buff, 2);
 }
 
 /***************************** Queuing Functions *****************************/
