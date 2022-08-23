@@ -6,18 +6,21 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/golang/glog"
 )
 
 // response Struct to return JSON.
 type response struct {
-	Err  string
-	Data interface{}
+	Err  string      // Error message.
+	Data interface{} // Data message.
 }
 
+// StartHTTP starts the HTTP server.
 func (c *Core) StartHTTP() error {
 
 	http.HandleFunc("/api/cli", c.cli)
-	return http.ListenAndServe(c.hostPort, nil)
+	return http.ListenAndServe(c.httpHostPort, nil)
 }
 
 // cli handles the command line raw packets.
@@ -31,14 +34,33 @@ func (c *Core) cli(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// convert string into byte array.
+	proto := strings.TrimSpace(r.Form.Get("proto"))
 	cmd := strings.TrimSpace(r.Form.Get("cmd"))
-	pkt := strings.Split(cmd, ",")
-	message := []byte{}
-	for i := 0; i < len(pkt); i++ {
-		v, _ := strconv.ParseUint(pkt[i], 16, 8)
-		message = append(message, byte(v))
+	cmds := strings.Split(cmd, ",")
+	msg := []byte{}
+	strMsg := ""
+	for i := 0; i < len(cmds); i++ {
+		v, _ := strconv.ParseUint(cmds[i], 16, 8)
+		msg = append(msg, byte(v))
+		strMsg = strMsg + fmt.Sprintf("%X ", byte(v))
 	}
-	fmt.Println(message)
+
+	switch {
+	// Send to UDP.
+	case proto == "U":
+		glog.Infof("Cli Command to UDP: %v", strMsg)
+		_, err := c.relays["0"].connUDP.WriteTo(msg, c.relays["0"].addr)
+		if err != nil {
+			glog.Errorf("Error sending relay config %v cmd:  %v", strMsg, err)
+		}
+		// Send to TCP.
+	case proto == "T":
+		glog.Infof("Cli Command to TCP: %v", strMsg)
+		_, err := c.relays["0"].conn.Write(msg)
+		if err != nil {
+			glog.Errorf("Error sending pkt  %v cmd:  %v", strMsg, err)
+		}
+	}
 
 	// If Exec is successful, send back command output.
 	writeResponse(w, &response{
@@ -56,6 +78,5 @@ func writeResponse(w http.ResponseWriter, resp *response) {
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
-	//	log.Printf("Writing json response %s", js)
 	w.Write(js)
 }

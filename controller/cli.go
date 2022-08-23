@@ -18,7 +18,8 @@ type response struct {
 func main() {
 
 	params := url.Values{
-		"cmd": {os.Args[3]},
+		"proto": {os.Args[3]},
+		"cmd":   {os.Args[4]},
 	}
 
 	resp, err := http.PostForm("http://"+os.Args[2]+"/api/cli", params)

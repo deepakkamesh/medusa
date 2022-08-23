@@ -3,13 +3,17 @@ package core
 type Core struct {
 	hostPort     string
 	httpHostPort string
-	tempChan     chan []byte
+	relays       map[string]*Relay
 }
 
 func NewCore(httpHostPort string, hostPort string) *Core {
 	return &Core{
 		hostPort:     hostPort,
 		httpHostPort: httpHostPort,
-		tempChan:     make(chan []byte, 0),
+		relays:       make(map[string]*Relay),
 	}
+}
+
+func (c *Core) TempInit() {
+	c.relays["0"] = &Relay{}
 }
