@@ -1,41 +1,63 @@
 {
    "Relays":[
       {
-         "HWAddr":[1,2,3,4,5,6],
-         "PAddr0":[10,1,2,3,4],
-         "PAddr1":[6,7,8,9,10],
-         "PAddr2":[6],
-         "PAddr3":[6],
-         "PAddr4":[6],
-         "PAddr5":[6],
+         "HWAddr":[67,68,69,70,55,21], 
+         "PAddr0":[10,10,2,3,4],
+         "PAddr1":[60,7,8,9,10],
+         "PAddr2":[61,7,8,9,10],
+         "PAddr3":[62,7,8,9,10],
+         "PAddr4":[63,7,8,9,10],
+         "PAddr5":[64,7,8,9,10],
+         "PAddr6":[68,69,70,55,21],
+         "Addr":[67,1,1],
          "Channel":115,
          "Description":"comment",
          "Room":"Living",
-         "Name":"Sensor1"
+         "Name":"Relay1"
       },
       {
-         "HWAddr":[7,8,9,10,11,12],
-         "PAddr0":[6,7,8,9,10],
-         "PAddr1":[6,7,8,9,10],
-         "PAddr2":[6,7,8,9,10],
-         "PAddr3":[6,7,8,9,10],
-         "PAddr4":[6,7,8,9,10],
-         "PAddr5":[6,7,8,9,10],
+         "HWAddr":[31,32,33,34,35,36],
+         "PAddr0":[16,7,8,9,10],
+         "PAddr1":[71,7,8,9,10],
+         "PAddr2":[72,7,8,9,10],
+         "PAddr3":[73,7,8,9,10],
+         "PAddr4":[74,7,8,9,10],
+         "PAddr5":[75,7,8,9,10],
+         "PAddr6":[32,33,34,35,36],
+         "Addr":[77,1,1],
          "Channel":115,
          "Description":"comment2",
          "Room":"Family",
-         "Name":"Sensor1"
+         "Name":"Relay1"
       }
    ],
    "Boards":[
       {
-         "Addr":[4,5,3,5],
-         "PAddr":[6,7,8,9,10],
+         "Addr":[4,5,3],
+         "PAddr":[60,7,8,9,10],
          "ARD":15,
          "PingInt":1,
-         "Description":"comment2",
-         "Room":"Family",
-         "Name":"Sensor1"
+         "Description":"board on relay1",
+         "Room":"living",
+         "Name":"board1"
+      },
+      {
+         "Addr":[67,1,1],
+         "PAddr":[68,69,70,55,21],
+         "ARD":15,
+         "PingInt":1,
+         "Description":"vboard living relay1",
+         "Room":"living",
+         "Name":"board2"
+      },
+      {
+         "Addr":[77,1,1],
+         "PAddr":[32,33,34,35,36],
+         "ARD":15,
+         "PingInt":1,
+         "Description":"vboard family relay1",
+         "Room":"family",
+         "Name":"board1"
       }
    ]
 }

@@ -17,6 +17,7 @@ type Relay struct {
 	PAddr3      []byte
 	PAddr4      []byte
 	PAddr5      []byte
+	PAddr6      []byte // Pipe Address for the virtual board.
 	Addr        []byte // Address of virt board on relay.
 	Channel     byte
 	Description string
@@ -62,6 +63,33 @@ func (f *Config) getRelaybyIP(ip net.IP) *Relay {
 	return nil
 }
 
+func (f *Config) getRelayByPAddr(paddr []byte) *Relay {
+	for _, v := range f.Relays {
+		if bytes.Compare(v.PAddr0, paddr) == 0 {
+			return v
+		}
+		if bytes.Compare(v.PAddr1, paddr) == 0 {
+			return v
+		}
+		if bytes.Compare(v.PAddr2, paddr) == 0 {
+			return v
+		}
+		if bytes.Compare(v.PAddr3, paddr) == 0 {
+			return v
+		}
+		if bytes.Compare(v.PAddr4, paddr) == 0 {
+			return v
+		}
+		if bytes.Compare(v.PAddr5, paddr) == 0 {
+			return v
+		}
+		if bytes.Compare(v.PAddr6, paddr) == 0 {
+			return v
+		}
+	}
+	return nil
+}
+
 func (f *Config) getRelayByHWAddr(hwaddr []byte) *Relay {
 	for _, v := range f.Relays {
 		if bytes.Compare(v.HWAddr, hwaddr) == 0 {
@@ -71,7 +99,11 @@ func (f *Config) getRelayByHWAddr(hwaddr []byte) *Relay {
 	return nil
 }
 
-// SendPKt sends the packet
-func (f *Config) SendPkt(addr []byte, pkt []byte) error {
+func (f *Config) getBoardByAddr(addr []byte) *Board {
+	for _, v := range f.Boards {
+		if bytes.Compare(v.Addr, addr) == 0 {
+			return v
+		}
+	}
 	return nil
 }
