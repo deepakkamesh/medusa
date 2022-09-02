@@ -11,7 +11,7 @@ import (
 type Core struct {
 	hostPort string // IP Port for TCP & UDP bindings.
 	conf     *Config
-	Event    chan Event // Channel to receive the packet.
+	Event    chan Event // Channel to receive events.
 }
 
 // NewCore returns an initialized Core.
@@ -28,11 +28,33 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 	}, nil
 }
 
-func (c *Core) GetLight(addr []byte) error {
+// RequestAction sends an action request to the board addr.
+func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
+	brd := c.conf.getBoardByAddr(addr)
+	if brd == nil {
+		return fmt.Errorf("address not found %v", addr)
+	}
+	relay := c.conf.getRelayByPAddr(brd.PAddr)
+	if relay == nil {
+		return fmt.Errorf("relay not found for pipe address %v", brd.PAddr)
+	}
+	pkt := makePktTypeActionReq(actionID, brd.Addr, brd.PAddr, data)
+
+	if relay.conn == nil {
+		return fmt.Errorf("relay not registered. hwaddr:%v", relay.HWAddr)
+	}
+	_, err := relay.conn.Write(pkt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Core) Light(addr []byte) error {
 	return c.requestAction(addr, ActionLight, []byte{})
 }
 
-func (c *Core) GetTemp(addr []byte) error {
+func (c *Core) Temp(addr []byte) error {
 	return c.requestAction(addr, ActionTemp, []byte{})
 }
 
@@ -44,22 +66,25 @@ func (c *Core) LEDOn(addr []byte, on bool) error {
 	return c.requestAction(addr, ActionLED, []byte{data})
 }
 
-// RequestAction sends an action request to the board addr.
-func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
-	brd := c.conf.getBoardByAddr(addr)
+// BoardConfig sends the board configuration associated with naddr in
+// config file to board address default addr and paddr.
+func (c *Core) SetBoardConfig(addr []byte, paddr []byte, naddr []byte, hwaddr []byte) error {
+
+	relay := c.conf.getRelayByHWAddr(hwaddr)
+	if relay == nil {
+		return fmt.Errorf("relay not found for hwaddr %v", hwaddr)
+	}
+	if relay.conn == nil {
+		return fmt.Errorf("relay not registered. hwaddr:%v", relay.HWAddr)
+	}
+
+	brd := c.conf.getBoardByAddr(naddr)
 	if brd == nil {
 		return fmt.Errorf("address not found %v", addr)
 	}
-	relay := c.conf.getRelayByPAddr(brd.PAddr)
-	if relay == nil {
-		return fmt.Errorf("relay not found for pipe address %v", brd.PAddr)
-	}
-	pkt := genActionPacket(actionID, brd.Addr, brd.PAddr, data)
 
-	//	fmt.Println(relay)
-	if relay.conn == nil {
-		return fmt.Errorf("relay not registered")
-	}
+	pkt := makePktTypeConfig(addr, paddr, brd)
+
 	_, err := relay.conn.Write(pkt)
 	if err != nil {
 		return err
@@ -67,19 +92,21 @@ func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
 	return nil
 }
 
-/*
-// TODO SendRawPacket sends the raw packet to the board.
-func (c *Core) SendRawPacket(pkt []byte) error {
-	//	_, err := c.relays["0"].conn.Write(pkt)
-	return nil
+// SetRelayConfigMode sets relay with hwaddr in config mode.
+// if ok is false, unsets config mode.
+func (c *Core) SetRelayConfigMode(hwaddr []byte, yes bool) error {
+	relay := c.conf.getRelayByHWAddr(hwaddr)
+	if relay == nil {
+		return fmt.Errorf("relay not found for hwaddr %v", hwaddr)
+	}
+	if relay.conn == nil {
+		return fmt.Errorf("relay not registered. hwaddr:%v", relay.HWAddr)
+	}
+	// Send Relay config.
+	relayCfg := makePktTypeRelayCfgResp(relay, yes)
+	_, err := relay.conn.Write(relayCfg)
+	return err
 }
-
-// TODO SendManualRelayCfg sends the manual config response for relay.
-func (c *Core) SendManualRelayCfg(pkt []byte) error {
-	//_, err := c.relays["0"].connUDP.WriteTo(pkt, c.relays["0"].IP)
-	return nil
-}
-*/
 
 // StartCore starts up the packet handlers.
 func (c *Core) StartCore() {
@@ -184,7 +211,7 @@ func (c *Core) sendRelayConfig(conn net.PacketConn) {
 	relay.IP = addr.(*net.UDPAddr).IP // Register IP from relay.
 
 	// Send Relay config.
-	relayCfg := makePktTypeRelayCfgResp(relay)
+	relayCfg := makePktTypeRelayCfgResp(relay, false)
 	preamble = fmt.Sprintf("%v - PktTypeRelayCfgResp:", addr.String())
 	glog.Infof(PrintPkt(preamble, relayCfg, len(relayCfg)))
 	if _, err := conn.WriteTo(relayCfg, addr); err != nil {

@@ -41,6 +41,9 @@ const (
 	PktTypeRelayCfgReqLen = 7
 )
 
+// Default config pipe address.
+var defPipeAdress []byte = []byte{0x68, 0x65, 0x6C, 0x6C, 0x6F}
+
 func okPktTypeRelayCfgReq(buffer []byte) bool {
 	if buffer[0] != PktTypeRelayCfgReq || len(buffer) < PktTypeRelayCfgReqLen {
 		return false
@@ -54,10 +57,15 @@ func getHWAddr(buffer []byte) []byte {
 }
 
 // makePktTypeRelayCfgResp creates a relay config response packet.
-func makePktTypeRelayCfgResp(r *Relay) []byte {
+// if defPAddr is true, sets PAddr0 to defPipeAddress ("hello").
+func makePktTypeRelayCfgResp(r *Relay, defPaddr bool) []byte {
 	pkt := []byte{}
 	pkt = append(pkt, PktTypeRelayCfgResp)
-	pkt = append(pkt, r.PAddr0...)
+	if defPaddr {
+		pkt = append(pkt, defPipeAdress...)
+	} else {
+		pkt = append(pkt, r.PAddr0...)
+	}
 	pkt = append(pkt, r.PAddr1...)
 	pkt = append(pkt, r.PAddr2[0])
 	pkt = append(pkt, r.PAddr3[0])
@@ -69,14 +77,23 @@ func makePktTypeRelayCfgResp(r *Relay) []byte {
 	return pkt
 }
 
-func makePktTypeConfig(b *Board) []byte {
+func makePktTypeConfig(addr []byte, paddr []byte, b *Board) []byte {
 	pkt := []byte{}
+	pkt = append(pkt, PktTypeRelayBoardData)
+	pkt = append(pkt, paddr...)
+	pkt = append(pkt, PktTypeConfig)
+	pkt = append(pkt, addr...)
+	pkt = append(pkt, b.ARD)
+	pkt = append(pkt, b.PingInt)
+	pkt = append(pkt, b.PAddr...)
+	pkt = append(pkt, b.Addr...)
 
+	return pkt
 }
 
-func genActionPacket(actionID byte, addr []byte, paddr []byte, data []byte) []byte {
+func makePktTypeActionReq(actionID byte, addr []byte, paddr []byte, data []byte) []byte {
 	pkt := []byte{}
-	pkt = append(pkt, 0xAD)
+	pkt = append(pkt, PktTypeRelayBoardData)
 	pkt = append(pkt, paddr...)
 	pkt = append(pkt, PktTypeActionReq)
 	pkt = append(pkt, addr...)

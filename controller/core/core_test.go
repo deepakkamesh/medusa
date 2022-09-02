@@ -77,7 +77,7 @@ func TestAction(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Temp.
-	if err := core.GetTemp([]byte{4, 5, 3}); err != nil {
+	if err := core.Temp([]byte{4, 5, 3}); err != nil {
 		t.Fatalf("Failed to call temp: %v", err)
 	}
 	if err := readandCompare(conn, []byte{0xAD, 60, 7, 8, 9, 10, PktTypeActionReq, 4, 5, 3, ActionTemp}); err != nil {
@@ -190,4 +190,43 @@ func TestDataPacket(t *testing.T) {
 		default:
 		}
 	}
+}
+
+func TestConfigMode(t *testing.T) {
+	tcpAddr, _ := net.ResolveTCPAddr("tcp", hostPort)
+
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	if err != nil {
+		t.Fatalf("Failed to dial server:%v", err)
+	}
+	// Delay needed to stabilize listen on server.
+	time.Sleep(100 * time.Millisecond)
+
+	hwaddr := []byte{67, 68, 69, 70, 55, 21}
+	defBrdAddr := []byte{0xff, 0xff, 0xff}
+
+	// Validate relay config mode.
+	if err := core.SetRelayConfigMode(hwaddr, true); err != nil {
+		t.Error(err)
+	}
+	if err := readandCompare(conn, []byte{PktTypeRelayCfgResp, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 60, 7, 8, 9, 10, 61, 62, 63, 64, 115, 67, 1, 1}); err != nil {
+		t.Errorf("Failed: %v", err)
+	}
+
+	// Validate board config.
+	if err := core.SetBoardConfig(defBrdAddr, defPipeAdress, []byte{4, 5, 3}, hwaddr); err != nil {
+		t.Error(err)
+	}
+	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x68, 0x65, 0x6C, 0x6C, 0x6F, PktTypeConfig, 0xff, 0xff, 0xff, 15, 1, 60, 7, 8, 9, 10, 4, 5, 3}); err != nil {
+		t.Errorf("Failed: %v", err)
+	}
+
+	// Validate resetting relay config.
+	if err := core.SetRelayConfigMode(hwaddr, false); err != nil {
+		t.Error(err)
+	}
+	if err := readandCompare(conn, []byte{PktTypeRelayCfgResp, 10, 10, 2, 3, 4, 60, 7, 8, 9, 10, 61, 62, 63, 64, 115, 67, 1, 1}); err != nil {
+		t.Errorf("Failed: %v", err)
+	}
+
 }
