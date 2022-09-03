@@ -7,9 +7,9 @@ type Controller struct {
 	core     *core.Core
 }
 
-func NewController(hostPort string, httpPort string) *Controller {
+func NewController(c *core.Core, httpPort string) *Controller {
 	return &Controller{
-		core:     core.NewCore(hostPort),
+		core:     c,
 		httpPort: httpPort,
 	}
 }
