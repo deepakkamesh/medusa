@@ -2,12 +2,9 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/golang/glog"
 )
 
 // response Struct to return JSON.
@@ -18,10 +15,35 @@ type response struct {
 
 // StartHTTP starts the HTTP server.
 func (c *Controller) StartHTTP() error {
-	http.HandleFunc("/api/cli", c.cli)
+	http.HandleFunc("/api/action", c.action)
 	return http.ListenAndServe(c.httpPort, nil)
 }
 
+// led controls the led.
+func (c *Controller) action(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		writeErr(w, "Err parsing form")
+		return
+	}
+
+	addr := parseStr(strings.TrimSpace(r.Form.Get("addr")))
+	act := strings.TrimSpace(r.Form.Get("actionID"))
+	actionID, _ := strconv.ParseUint(act, 16, 8)
+	data := parseStr(strings.TrimSpace(r.Form.Get("data")))
+
+	_, _, _ = addr, actionID, data
+
+	//TODO:
+	/*
+		if err := c.core.LEDOn(addr, on); err != nil {
+			writeErr(w, err.Error())
+			return
+		}*/
+
+	writeData(w, "ok")
+}
+
+/*
 // cli handles the command line raw packets.
 func (c *Controller) cli(w http.ResponseWriter, r *http.Request) {
 
@@ -64,7 +86,7 @@ func (c *Controller) cli(w http.ResponseWriter, r *http.Request) {
 		Data: string("ok"),
 	})
 
-}
+}*/
 
 // writeResponse writes the response json object to w. If unable to marshal
 // it writes a http 500.
@@ -76,4 +98,27 @@ func writeResponse(w http.ResponseWriter, resp *response) {
 		return
 	}
 	w.Write(js)
+}
+
+// parseStr converts comma sep. string hex values to slice.
+func parseStr(arg string) []byte {
+	cmds := strings.Split(arg, ",")
+	msg := []byte{}
+	for i := 0; i < len(cmds); i++ {
+		v, _ := strconv.ParseUint(cmds[i], 16, 8)
+		msg = append(msg, byte(v))
+	}
+	return msg
+}
+
+func writeErr(w http.ResponseWriter, s string) {
+	writeResponse(w, &response{
+		Err: s,
+	})
+}
+
+func writeData(w http.ResponseWriter, s string) {
+	writeResponse(w, &response{
+		Data: s,
+	})
 }

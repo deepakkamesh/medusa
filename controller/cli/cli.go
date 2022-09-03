@@ -1,11 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
 
+	"github.com/deepakkamesh/medusa/controller/core"
 	"github.com/urfave/cli"
 )
 
@@ -29,9 +34,21 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				addr := parseStr(c.String("a"))
+				addr := c.String("a")
 				on := c.Bool("on")
-				fmt.Println(addr, on)
+
+				onV := string("1")
+				if !on {
+					onV = "0"
+				}
+
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {strconv.Itoa(core.ActionLED)},
+					"data":     {onV},
+				}
+				post("", params, "action")
+
 				return nil
 			},
 		},
@@ -119,4 +136,40 @@ func parseStr(arg string) []byte {
 		msg = append(msg, byte(v))
 	}
 	return msg
+}
+
+// response Struct to return JSON.
+type response struct {
+	Err  string
+	Data interface{}
+}
+
+func post(host string, params url.Values, api string) {
+	/*	params = url.Values{
+		"proto": {os.Args[3]},
+		"cmd":   {os.Args[4]},
+	}*/
+
+	resp, err := http.PostForm("http://"+host+"/api/"+api, params)
+	if err != nil {
+		fmt.Printf("request failed: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("http read failed: %v", err)
+		return
+	}
+	respo := &response{}
+	if err := json.Unmarshal(body, respo); err != nil {
+		fmt.Printf("json unmarshal failed: %v", err)
+		return
+	}
+	if respo.Err != "" {
+		fmt.Printf("Core error: %s", respo.Err)
+		return
+	}
+	fmt.Println(respo.Data)
+	resp.Body.Close()
 }
