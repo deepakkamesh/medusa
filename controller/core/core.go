@@ -9,8 +9,8 @@ import (
 
 // Core is the main struct for the Medusa Core handling.
 type Core struct {
-	hostPort string // IP Port for TCP & UDP bindings.
-	conf     *Config
+	hostPort string     // IP Port for TCP & UDP bindings.
+	conf     *Config    // Config holds the hardware configuration.
 	Event    chan Event // Channel to receive events.
 }
 
@@ -28,21 +28,24 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 	}, nil
 }
 
-// RequestAction sends an action request to the board addr.
+// requestAction sends an action request to the board addr.
 func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
 	brd := c.conf.getBoardByAddr(addr)
 	if brd == nil {
 		return fmt.Errorf("address not found %v", addr)
 	}
+
 	relay := c.conf.getRelayByPAddr(brd.PAddr)
 	if relay == nil {
 		return fmt.Errorf("relay not found for pipe address %v", brd.PAddr)
 	}
-	pkt := makePktTypeActionReq(actionID, brd.Addr, brd.PAddr, data)
-
 	if relay.conn == nil {
 		return fmt.Errorf("relay not registered. hwaddr:%v", relay.HWAddr)
 	}
+
+	pkt := makePktTypeActionReq(actionID, brd.Addr, brd.PAddr, data)
+	glog.Info(PP(pkt, "%v - PktTypeActionReq:", relay.IP))
+
 	_, err := relay.conn.Write(pkt)
 	if err != nil {
 		return err
@@ -50,14 +53,17 @@ func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
 	return nil
 }
 
+// Light gets light level.
 func (c *Core) Light(addr []byte) error {
 	return c.requestAction(addr, ActionLight, []byte{})
 }
 
+// Temp - temp and humidity.
 func (c *Core) Temp(addr []byte) error {
 	return c.requestAction(addr, ActionTemp, []byte{})
 }
 
+// LEDOn sets led on or off.
 func (c *Core) LEDOn(addr []byte, on bool) error {
 	var data byte = 0
 	if on {
@@ -84,6 +90,7 @@ func (c *Core) SetBoardConfig(addr []byte, paddr []byte, naddr []byte, hwaddr []
 	}
 
 	pkt := makePktTypeConfig(addr, paddr, brd)
+	glog.Info(PP(pkt, "%v - PktTypeConfig:", relay.IP))
 
 	_, err := relay.conn.Write(pkt)
 	if err != nil {
@@ -103,8 +110,10 @@ func (c *Core) SetRelayConfigMode(hwaddr []byte, yes bool) error {
 		return fmt.Errorf("relay not registered. hwaddr:%v", relay.HWAddr)
 	}
 	// Send Relay config.
-	relayCfg := makePktTypeRelayCfgResp(relay, yes)
-	_, err := relay.conn.Write(relayCfg)
+	pkt := makePktTypeRelayCfgResp(relay, yes)
+	glog.Info(PP(pkt, "%v - PktTypeConfig:", relay.IP))
+
+	_, err := relay.conn.Write(pkt)
 	return err
 }
 
@@ -153,11 +162,9 @@ func (c *Core) handleRequest(conn net.Conn) {
 			return
 		}
 		buf = buf[:n]
-		preamble := fmt.Sprintf("%v - Pkt:", conn.RemoteAddr())
-		glog.Infof(PrintPkt(preamble, buf, n))
+		glog.Info(PP(buf, "%v - Pkt:", conn.RemoteAddr()))
 
 		ip := conn.RemoteAddr().(*net.TCPAddr).IP
-
 		relay := c.conf.getRelaybyIP(ip)
 
 		// Translate packet to event and send to channel.
@@ -192,8 +199,7 @@ func (c *Core) sendRelayConfig(conn net.PacketConn) {
 		glog.Fatalf("Failed reading from UDP: %v", err)
 	}
 	buf = buf[:n]
-	preamble := fmt.Sprintf("%v - PktTypeRelayCfgReq:", addr.String())
-	glog.Infof(PrintPkt(preamble, buf, n))
+	glog.Infof(PP(buf, "%v - PktTypeRelayCfgReq:", addr.String()))
 
 	// Validate the config request packet.
 	if !okPktTypeRelayCfgReq(buf) {
@@ -212,9 +218,8 @@ func (c *Core) sendRelayConfig(conn net.PacketConn) {
 
 	// Send Relay config.
 	relayCfg := makePktTypeRelayCfgResp(relay, false)
-	preamble = fmt.Sprintf("%v - PktTypeRelayCfgResp:", addr.String())
-	glog.Infof(PrintPkt(preamble, relayCfg, len(relayCfg)))
 	if _, err := conn.WriteTo(relayCfg, addr); err != nil {
 		glog.Errorf("Failed to send relay config:%v", err)
 	}
+	glog.Info(PP(relayCfg, "%v - PktTypeRelayCfgResp:", addr.String()))
 }

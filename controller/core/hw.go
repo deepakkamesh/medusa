@@ -33,6 +33,7 @@ type Board struct {
 	Description string
 	Room        string
 	Name        string
+	Actions     []byte // Supported actions.
 }
 
 type Config struct {
