@@ -11,12 +11,19 @@ import (
 	"strings"
 
 	"github.com/deepakkamesh/medusa/controller/core"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.EnableBashCompletion = true
+
+	app.Flags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  "host",
+			Usage: "Set host:Port",
+		},
+	}
 
 	app.Commands = []*cli.Command{
 		{
@@ -36,22 +43,20 @@ func main() {
 			Action: func(c *cli.Context) error {
 				addr := c.String("a")
 				on := c.Bool("on")
-
-				onV := string("1")
+				onV := "1"
 				if !on {
 					onV = "0"
 				}
-
 				params := url.Values{
 					"addr":     {addr},
-					"actionID": {strconv.Itoa(core.ActionLED)},
+					"actionID": {fmt.Sprintf("%X", core.ActionLED)},
 					"data":     {onV},
 				}
-				post("", params, "action")
-
+				post(c.String("host"), params, "action")
 				return nil
 			},
 		},
+
 		{
 			Name:    "temp",
 			Aliases: []string{"t"},
@@ -63,29 +68,40 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				addr := parseStr(c.String("a"))
-				fmt.Println(addr)
+				addr := c.String("a")
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionTemp)},
+				}
+				post(c.String("host"), params, "action")
 				return nil
 			},
 		},
+
 		{
 			Name:    "RelayConfigMode",
 			Aliases: []string{"rcm"},
 			Usage:   "Enable/Disable config mode for relay",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:  "a",
+					Name:  "hw",
 					Usage: "Relay HWAddress hex -a AB,FF,3A",
 				},
 				&cli.BoolFlag{
 					Name:  "on",
-					Usage: "on",
+					Usage: "on to enable relay config",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				addr := parseStr(c.String("a"))
+				hwaddr := c.String("hw")
 				on := c.Bool("on")
-				fmt.Println(addr, on)
+
+				params := url.Values{
+					"hwaddr": {hwaddr},
+					"on":     {fmt.Sprintf("%t", on)},
+				}
+				post(c.String("host"), params, "relayconfigmode")
+
 				return nil
 			},
 		},
@@ -113,12 +129,19 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				addr := parseStr(c.String("a"))
-				paddr := parseStr(c.String("pa"))
-				hwaddr := parseStr(c.String("hw"))
-				na := parseStr(c.String("na"))
+				addr := c.String("a")
+				paddr := c.String("pa")
+				hwaddr := c.String("hw")
+				naddr := c.String("na")
 
-				fmt.Println(addr, paddr, hwaddr, na)
+				params := url.Values{
+					"addr":   {addr},
+					"paddr":  {paddr},
+					"hwaddr": {hwaddr},
+					"naddr":  {naddr},
+				}
+
+				post(c.String("host"), params, "boardconfig")
 				return nil
 			},
 		},
@@ -167,7 +190,7 @@ func post(host string, params url.Values, api string) {
 		return
 	}
 	if respo.Err != "" {
-		fmt.Printf("Core error: %s", respo.Err)
+		fmt.Printf("Core error: %s\n", respo.Err)
 		return
 	}
 	fmt.Println(respo.Data)

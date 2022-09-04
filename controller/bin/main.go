@@ -39,6 +39,8 @@ func main() {
 		glog.Fatalf("Failed to startup Controller:%v", err)
 	}
 
+	go ctrl.Run()
+
 	if err := ctrl.StartHTTP(); err != nil {
 		glog.Fatalf("Failed to start http server %v", err)
 	}

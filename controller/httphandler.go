@@ -16,10 +16,11 @@ type response struct {
 // StartHTTP starts the HTTP server.
 func (c *Controller) StartHTTP() error {
 	http.HandleFunc("/api/action", c.action)
+	http.HandleFunc("/api/relayconfigmode", c.relayConfigMode)
+	http.HandleFunc("/api/boardconfig", c.boardConfig)
 	return http.ListenAndServe(c.httpPort, nil)
 }
 
-// led controls the led.
 func (c *Controller) action(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		writeErr(w, "Err parsing form")
@@ -31,62 +32,46 @@ func (c *Controller) action(w http.ResponseWriter, r *http.Request) {
 	actionID, _ := strconv.ParseUint(act, 16, 8)
 	data := parseStr(strings.TrimSpace(r.Form.Get("data")))
 
-	_, _, _ = addr, actionID, data
-
-	//TODO:
-	/*
-		if err := c.core.LEDOn(addr, on); err != nil {
-			writeErr(w, err.Error())
-			return
-		}*/
-
+	if err := c.core.Action(addr, byte(actionID), data); err != nil {
+		writeErr(w, err.Error())
+		return
+	}
 	writeData(w, "ok")
 }
 
-/*
-// cli handles the command line raw packets.
-func (c *Controller) cli(w http.ResponseWriter, r *http.Request) {
-
+func (c *Controller) relayConfigMode(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		writeResponse(w, &response{
-			Err: string("Error parsing form"),
-		})
+		writeErr(w, "Err parsing form")
 		return
 	}
 
-	// convert string into byte array.
-	proto := strings.TrimSpace(r.Form.Get("proto"))
-	cmd := strings.TrimSpace(r.Form.Get("cmd"))
-	cmds := strings.Split(cmd, ",")
-	msg := []byte{}
-	strMsg := ""
-	for i := 0; i < len(cmds); i++ {
-		v, _ := strconv.ParseUint(cmds[i], 16, 8)
-		msg = append(msg, byte(v))
-		strMsg = strMsg + fmt.Sprintf("%X ", byte(v))
+	hwaddr := parseStr(strings.TrimSpace(r.Form.Get("hwaddr")))
+	on, _ := strconv.ParseBool(strings.TrimSpace(r.Form.Get("on")))
+
+	if err := c.core.RelayConfigMode(hwaddr, on); err != nil {
+		writeErr(w, err.Error())
+		return
+	}
+	writeData(w, "ok")
+}
+
+func (c *Controller) boardConfig(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		writeErr(w, "Err parsing form")
+		return
 	}
 
-	glog.Infof("Cli Command to %v: %v", proto, strMsg)
+	hwaddr := parseStr(strings.TrimSpace(r.Form.Get("hwaddr")))
+	addr := parseStr(strings.TrimSpace(r.Form.Get("addr")))
+	paddr := parseStr(strings.TrimSpace(r.Form.Get("paddr")))
+	naddr := parseStr(strings.TrimSpace(r.Form.Get("naddr")))
 
-	switch {
-	// Send to UDP.
-	case proto == "U":
-		if err := c.core.SendManualRelayCfg(msg); err != nil {
-			glog.Errorf("Error sending relay config %v cmd:  %v", strMsg, err)
-		}
-		// Send to TCP.
-	case proto == "T":
-		if err := c.core.SendRawPacket(msg); err != nil {
-			glog.Errorf("Error sending pkt  %v cmd:  %v", strMsg, err)
-		}
+	if err := c.core.BoardConfig(addr, paddr, hwaddr, naddr); err != nil {
+		writeErr(w, err.Error())
+		return
 	}
-
-	// If Exec is successful, send back command output.
-	writeResponse(w, &response{
-		Data: string("ok"),
-	})
-
-}*/
+	writeData(w, "ok")
+}
 
 // writeResponse writes the response json object to w. If unable to marshal
 // it writes a http 500.
@@ -102,6 +87,9 @@ func writeResponse(w http.ResponseWriter, resp *response) {
 
 // parseStr converts comma sep. string hex values to slice.
 func parseStr(arg string) []byte {
+	if arg == "" {
+		return nil
+	}
 	cmds := strings.Split(arg, ",")
 	msg := []byte{}
 	for i := 0; i < len(cmds); i++ {
@@ -111,12 +99,14 @@ func parseStr(arg string) []byte {
 	return msg
 }
 
+// writeErr is wrapper for writeResponse for Error.
 func writeErr(w http.ResponseWriter, s string) {
 	writeResponse(w, &response{
 		Err: s,
 	})
 }
 
+// writeData is wrapper for writeResponse for Data.
 func writeData(w http.ResponseWriter, s string) {
 	writeResponse(w, &response{
 		Data: s,

@@ -19,3 +19,12 @@ func PP(b []byte, format string, a ...any) string {
 	}
 	return logMsg
 }
+
+// PrintPkt returns a string of packet formatted properly.
+func PP2(b []byte) string {
+	logMsg := ""
+	for i := 0; i < len(b); i++ {
+		logMsg = logMsg + fmt.Sprintf("%X ", b[i])
+	}
+	return logMsg
+}

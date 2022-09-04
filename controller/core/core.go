@@ -28,13 +28,12 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 	}, nil
 }
 
-// requestAction sends an action request to the board addr.
-func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
+// Action sends an action request to the board addr.
+func (c *Core) Action(addr []byte, actionID byte, data []byte) error {
 	brd := c.conf.getBoardByAddr(addr)
 	if brd == nil {
 		return fmt.Errorf("address not found %v", addr)
 	}
-
 	relay := c.conf.getRelayByPAddr(brd.PAddr)
 	if relay == nil {
 		return fmt.Errorf("relay not found for pipe address %v", brd.PAddr)
@@ -44,7 +43,7 @@ func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
 	}
 
 	pkt := makePktTypeActionReq(actionID, brd.Addr, brd.PAddr, data)
-	glog.Info(PP(pkt, "%v - PktTypeActionReq:", relay.IP))
+	glog.Info(PP(pkt, "PktTypeActionReq:"))
 
 	_, err := relay.conn.Write(pkt)
 	if err != nil {
@@ -55,12 +54,12 @@ func (c *Core) requestAction(addr []byte, actionID byte, data []byte) error {
 
 // Light gets light level.
 func (c *Core) Light(addr []byte) error {
-	return c.requestAction(addr, ActionLight, []byte{})
+	return c.Action(addr, ActionLight, []byte{})
 }
 
 // Temp - temp and humidity.
 func (c *Core) Temp(addr []byte) error {
-	return c.requestAction(addr, ActionTemp, []byte{})
+	return c.Action(addr, ActionTemp, []byte{})
 }
 
 // LEDOn sets led on or off.
@@ -69,12 +68,12 @@ func (c *Core) LEDOn(addr []byte, on bool) error {
 	if on {
 		data = 1
 	}
-	return c.requestAction(addr, ActionLED, []byte{data})
+	return c.Action(addr, ActionLED, []byte{data})
 }
 
 // BoardConfig sends the board configuration associated with naddr in
 // config file to board address default addr and paddr.
-func (c *Core) SetBoardConfig(addr []byte, paddr []byte, naddr []byte, hwaddr []byte) error {
+func (c *Core) BoardConfig(addr []byte, paddr []byte, hwaddr []byte, naddr []byte) error {
 
 	relay := c.conf.getRelayByHWAddr(hwaddr)
 	if relay == nil {
@@ -90,7 +89,7 @@ func (c *Core) SetBoardConfig(addr []byte, paddr []byte, naddr []byte, hwaddr []
 	}
 
 	pkt := makePktTypeConfig(addr, paddr, brd)
-	glog.Info(PP(pkt, "%v - PktTypeConfig:", relay.IP))
+	glog.Info(PP(pkt, "PktTypeConfig:"))
 
 	_, err := relay.conn.Write(pkt)
 	if err != nil {
@@ -99,9 +98,9 @@ func (c *Core) SetBoardConfig(addr []byte, paddr []byte, naddr []byte, hwaddr []
 	return nil
 }
 
-// SetRelayConfigMode sets relay with hwaddr in config mode.
+// RelayConfigMode sets relay with hwaddr in config mode.
 // if ok is false, unsets config mode.
-func (c *Core) SetRelayConfigMode(hwaddr []byte, yes bool) error {
+func (c *Core) RelayConfigMode(hwaddr []byte, yes bool) error {
 	relay := c.conf.getRelayByHWAddr(hwaddr)
 	if relay == nil {
 		return fmt.Errorf("relay not found for hwaddr %v", hwaddr)
@@ -111,7 +110,7 @@ func (c *Core) SetRelayConfigMode(hwaddr []byte, yes bool) error {
 	}
 	// Send Relay config.
 	pkt := makePktTypeRelayCfgResp(relay, yes)
-	glog.Info(PP(pkt, "%v - PktTypeConfig:", relay.IP))
+	glog.Info(PP(pkt, "PktTypeRelayCfgResp:"))
 
 	_, err := relay.conn.Write(pkt)
 	return err
@@ -146,12 +145,12 @@ func (c *Core) boardPacketHandler() {
 		relay.conn = conn
 
 		// Now handle the request.
-		go c.handleRequest(conn)
+		go c.handleRequest(conn, relay.HWAddr)
 	}
 }
 
 // Handles incoming requests.
-func (c *Core) handleRequest(conn net.Conn) {
+func (c *Core) handleRequest(conn net.Conn, hwaddr []byte) {
 	defer conn.Close()
 
 	for {
@@ -164,11 +163,8 @@ func (c *Core) handleRequest(conn net.Conn) {
 		buf = buf[:n]
 		glog.Info(PP(buf, "%v - Pkt:", conn.RemoteAddr()))
 
-		ip := conn.RemoteAddr().(*net.TCPAddr).IP
-		relay := c.conf.getRelaybyIP(ip)
-
 		// Translate packet to event and send to channel.
-		event, err := translatePacket(buf, relay.HWAddr)
+		event, err := translatePacket(buf, hwaddr)
 		if err != nil {
 			glog.Errorf("Unable to translate packet:%v", err)
 			continue

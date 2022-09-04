@@ -39,8 +39,10 @@ func TestRelayConfig(t *testing.T) {
 		req  []byte
 		resp []byte
 	}{
-		{[]byte{0xAA, 67, 68, 69, 70, 55, 21}, []byte{0xAB, 10, 10, 2, 3, 4, 60, 7, 8, 9, 10, 61, 62, 63, 64, 115, 67, 1, 1}},
-		{[]byte{0xAA, 31, 32, 33, 34, 35, 36}, []byte{0xAB, 16, 7, 8, 9, 10, 71, 7, 8, 9, 10, 72, 73, 74, 75, 115, 77, 1, 1}},
+		{[]byte{PktTypeRelayCfgReq, 0xa1, 0xb1, 0xc1, 0xd1, 0xe1, 0xf1},
+			[]byte{PktTypeRelayCfgResp, 0x1, 0xc1, 0xd1, 0xe1, 0xf1, 0x2, 0xc1, 0xd1, 0xe1, 0xf1, 0x3, 0x4, 0x5, 0x6, 0x73, 0xd1, 0xe1, 0xf1}},
+		{[]byte{PktTypeRelayCfgReq, 0xa2, 0xb2, 0xc2, 0xd2, 0xe2, 0xf2},
+			[]byte{PktTypeRelayCfgResp, 0x1, 0xc2, 0xd2, 0xe2, 0xf2, 0x2, 0xc2, 0xd2, 0xe2, 0xf2, 0x3, 0x4, 0x5, 0x6, 0x73, 0xd2, 0xe2, 0xf2}},
 	}
 
 	// Send config request to server.
@@ -50,15 +52,13 @@ func TestRelayConfig(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		t.Logf("Config request:%v", v.req)
 		//  Receive config response.
-		buffer := make([]byte, 1024)
+		buffer := make([]byte, 255)
 		n, _, err := conn.ReadFromUDP(buffer)
 		if err != nil {
 			t.Errorf("%v", err)
 		}
 		buffer = buffer[:n]
-		t.Logf("Config response:%v", buffer)
 		if bytes.Compare(buffer, v.resp) != 0 {
 			t.Errorf("want %v got %v", v.resp, buffer)
 		}
@@ -77,17 +77,17 @@ func TestAction(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Temp.
-	if err := core.Temp([]byte{4, 5, 3}); err != nil {
+	if err := core.Temp([]byte{0x1, 0x1, 0x1}); err != nil {
 		t.Fatalf("Failed to call temp: %v", err)
 	}
-	if err := readandCompare(conn, []byte{0xAD, 60, 7, 8, 9, 10, PktTypeActionReq, 4, 5, 3, ActionTemp}); err != nil {
+	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x1, 0xc1, 0xd1, 0xe1, 0xf1, PktTypeActionReq, 0x1, 0x1, 0x1, ActionTemp}); err != nil {
 		t.Error(err)
 	}
 	// LedOn.
-	if err := core.LEDOn([]byte{4, 5, 3}, true); err != nil {
+	if err := core.LEDOn([]byte{0xd1, 0xe1, 0xf1}, true); err != nil {
 		t.Fatalf("Failed to call ledon: %v", err)
 	}
-	if err := readandCompare(conn, []byte{0xAD, 60, 7, 8, 9, 10, PktTypeActionReq, 4, 5, 3, ActionLED, 1}); err != nil {
+	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x7, 0xc1, 0xd1, 0xe1, 0xf1, PktTypeActionReq, 0xd1, 0xe1, 0xf1, ActionLED, 1}); err != nil {
 		t.Error(err)
 	}
 
@@ -173,7 +173,6 @@ func TestDataPacket(t *testing.T) {
 		// Check Packet specific stuff.
 		switch f := event.(type) {
 		case Ping:
-			_ = f
 
 		case Temp:
 			if f.Temp != v.data[0] {
@@ -185,9 +184,7 @@ func TestDataPacket(t *testing.T) {
 			}
 
 		case Motion:
-			_ = f
 
-		default:
 		}
 	}
 }
@@ -202,30 +199,33 @@ func TestConfigMode(t *testing.T) {
 	// Delay needed to stabilize listen on server.
 	time.Sleep(100 * time.Millisecond)
 
-	hwaddr := []byte{67, 68, 69, 70, 55, 21}
+	hwaddr := []byte{0xa1, 0xb1, 0xc1, 0xd1, 0xe1, 0xf1}
 	defBrdAddr := []byte{0xff, 0xff, 0xff}
 
 	// Validate relay config mode.
-	if err := core.SetRelayConfigMode(hwaddr, true); err != nil {
+	if err := core.RelayConfigMode(hwaddr, true); err != nil {
 		t.Error(err)
 	}
-	if err := readandCompare(conn, []byte{PktTypeRelayCfgResp, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 60, 7, 8, 9, 10, 61, 62, 63, 64, 115, 67, 1, 1}); err != nil {
+	if err := readandCompare(conn,
+		[]byte{PktTypeRelayCfgResp, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x2, 0xc1, 0xd1, 0xe1, 0xf1, 0x3, 0x4, 0x5, 0x6, 0x73, 0xd1, 0xe1, 0xf1}); err != nil {
 		t.Errorf("Failed: %v", err)
 	}
 
 	// Validate board config.
-	if err := core.SetBoardConfig(defBrdAddr, defPipeAdress, []byte{4, 5, 3}, hwaddr); err != nil {
+	if err := core.BoardConfig(defBrdAddr, defPipeAdress, hwaddr, []byte{0x1, 0x1, 0x1}); err != nil {
 		t.Error(err)
 	}
-	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x68, 0x65, 0x6C, 0x6C, 0x6F, PktTypeConfig, 0xff, 0xff, 0xff, 15, 1, 60, 7, 8, 9, 10, 4, 5, 3}); err != nil {
+	if err := readandCompare(conn,
+		[]byte{PktTypeRelayBoardData, 0x68, 0x65, 0x6C, 0x6C, 0x6F, PktTypeConfig, 0xff, 0xff, 0xff, 0xB, 0x1, 0x1, 0xc1, 0xd1, 0xe1, 0xf1, 0x1, 0x1, 0x1}); err != nil {
 		t.Errorf("Failed: %v", err)
 	}
 
 	// Validate resetting relay config.
-	if err := core.SetRelayConfigMode(hwaddr, false); err != nil {
+	if err := core.RelayConfigMode(hwaddr, false); err != nil {
 		t.Error(err)
 	}
-	if err := readandCompare(conn, []byte{PktTypeRelayCfgResp, 10, 10, 2, 3, 4, 60, 7, 8, 9, 10, 61, 62, 63, 64, 115, 67, 1, 1}); err != nil {
+	if err := readandCompare(conn,
+		[]byte{PktTypeRelayCfgResp, 0x1, 0xc1, 0xd1, 0xe1, 0xf1, 0x2, 0xc1, 0xd1, 0xe1, 0xf1, 0x3, 0x4, 0x5, 0x6, 0x73, 0xd1, 0xe1, 0xf1}); err != nil {
 		t.Errorf("Failed: %v", err)
 	}
 

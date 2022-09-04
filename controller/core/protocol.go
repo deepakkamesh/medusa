@@ -122,7 +122,6 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 
 	p.paddr = pkt[1:6]
 	p.addr = pkt[7:10]
-	fmt.Println(p)
 	switch pkt[6] {
 	case PktTypePing:
 		return translatePingPacket(p)

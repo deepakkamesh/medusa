@@ -15,10 +15,11 @@ func TestConfigFileLoad(t *testing.T) {
 		got  []byte
 		want []byte
 	}{
-		{got: conf.Boards[0].Addr, want: []byte{4, 5, 3}},
-		{got: conf.Boards[0].PAddr, want: []byte{60, 7, 8, 9, 10}},
-		{got: conf.Relays[0].HWAddr, want: []byte{67, 68, 69, 70, 55, 21}},
-		{got: conf.Boards[0].Actions, want: []byte{0x01, 0x02, 0x03}},
+		{got: conf.Boards[0].Addr, want: []byte{0x1, 0x1, 0x1}},
+		{got: conf.Boards[0].PAddr, want: []byte{0x1, 0xc1, 0xd1, 0xe1, 0xf1}},
+		{got: conf.Boards[0].Actions, want: []byte{1, 2, 3}},
+		{got: conf.Relays[0].HWAddr, want: []byte{0xa1, 0xb1, 0xc1, 0xd1, 0xe1, 0xf1}},
+		{got: conf.Relays[0].PAddr0, want: []byte{0x1, 0xc1, 0xd1, 0xe1, 0xf1}},
 	}
 
 	for _, v := range data {

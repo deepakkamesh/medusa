@@ -2,9 +2,10 @@ package core
 
 import (
 	"bytes"
-	"encoding/json"
 	"io/ioutil"
 	"net"
+
+	"github.com/flynn/json5"
 )
 
 type Relay struct {
@@ -48,7 +49,7 @@ func newConfig(filepath string) (*Config, error) {
 	}
 
 	c := &Config{}
-	err = json.Unmarshal([]byte(cfg), c)
+	err = json5.Unmarshal([]byte(cfg), c)
 	if err != nil {
 		return nil, err
 	}
