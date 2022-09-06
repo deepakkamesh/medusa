@@ -26,9 +26,6 @@ uint8_t  ParseConfigPkt(uint8_t * bufferRX, uint8_t len) {
   Config.pipe_addr[6][0] = bufferRX[15];
   SuperMemCpy(Config.pipe_addr[6], 1, bufferRX, 7, PIPE_ADDR_LEN - 1);
 
-
-  //SuperMemCpy(Config.pipe_addr[6], 0, pipe_addr_6, 0, PIPE_ADDR_LEN); // Virtual pipe address #6.
-
   /* Copy pipe address into config */
   Config.nrf24Channel = bufferRX[16];
 

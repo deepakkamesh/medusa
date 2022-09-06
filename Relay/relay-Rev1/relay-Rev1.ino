@@ -29,8 +29,6 @@
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_FLUSH_TX_FIFO 0x17
 
-uint8_t pipe_addr_6[PIPE_ADDR_LEN] = {0, 0, 0, 0, 0}; // pipe address of virtual pipe addr;
-
 struct RelayConfig {
   uint8_t pipe_addr[PIPE_ADDR_NUM][PIPE_ADDR_LEN];
   bool isConfigured;
