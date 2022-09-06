@@ -53,7 +53,7 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
       ESP.restart();
       break;
     case ACTION_STATUS_LED:
-      digitalWrite(LED_ONBOARD, data[0]);
+      digitalWrite(LED_ONBOARD, !data[0]);
       break;
     case ACTION_FLUSH_TX_FIFO:
       radio.flush_tx();

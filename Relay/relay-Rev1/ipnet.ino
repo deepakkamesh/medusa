@@ -1,6 +1,6 @@
 #define UDP_LISTEN_PORT 6069 // default listen port.
 
-#define RELAY_CONFIG_ANS_LEN 19 // Length of  Relay Get Answer
+#define RELAY_CONFIG_ANS_LEN 20 // Length of  Relay Get Answer
 #define MAC_ADDR_LEN 6
 
 
