@@ -1,41 +1,41 @@
 {
    "Relays":[
       {
-         "HWAddr":[1,2,3,4,5],
-         "PAddr0":[6,7,8,9,10],
-         "PAddr1":[6,7,8,9,10],
-         "PAddr2":[6],
-         "PAddr3":[6],
-         "PAddr4":[6],
-         "PAddr5":[6],
-         "Channel":115,
+         "HWAddr":[0x4C,0x75,0x25,0x36,0x54,0x22], 
+         "PAddr0":[0x1,0x25,0x36,0x54,0x22],
+         "PAddr1":[0x2,0x25,0x36,0x54,0x22],
+         "PAddr2":[0x3,0x25,0x36,0x54,0x22],
+         "PAddr3":[0x4,0x25,0x36,0x54,0x22],
+         "PAddr4":[0x5,0x25,0x36,0x54,0x22],
+         "PAddr5":[0x6,0x25,0x36,0x54,0x22],
+         "PAddr6":[0x7,0x25,0x36,0x54,0x22],
+         "Addr":[0x36,0x54,0x22],
+         "Channel":0x73,
          "Description":"comment",
          "Room":"Living",
-         "Name":"Sensor1"
-      },
-      {
-         "HWAddr":[1,2,3,4,5],
-         "PAddr0":[6,7,8,9,10],
-         "PAddr1":[6,7,8,9,10],
-         "PAddr2":[6,7,8,9,10],
-         "PAddr3":[6,7,8,9,10],
-         "PAddr4":[6,7,8,9,10],
-         "PAddr5":[6,7,8,9,10],
-         "Channel":115,
-         "Description":"comment2",
-         "Room":"Family",
-         "Name":"Sensor1"
+         "Name":"Relay1"
       }
    ],
    "Boards":[
       {
-         "Addr":[4,5,3],
-         "PAddr":[6,7,8,9,10],
-         "ARD":15,
-         "PingInt":1,
-         "Description":"comment2",
-         "Room":"Family",
-         "Name":"Sensor1"
+         "Addr":[0x1,0x1,0x1],
+         "PAddr":[0x1,0x25,0x36,0x54,0x22],
+         "ARD":0xB,
+         "PingInt":0x1,
+         "Description":"board on relay1",
+         "Room":"living",
+         "Name":"board1",
+         "Actions":[1,2,3]
+      },
+      {
+         "Addr":[0x36,0x54,0x22],
+         "PAddr":[0x7,0x25,0x36,0x54,0x22],
+         "ARD":0xB,
+         "PingInt":0x1,
+         "Description":"vboard living relay1",
+         "Room":"living",
+         "Name":"board2",
+         "Actions":[1,2,3]
       }
    ]
 }
