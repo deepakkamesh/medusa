@@ -71,9 +71,9 @@ func makePktTypeRelayCfgResp(r *Relay, defPaddr bool) []byte {
 	pkt = append(pkt, r.PAddr3[0])
 	pkt = append(pkt, r.PAddr4[0])
 	pkt = append(pkt, r.PAddr5[0])
+	pkt = append(pkt, r.PAddr6[0])
 	pkt = append(pkt, r.Channel)
 	pkt = append(pkt, r.Addr...)
-	// TODO: Send PAddr6 as well.
 	return pkt
 }
 
@@ -170,6 +170,14 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 			pktInfo: p,
 		}, nil
 
+	case ActionVolt:
+		var x uint
+		x = uint(data[1])
+		x = x<<8 | uint(data[0])
+		return Volt{
+			pktInfo: p,
+			Volt:    (2.048 * 1023) / float32(x),
+		}, nil
 	default:
 		return nil, fmt.Errorf("unknown action %v", action)
 	}

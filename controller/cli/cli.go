@@ -145,6 +145,46 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:    "restart",
+			Aliases: []string{"r"},
+			Usage:   "restart device",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionReset)},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
+		{
+			Name:    "volt",
+			Aliases: []string{"v"},
+			Usage:   "get volts",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionVolt)},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
 	}
 	app.Run(os.Args)
 

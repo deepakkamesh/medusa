@@ -39,6 +39,10 @@ type Temp struct {
 	Humidity byte
 }
 
+type Volt struct {
+	pktInfo
+	Volt float32
+}
 type Error struct {
 	pktInfo
 	ErrCode byte

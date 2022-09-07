@@ -38,6 +38,8 @@ func (c *Controller) Run() {
 		case core.Motion:
 			glog.Infof("Event Motion addr:%v addr:%v addr:%v\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()))
 
+		case core.Volt:
+			glog.Infof("Event Volt - Addr:%v paddr:%v hwaddr:%v volts:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Volt)
 		}
 
 	}
