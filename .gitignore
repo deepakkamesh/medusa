@@ -4,4 +4,6 @@ Board_Firmware/*.*/dist/
 Board_Firmware/*.*/build/
 Board_Firmware/*.*/nbproject/Makefile-*.*
 Board_Firmware/*.*/nbproject/private/
-
+controller/bin/main
+controller/bin/oldmain
+controller/cli/cli
