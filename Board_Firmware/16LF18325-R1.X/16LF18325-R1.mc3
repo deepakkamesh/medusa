@@ -152,7 +152,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="ADC" name="dependentModuleKey"/>
-         <value>0</value>
+         <value>5</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="ADC" name="enableInterrupt"/>
@@ -456,7 +456,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="FVR" name="cdafvrVoltage"/>
-         <value></value>
+         <value/>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="FVR" registerAlias="FVRCON" settingAlias="ADFVR" alias="1x"/>
@@ -1180,7 +1180,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="MSSP1" name="tmr2PeriodValue"/>
-         <value>0</value>
+         <value>0.000256</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="MSSP1" registerAlias="SSPCON1" settingAlias="CKP" alias="Idle:High, Active:Low"/>
@@ -2224,7 +2224,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="anselUserSetRA2"/>
-         <value>disabled</value>
+         <value>enabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="anselUserSetRA4"/>
@@ -2256,7 +2256,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="anselUserSetRC5"/>
-         <value>disabled</value>
+         <value>enabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="customNameUserSet RA0"/>
@@ -3372,11 +3372,11 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="ANSELA"/>
-         <value>23</value>
+         <value>19</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="ANSELC"/>
-         <value>32</value>
+         <value>0</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="CCP1PPS"/>
@@ -3620,7 +3620,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="ANSELA" settingAlias="ANSA2"/>
-         <value>analog</value>
+         <value>digital</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="ANSELA" settingAlias="ANSA4"/>
@@ -3652,7 +3652,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="ANSELC" settingAlias="ANSC5"/>
-         <value>analog</value>
+         <value>digital</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="CCP1PPS" settingAlias="CCP1PPS"/>
@@ -4572,7 +4572,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="TMR1" name="dependentModuleKey"/>
-         <value>3</value>
+         <value>8</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="TMR1" name="gatePin"/>
@@ -4961,12 +4961,12 @@
          <hash>ab479a370bb795c0fef88abcb23f331c00c60cec07f44ad8be416b4325c33b8f</hash>
       </entry>
       <entry>
-         <file>main.c</file>
-         <hash>d5ae311b1f7d1f6b384b5410a4f896da1a772e5ddc5db5d8bb6ce2eac9866fa2</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files/memory.c</file>
          <hash>2959a866292419c3e9fc00423ab3219586e94cdaeb9d1ea27d2af69b7be0e081</hash>
+      </entry>
+      <entry>
+         <file>main.c</file>
+         <hash>d5ae311b1f7d1f6b384b5410a4f896da1a772e5ddc5db5d8bb6ce2eac9866fa2</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/tmr1.h</file>
@@ -5001,16 +5001,16 @@
          <hash>33f6421d1ba0e68f431c17d7743e9ef2d8d1ff970fb4a6a52c8c3b442dd75e2e</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/fvr.h</file>
-         <hash>396ff67f315a5b9ccb7ff5d02fe71744c4b33974088baf7c2a30fe9aded0d057</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files/mcc.c</file>
          <hash>d9dab841f3695ba5201e2212514fbe5fae537ad458d1af34298b244dba781696</hash>
       </entry>
       <entry>
+         <file>mcc_generated_files/fvr.h</file>
+         <hash>396ff67f315a5b9ccb7ff5d02fe71744c4b33974088baf7c2a30fe9aded0d057</hash>
+      </entry>
+      <entry>
          <file>mcc_generated_files/pin_manager.c</file>
-         <hash>74fe5a1b7d099931053cef1392f1ec4dac00d16d674f8d344d5254a314e64147</hash>
+         <hash>6d67a45b5591e40187244cb610689055a4d3cd272dbd3632c216208798a58458</hash>
       </entry>
    </generatedFileHashHistoryMap>
 </config>

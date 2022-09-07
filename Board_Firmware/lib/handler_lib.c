@@ -61,7 +61,7 @@ void InitRadio(void) {
     // DPL_P0.
     nrf24_write_register(NRF24_MEM_DYNPD, 0b1); // Dynamic payload on Pipe 0.
     // Setup ARD.
-    uint8_t ard = (config.ARD << 4) | 0xF;
+    uint8_t ard = (uint8_t) ((config.ARD << 4) | 0xF);
     nrf24_write_register(NRF24_MEM_SETUP_RETR, ard);
     __delay_us(10);
 
@@ -257,6 +257,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
             SuperMemCpy(config.PipeAddr1, 0, buffer, 6, PIPE_ADDR_LEN);
             SuperMemCpy(config.Address, 0, buffer, 11, ADDR_LEN);
             WriteConfigToEE();
+            RESET();
             break;
         default:
             SendError(ERR_UNKNOWN_PKT_TYPE);
