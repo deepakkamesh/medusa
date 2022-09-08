@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include "DHT.h"
 
 #define DEBUG 1
 #define LED_ONBOARD 16
@@ -25,6 +26,7 @@
 #define ERROR_PIPE_ADDR_404 0x06
 #define ERROR_UNKNOWN_PKT 0x05
 
+#define ACTION_TEMP 0x2
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_FLUSH_TX_FIFO 0x17
@@ -42,8 +44,10 @@ struct RelayConfig Config = {
   .vboard_addr = {0xA, 0xB, 0xC},
 };
 
+// Board pin connectivity and configuration.
 RF24 radio(5, 4); // CE, CSN.
-
+#define DHTTYPE DHT11
+#define DHTPIN D4
 
 void setup() {
   Serial.begin(9600);
@@ -51,6 +55,7 @@ void setup() {
   int ok ;
   WifiConnect();
   OTAInit();
+  dhtstart();
   ok = RelaySetup();
   if (!ok) {
     digitalWrite(LED_ONBOARD, false); // false turns it on?.
