@@ -65,6 +65,26 @@
 #define PULL_UP_ENABLED      1
 #define PULL_UP_DISABLED     0
 
+// get/set nRF24_CE aliases
+#define nRF24_CE_TRIS                 TRISAbits.TRISA4
+#define nRF24_CE_LAT                  LATAbits.LATA4
+#define nRF24_CE_PORT                 PORTAbits.RA4
+#define nRF24_CE_WPU                  WPUAbits.WPUA4
+#define nRF24_CE_OD                   ODCONAbits.ODCA4
+#define nRF24_CE_ANS                  ANSELAbits.ANSA4
+#define nRF24_CE_SetHigh()            do { LATAbits.LATA4 = 1; } while(0)
+#define nRF24_CE_SetLow()             do { LATAbits.LATA4 = 0; } while(0)
+#define nRF24_CE_Toggle()             do { LATAbits.LATA4 = ~LATAbits.LATA4; } while(0)
+#define nRF24_CE_GetValue()           PORTAbits.RA4
+#define nRF24_CE_SetDigitalInput()    do { TRISAbits.TRISA4 = 1; } while(0)
+#define nRF24_CE_SetDigitalOutput()   do { TRISAbits.TRISA4 = 0; } while(0)
+#define nRF24_CE_SetPullup()          do { WPUAbits.WPUA4 = 1; } while(0)
+#define nRF24_CE_ResetPullup()        do { WPUAbits.WPUA4 = 0; } while(0)
+#define nRF24_CE_SetPushPull()        do { ODCONAbits.ODCA4 = 0; } while(0)
+#define nRF24_CE_SetOpenDrain()       do { ODCONAbits.ODCA4 = 1; } while(0)
+#define nRF24_CE_SetAnalogMode()      do { ANSELAbits.ANSA4 = 1; } while(0)
+#define nRF24_CE_SetDigitalMode()     do { ANSELAbits.ANSA4 = 0; } while(0)
+
 // get/set LED aliases
 #define LED_TRIS                 TRISAbits.TRISA5
 #define LED_LAT                  LATAbits.LATA5
@@ -140,26 +160,6 @@
 #define nRF24_CSN_SetOpenDrain()       do { ODCONCbits.ODCC3 = 1; } while(0)
 #define nRF24_CSN_SetAnalogMode()      do { ANSELCbits.ANSC3 = 1; } while(0)
 #define nRF24_CSN_SetDigitalMode()     do { ANSELCbits.ANSC3 = 0; } while(0)
-
-// get/set nRF24_CE aliases
-#define nRF24_CE_TRIS                 TRISCbits.TRISC4
-#define nRF24_CE_LAT                  LATCbits.LATC4
-#define nRF24_CE_PORT                 PORTCbits.RC4
-#define nRF24_CE_WPU                  WPUCbits.WPUC4
-#define nRF24_CE_OD                   ODCONCbits.ODCC4
-#define nRF24_CE_ANS                  ANSELCbits.ANSC4
-#define nRF24_CE_SetHigh()            do { LATCbits.LATC4 = 1; } while(0)
-#define nRF24_CE_SetLow()             do { LATCbits.LATC4 = 0; } while(0)
-#define nRF24_CE_Toggle()             do { LATCbits.LATC4 = ~LATCbits.LATC4; } while(0)
-#define nRF24_CE_GetValue()           PORTCbits.RC4
-#define nRF24_CE_SetDigitalInput()    do { TRISCbits.TRISC4 = 1; } while(0)
-#define nRF24_CE_SetDigitalOutput()   do { TRISCbits.TRISC4 = 0; } while(0)
-#define nRF24_CE_SetPullup()          do { WPUCbits.WPUC4 = 1; } while(0)
-#define nRF24_CE_ResetPullup()        do { WPUCbits.WPUC4 = 0; } while(0)
-#define nRF24_CE_SetPushPull()        do { ODCONCbits.ODCC4 = 0; } while(0)
-#define nRF24_CE_SetOpenDrain()       do { ODCONCbits.ODCC4 = 1; } while(0)
-#define nRF24_CE_SetAnalogMode()      do { ANSELCbits.ANSC4 = 1; } while(0)
-#define nRF24_CE_SetDigitalMode()     do { ANSELCbits.ANSC4 = 0; } while(0)
 
 /**
    @Param
