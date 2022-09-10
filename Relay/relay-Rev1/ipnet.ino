@@ -13,7 +13,7 @@ uint8_t bufferTX[255];
 const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
 
-uint16_t ctrPort = 3334;
+uint16_t ctrPort = 3345;
 IPAddress ctrIP;
 
 
@@ -55,6 +55,7 @@ int RelaySetup(void) {
   WiFi.macAddress(mac);
   SuperMemCpy(bufferTX, 1, mac, 0, MAC_ADDR_LEN);
   while (1) {
+    digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
     delay(1000);
 
     int ok = NetSendUDP(bufferTX, 7, bcastIP, ctrPort);

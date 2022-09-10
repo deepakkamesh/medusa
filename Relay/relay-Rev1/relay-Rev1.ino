@@ -19,6 +19,7 @@
 #define PKT_TYPE_BOARD_DATA_RELAY 0xAD // Packet type for Relay  data packet. 
 #define PKT_TYPE_PING 0x02
 #define PKT_TYPE_ACTION 0x10
+#define PKT_TYPE_DATA 0x01
 
 #define ERROR_RELAY_RADIO_INIT_FAILED 0x02
 #define ERROR_RELAY_ACK_PAYLOAD_LOAD 0x03

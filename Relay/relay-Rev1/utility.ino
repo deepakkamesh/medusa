@@ -1,5 +1,7 @@
 /************* Utility Functions *********************/
 
+
+
 /********** ParseConfigPkt() - Parses config response into the Config ***************/
 uint8_t  ParseConfigPkt(uint8_t * bufferRX, uint8_t len) {
   // Valid packet?

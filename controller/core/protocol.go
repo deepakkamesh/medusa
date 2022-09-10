@@ -40,7 +40,8 @@ const (
 	ErrUnknownPktType = 0x05
 	ErrPipeAddr404    = 0x06
 
-	PktTypeRelayCfgReqLen = 7
+	PktTypeRelayCfgReqLen    = 7
+	PktTypeRelayBoardDataLen = 10 // min len of board data pkt.
 )
 
 // Default config pipe address.
@@ -108,6 +109,7 @@ func makePktTypeActionReq(actionID byte, addr []byte, paddr []byte, data []byte)
 // translatePacket converts the byte packet into an event.
 // TODO make more readable.
 func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
+
 	p := pktInfo{
 		hwaddr: hwaddr,
 	}
@@ -115,6 +117,12 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 	// Handle if relay error.
 	if pkt[0] == PktTypeRelayError {
 		return translateErrorPacket(p, pkt[1])
+	}
+
+	// Validate to ensure packet is valid.
+	// TODO: Implement checksum.
+	if len(pkt) < PktTypeRelayBoardDataLen {
+		return nil, fmt.Errorf("bad packet len")
 	}
 
 	// Handle if relay board data.

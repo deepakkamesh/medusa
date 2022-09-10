@@ -66,28 +66,61 @@ int SendPing() {
 }
 
 
+// Sends the data for the particular action.
+bool SendData(uint8_t Action, uint8_t *data, int8_t sz) {
+  uint8_t i = 0;
+  bufferTX[i] = PKT_TYPE_BOARD_DATA_RELAY;
+  i++;
+  SuperMemCpy(bufferTX, i, Config.pipe_addr[VIRT_PIPE], 0, PIPE_ADDR_LEN);
+  i += PIPE_ADDR_LEN;
+  bufferTX[i] = PKT_TYPE_DATA;
+  i++;
+  SuperMemCpy(bufferTX, i, Config.vboard_addr, 0, ADDR_LEN);
+  i += ADDR_LEN;
+  bufferTX[i] = Action;
+  i++;
+  bufferTX[i] = 0x00;
+  i++;
+  SuperMemCpy(bufferTX, i, data, 0, sz);
+  i += sz;
+  return NetSend(bufferTX, i);
+}
+
+
 DHT dht(DHTPIN, DHTTYPE);
 void dhtstart() {
   dht.begin();
 }
 
+union val {
+  float f;
+  uint8_t uc[4];
+};
+
 void TempHumidity() {
+
+  union val temp, humidity;
+  uint8_t buff[10];
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dht.readHumidity();
+  humidity.f = dht.readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
+  temp.f = dht.readTemperature();
   
+  buff[0] = temp.uc[0];
+  buff[1] = temp.uc[1];
+  buff[2] = temp.uc[2];
+  buff[3] = temp.uc[3];
+  buff[4] = humidity.uc[0];
+  buff[5] = humidity.uc[1];
+  buff[6] = humidity.uc[2];
+  buff[7] = humidity.uc[3];
 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) ) {
+  if (isnan( humidity.f) || isnan( temp.f) ) {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
 
-  
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
+ SendData(ACTION_TEMP,buff,8);
 }
