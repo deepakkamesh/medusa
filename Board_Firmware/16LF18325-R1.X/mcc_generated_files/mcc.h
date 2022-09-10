@@ -54,10 +54,12 @@
 #include <conio.h>
 #include "interrupt_manager.h"
 #include "spi1.h"
+#include "i2c2_master.h"
+#include "tmr1.h"
 #include "fvr.h"
 #include "memory.h"
-#include "tmr1.h"
 #include "adc.h"
+#include "drivers/i2c_simple_master.h"
 
 
 

@@ -10,7 +10,7 @@
 #include "handler_lib.h"
 
 #include "nrf24_lib.h"
-#include "dht11_lib.h"
+#include "aht10_lib.h"
 
 uint32_t prevTicks = 0;
 uint32_t Ticks = 0; // Ticks of timer.
@@ -22,12 +22,18 @@ uint8_t sentPktCnt = 0;
 uint8_t failedPktCnt = 0;
 Queue TXQueue; //Transmit Queue;
 
+union conv {
+    float f;
+    uint8_t uc[4];
+};
+
 void InitHandlerLib(void) {
     LoadConfigFromEE();
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
+    AHT10Init(AHT10ADDR);
 }
 
 void HandlerLoop(void) {
@@ -88,6 +94,7 @@ uint8_t DiscoverRFChannel(void) {
 #ifdef DEV_STATUS_LED
         LED_Toggle();
 #endif
+        CLRWDT(); // Needed so we dont trip up WDT until we get to main loop.
         nrf24_write_register(NRF24_MEM_RF_CH, rf);
         nrf24_send_rf_data(bufferTX, ADDR_LEN + 1);
         __delay_us(10);
@@ -265,8 +272,9 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 }
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
-    uint8_t buff[2] = {0, 0};
+    uint8_t buff[10];
     adc_result_t volts;
+    union conv temp, humidity;
 
     switch (actionID) {
         case ACTION_STATUS_LED:
@@ -282,8 +290,17 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 
         case ACTION_GET_TEMP_HUMIDITY:
 #ifdef DEV_TEMP_HUMIDITY
-            GetMockTempHumidity(buff);
-            SendData(ACTION_GET_TEMP_HUMIDITY, buff, 2);
+            AHT10Read(AHT10ADDR, &temp.f, &humidity.f);
+            buff[0] = temp.uc[0];
+            buff[1] = temp.uc[1];
+            buff[2] = temp.uc[2];
+            buff[3] = temp.uc[3];
+            buff[4] = humidity.uc[0];
+            buff[5] = humidity.uc[1];
+            buff[6] = humidity.uc[2];
+            buff[7] = humidity.uc[3];
+            
+            SendData(ACTION_GET_TEMP_HUMIDITY, buff, 8);
             break;
 #else
             SendError(ERR_NOT_IMPL);

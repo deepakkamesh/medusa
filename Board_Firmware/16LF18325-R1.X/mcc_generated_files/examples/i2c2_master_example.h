@@ -1,22 +1,25 @@
 /**
-  Generated Main Source File
+  I2C2 Generated Driver API Header File
 
-  Company:
+  @Company
     Microchip Technology Inc.
 
-  File Name:
-    main.c
+  @File Name
+    i2c2_master_example.h
 
-  Summary:
-    This is the main file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs
+  @Summary
+    This is the generated header file for the I2C2 driver example using PIC10 / PIC12 / PIC16 / PIC18 MCUs
 
-  Description:
-    This header file provides implementations for driver APIs for all modules selected in the GUI.
+  @Description
+    This header file provides APIs for driver for I2C2.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
         Device            :  PIC16LF18325
-        Driver Version    :  2.00
- */
+        Driver Version    :  1.0.0
+    The generated drivers are tested against the following:
+        Compiler          :  XC8 2.31 and above or later
+        MPLAB             :  MPLAB X 5.45
+*/
 
 /*
     (c) 2018 Microchip Technology Inc. and its subsidiaries. 
@@ -39,44 +42,21 @@
     CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
     OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
     SOFTWARE.
- */
-#include "mcc_generated_files/mcc.h"
-#include "../lib/nrf24_lib.h"
-#include "../lib/handler_lib.h"
-#include "../lib/aht10_lib.h"
+*/
 
-/*
-                         Main application
- */
+#ifndef I2C2_MASTER_EXAMPLE_H
+#define I2C2_MASTER_EXAMPLE_H
 
-void main(void) {
-    // initialize the device
-    SYSTEM_Initialize();
+#include <stdint.h>
+#include <stdio.h>
+#include "../i2c2_master.h"
 
-    // When using interrupts, you need to set the Global and Peripheral Interrupt Enable bits
-    // Use the following macros to:
+uint8_t  I2C2_Read1ByteRegister(i2c2_address_t address, uint8_t reg);
+uint16_t I2C2_Read2ByteRegister(i2c2_address_t address, uint8_t reg);
+void I2C2_Write1ByteRegister(i2c2_address_t address, uint8_t reg, uint8_t data);
+void I2C2_Write2ByteRegister(i2c2_address_t address, uint8_t reg, uint16_t data);
+void I2C2_WriteNBytes(i2c2_address_t address, uint8_t *data, size_t len);
+void I2C2_ReadNBytes(i2c2_address_t address, uint8_t *data, size_t len);
+void I2C2_ReadDataBlock(i2c2_address_t address, uint8_t reg, uint8_t *data, size_t len);
 
-    // Enable the Global Interrupts
-    INTERRUPT_GlobalInterruptEnable();
-
-    // Enable the Peripheral Interrupts
-    INTERRUPT_PeripheralInterruptEnable();
-
-    // Disable the Global Interrupts
-    //INTERRUPT_GlobalInterruptDisable();
-
-    // Disable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptDisable();
-    IDLEN = 1; // Enable IDLE. 
-    InitHandlerLib();
-
-    while (1) {
-        // Add your application code
-        HandlerLoop();
-    }
-}
-
-
-/**
- End of File
- */
+#endif /* I2C2_MASTER_EXAMPLE_H */

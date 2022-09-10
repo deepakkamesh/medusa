@@ -7,6 +7,12 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
+        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
+          <itemPath>mcc_generated_files/drivers/i2c_simple_master.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="examples" displayName="examples" projectFiles="true">
+          <itemPath>mcc_generated_files/examples/i2c2_master_example.h</itemPath>
+        </logicalFolder>
         <itemPath>mcc_generated_files/device_config.h</itemPath>
         <itemPath>mcc_generated_files/pin_manager.h</itemPath>
         <itemPath>mcc_generated_files/tmr1.h</itemPath>
@@ -16,12 +22,13 @@
         <itemPath>mcc_generated_files/spi1.h</itemPath>
         <itemPath>mcc_generated_files/fvr.h</itemPath>
         <itemPath>mcc_generated_files/adc.h</itemPath>
+        <itemPath>mcc_generated_files/i2c2_master.h</itemPath>
       </logicalFolder>
       <itemPath>exports.h</itemPath>
-      <itemPath>../lib/dht11_lib.h</itemPath>
       <itemPath>../lib/handler_lib.h</itemPath>
       <itemPath>../lib/master_exports.h</itemPath>
       <itemPath>../lib/nrf24_lib.h</itemPath>
+      <itemPath>../lib/aht10_lib.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -33,6 +40,15 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
+        <logicalFolder name="docs" displayName="docs" projectFiles="true">
+          <itemPath>mcc_generated_files/docs/i2c_simple.dox</itemPath>
+        </logicalFolder>
+        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
+          <itemPath>mcc_generated_files/drivers/i2c_simple_master.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="examples" displayName="examples" projectFiles="true">
+          <itemPath>mcc_generated_files/examples/i2c2_master_example.c</itemPath>
+        </logicalFolder>
         <itemPath>mcc_generated_files/pin_manager.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/device_config.c</itemPath>
@@ -42,11 +58,12 @@
         <itemPath>mcc_generated_files/spi1.c</itemPath>
         <itemPath>mcc_generated_files/fvr.c</itemPath>
         <itemPath>mcc_generated_files/adc.c</itemPath>
+        <itemPath>mcc_generated_files/i2c2_master.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
-      <itemPath>../lib/dht11_lib.c</itemPath>
       <itemPath>../lib/handler_lib.c</itemPath>
       <itemPath>../lib/nrf24_lib.c</itemPath>
+      <itemPath>../lib/aht10_lib.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

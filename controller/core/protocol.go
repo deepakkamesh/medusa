@@ -1,7 +1,9 @@
 package core
 
 import (
+	"encoding/binary"
 	"fmt"
+	"math"
 )
 
 const (
@@ -159,10 +161,11 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 	switch action {
 
 	case ActionTemp:
+		t, h := readTemp(data)
 		return Temp{
 			pktInfo:  p,
-			Temp:     data[0],
-			Humidity: data[1],
+			Temp:     t,
+			Humidity: h,
 		}, nil
 
 	case ActionMotion:
@@ -181,4 +184,19 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 	default:
 		return nil, fmt.Errorf("unknown action %v", action)
 	}
+}
+
+func readTemp(data []byte) (temp float32, humidity float32) {
+
+	_temp := []byte{data[0], data[1], data[2], data[3]}
+	_humidity := []byte{data[4], data[5], data[6], data[7]}
+
+	// Convert to 'F and return.
+	return float32frombytes(_temp)*1.8 + 32, float32frombytes(_humidity)
+}
+
+func float32frombytes(bytes []byte) float32 {
+	bits := binary.LittleEndian.Uint32(bytes)
+	float := math.Float32frombits(bits)
+	return float
 }

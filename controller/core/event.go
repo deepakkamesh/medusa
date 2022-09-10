@@ -35,8 +35,8 @@ type Motion struct {
 
 type Temp struct {
 	pktInfo
-	Temp     byte
-	Humidity byte
+	Temp     float32
+	Humidity float32
 }
 
 type Volt struct {
