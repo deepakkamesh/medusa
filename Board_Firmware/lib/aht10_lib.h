@@ -9,7 +9,7 @@
 #define AHTX0_STATUS_BUSY 0x80       ///< Status bit for busy
 #define AHTX0_STATUS_CALIBRATED 0x08 ///< Status bit for calibrated
 
-bool AHT10Init(i2c2_address_t addr);
-void AHT10Read(i2c2_address_t addr, float *temp, float *humidity);
+bool AHT10Init(i2cAddr addr);
+void AHT10Read(i2cAddr addr, float *temp, float *humidity);
 
 #define AHT10ADDR 0x38

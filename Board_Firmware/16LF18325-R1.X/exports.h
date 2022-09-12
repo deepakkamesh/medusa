@@ -71,6 +71,11 @@ extern "C" {
 
 #define Motion_SetInterruptHandler(ih) IOCAF3_SetInterruptHandler(ih)
 #define MOTIONGetValue()    MOTION_GetValue()
+
+#define i2cRead1bReg(a,b)    i2c_read1ByteRegister(a,b)
+#define i2cWriteBytes(a,b,c) i2c_writeNBytes(a,b,c)
+#define i2cReadBytes(a,b,c)  i2c_readNBytes(a,b,c)
+#define i2cAddr i2c2_address_t
 // Available Actions. 
 #define DEV_STATUS_LED 1
 #define DEV_TEMP_HUMIDITY 1

@@ -1,13 +1,13 @@
 #include "aht10_lib.h"
 
 
-bool AHT10Init(i2c2_address_t addr) {
+bool AHT10Init(i2cAddr addr) {
     uint8_t cmd[3];
     uint8_t data[6];
 
     // Soft reset the device.
     cmd[0] = AHTX0_CMD_SOFTRESET;
-    i2c_writeNBytes(addr, cmd, 1);
+    i2cWriteBytes(addr, cmd, 1);
 
     __delay_ms(20);
 
@@ -15,22 +15,22 @@ bool AHT10Init(i2c2_address_t addr) {
     cmd[0] = AHTX0_CMD_CALIBRATE;
     cmd[1] = 0x08;
     cmd[2] = 0x00;
-    i2c_writeNBytes(addr, cmd, 3);
+    i2cWriteBytes(addr, cmd, 3);
 
     // Wait for ready.
-    while (i2c_read1ByteRegister(addr, 0x71) & AHTX0_STATUS_BUSY) {
+    while (i2cRead1bReg(addr, 0x71) & AHTX0_STATUS_BUSY) {
         __delay_ms(10);
     }
 
     // Check if calibrated.
-    if (!(i2c_read1ByteRegister(addr, 0x71) & AHTX0_STATUS_CALIBRATED)) {
+    if (!(i2cRead1bReg(addr, 0x71) & AHTX0_STATUS_CALIBRATED)) {
         return false;
     }
     return true;
 
 }
 
-void AHT10Read(i2c2_address_t addr, float *temp, float *humidity) {
+void AHT10Read(i2cAddr addr, float *temp, float *humidity) {
 
     uint8_t cmd[3];
     uint8_t data[6];
@@ -39,13 +39,13 @@ void AHT10Read(i2c2_address_t addr, float *temp, float *humidity) {
     cmd[0] = AHTX0_CMD_TRIGGER;
     cmd[1] = 0x33;
     cmd[2] = 0x00;
-    i2c_writeNBytes(addr, cmd, 3);
+    i2cWriteBytes(addr, cmd, 3);
 
-    while (i2c_read1ByteRegister(addr, 0x71) & AHTX0_STATUS_BUSY) {
+    while (i2cRead1bReg(addr, 0x71) & AHTX0_STATUS_BUSY) {
         __delay_ms(10);
     }
 
-    i2c_readNBytes(addr, data, 6);
+    i2cReadBytes(addr, data, 6);
 
     uint32_t val = data[1];
     val <<= 8;
