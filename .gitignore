@@ -7,3 +7,4 @@ Board_Firmware/*.*/nbproject/private/
 controller/bin/main
 controller/bin/oldmain
 controller/cli/cli
+Board_Firmware/16LF18325-R1.X/.ca/
