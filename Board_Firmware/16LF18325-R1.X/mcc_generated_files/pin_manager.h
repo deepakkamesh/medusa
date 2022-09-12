@@ -65,6 +65,13 @@
 #define PULL_UP_ENABLED      1
 #define PULL_UP_DISABLED     0
 
+// get/set MOTION aliases
+#define MOTION_PORT                 PORTAbits.RA3
+#define MOTION_WPU                  WPUAbits.WPUA3
+#define MOTION_GetValue()           PORTAbits.RA3
+#define MOTION_SetPullup()          do { WPUAbits.WPUA3 = 1; } while(0)
+#define MOTION_ResetPullup()        do { WPUAbits.WPUA3 = 0; } while(0)
+
 // get/set nRF24_CE aliases
 #define nRF24_CE_TRIS                 TRISAbits.TRISA4
 #define nRF24_CE_LAT                  LATAbits.LATA4
@@ -208,6 +215,90 @@ void PIN_MANAGER_Initialize (void);
     PIN_MANAGER_IOC();
  */
 void PIN_MANAGER_IOC(void);
+
+
+/**
+ * @Param
+    none
+ * @Returns
+    none
+ * @Description
+    Interrupt on Change Handler for the IOCAF3 pin functionality
+ * @Example
+    IOCAF3_ISR();
+ */
+void IOCAF3_ISR(void);
+
+/**
+  @Summary
+    Interrupt Handler Setter for IOCAF3 pin interrupt-on-change functionality
+
+  @Description
+    Allows selecting an interrupt handler for IOCAF3 at application runtime
+    
+  @Preconditions
+    Pin Manager intializer called
+
+  @Returns
+    None.
+
+  @Param
+    InterruptHandler function pointer.
+
+  @Example
+    PIN_MANAGER_Initialize();
+    IOCAF3_SetInterruptHandler(MyInterruptHandler);
+
+*/
+void IOCAF3_SetInterruptHandler(void (* InterruptHandler)(void));
+
+/**
+  @Summary
+    Dynamic Interrupt Handler for IOCAF3 pin
+
+  @Description
+    This is a dynamic interrupt handler to be used together with the IOCAF3_SetInterruptHandler() method.
+    This handler is called every time the IOCAF3 ISR is executed and allows any function to be registered at runtime.
+    
+  @Preconditions
+    Pin Manager intializer called
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    PIN_MANAGER_Initialize();
+    IOCAF3_SetInterruptHandler(IOCAF3_InterruptHandler);
+
+*/
+extern void (*IOCAF3_InterruptHandler)(void);
+
+/**
+  @Summary
+    Default Interrupt Handler for IOCAF3 pin
+
+  @Description
+    This is a predefined interrupt handler to be used together with the IOCAF3_SetInterruptHandler() method.
+    This handler is called every time the IOCAF3 ISR is executed. 
+    
+  @Preconditions
+    Pin Manager intializer called
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    PIN_MANAGER_Initialize();
+    IOCAF3_SetInterruptHandler(IOCAF3_DefaultInterruptHandler);
+
+*/
+void IOCAF3_DefaultInterruptHandler(void);
 
 
 

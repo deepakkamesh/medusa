@@ -69,6 +69,8 @@ extern "C" {
 #define SPI_READ_BYTE(dt)           SPI1_ExchangeByte(dt)
 #define SPI_INIT()                  SPI1_Open(SPI1_DEFAULT)
 
+#define Motion_SetInterruptHandler(ih) IOCAF3_SetInterruptHandler(ih)
+#define MOTIONGetValue()    MOTION_GetValue()
 // Available Actions. 
 #define DEV_STATUS_LED 1
 #define DEV_TEMP_HUMIDITY 1

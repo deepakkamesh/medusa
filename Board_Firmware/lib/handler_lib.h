@@ -22,12 +22,14 @@
 #define ERR_UNKNOWN_PKT_TYPE 0x05
 
 // Action Types.
-#define ACTION_STATUS_LED 0x13
-#define ACTION_RESET_DEVICE 0x14
-#define ACTION_TEST 0x16
+#define ACTION_MOTION 0x01
 #define ACTION_GET_TEMP_HUMIDITY 0x02
 #define ACTION_GET_LIGHT 0x03
 #define ACTION_GET_VOLTS 0x05
+
+#define ACTION_STATUS_LED 0x13
+#define ACTION_RESET_DEVICE 0x14
+#define ACTION_TEST 0x16
 
 #define PIPE_ADDR_LEN 5 
 #define DEFAULT_RF_CHANNEL 0
@@ -55,6 +57,7 @@ void HandlerLoop(void); // Main loop. To be called in loop.
 uint8_t DiscoverRFChannel(void); // Discover RF Channel.
 void FlipPipeAddress(void);
 void ResetFlipCounter(void);
+void MotionInterruptHandler(void);
 
 // EEPROM stuff.
 #define IS_CONFIGURED 0x69 // Denotes if config is written on eeprom. 

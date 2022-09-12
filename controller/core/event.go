@@ -31,6 +31,7 @@ type Ping struct {
 
 type Motion struct {
 	pktInfo
+	Motion bool
 }
 
 type Temp struct {

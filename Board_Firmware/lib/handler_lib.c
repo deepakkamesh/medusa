@@ -18,9 +18,12 @@ struct Config config; // Board config.
 
 uint8_t bufferTX[32];
 uint8_t bufferRX[32];
+uint8_t data[5];
 uint8_t sentPktCnt = 0;
 uint8_t failedPktCnt = 0;
+uint8_t i = 0;
 Queue TXQueue; //Transmit Queue;
+unsigned int idx;
 
 union conv {
     float f;
@@ -31,6 +34,7 @@ void InitHandlerLib(void) {
     LoadConfigFromEE();
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
+    Motion_SetInterruptHandler(MotionInterruptHandler);
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
     AHT10Init(AHT10ADDR);
@@ -299,7 +303,7 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             buff[5] = humidity.uc[1];
             buff[6] = humidity.uc[2];
             buff[7] = humidity.uc[3];
-            
+
             SendData(ACTION_GET_TEMP_HUMIDITY, buff, 8);
             break;
 #else
@@ -326,8 +330,18 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
     }
 }
 
+void MotionInterruptHandler(void) {
+    data[0] = 0;
+    LED_SetLow();
+    if (MOTIONGetValue()) {
+        LED_SetHigh();
+        data[0] = 1;
+    }
+    SendData(ACTION_MOTION, data, 1);
+}
+
 void SendError(uint8_t errorCode) {
-    uint8_t i = 0;
+    i = 0;
     bufferTX[i] = PKT_DATA;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     i += ADDR_LEN;
@@ -337,7 +351,7 @@ void SendError(uint8_t errorCode) {
 }
 
 void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
-    uint8_t i = 0;
+    i = 0;
     bufferTX[i] = PKT_DATA;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     i += ADDR_LEN;
@@ -355,13 +369,13 @@ void SendPing(void) {
 }
 
 void ResetEE(void) {
-    unsigned int idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
+    idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     DATAEE_WriteByte(idx, 0xFF);
 }
 
 /* LoadConfigFromEE loads the configuration from memory. If none found default loaded*/
 void LoadConfigFromEE(void) {
-    unsigned int idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
+    idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     uint8_t isConfigured = DATAEE_ReadByte(idx);
     if (isConfigured != IS_CONFIGURED) {
         config.ARD = DEFAULT_ARD;
@@ -387,7 +401,7 @@ void LoadConfigFromEE(void) {
 }
 
 void WriteConfigToEE(void) {
-    unsigned int idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
+    idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     DATAEE_WriteByte(idx, IS_CONFIGURED);
     idx++;
     DATAEE_WriteByte(idx, config.ARD);

@@ -107,7 +107,7 @@ func makePktTypeActionReq(actionID byte, addr []byte, paddr []byte, data []byte)
 }
 
 // translatePacket converts the byte packet into an event.
-// TODO make more readable.
+// TODO make more readable and add some length validation.
 func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 
 	p := pktInfo{
@@ -177,8 +177,13 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 		}, nil
 
 	case ActionMotion:
+		motion := false
+		if data[0] == 1 {
+			motion = true
+		}
 		return Motion{
 			pktInfo: p,
+			Motion:  motion,
 		}, nil
 
 	case ActionVolt:
