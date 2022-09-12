@@ -56,7 +56,7 @@ int RelaySetup(void) {
   SuperMemCpy(bufferTX, 1, mac, 0, MAC_ADDR_LEN);
   while (1) {
     digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
-    delay(1000);
+    delay(500);
 
     int ok = NetSendUDP(bufferTX, 7, bcastIP, ctrPort);
     if (!ok) {
@@ -74,6 +74,8 @@ int RelaySetup(void) {
     if (!ParseConfigPkt(bufferRX, len)) {
       continue;
     }
+    digitalWrite(LED_ONBOARD, true); // For some reason true turns this off.
+
     // Get the controller IP.
     ctrIP = Udp.remoteIP();
     return 1;
