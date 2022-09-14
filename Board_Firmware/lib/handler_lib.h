@@ -39,7 +39,7 @@
 uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
 uint8_t PingInterval = 2; // Default ping interval.
 uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
-bool isRelayAvail = true; // Relay comms. If false dont sent any but ping packets.
+bool isRelayAvail = false; // Relay comms. If false dont sent any but ping packets and dont enqueue packets for retry.
 void TimerInterruptHandler(void);
 void InitRadio(void);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);

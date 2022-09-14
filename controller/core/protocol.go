@@ -137,7 +137,7 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 		return translatePingPacket(p)
 
 	case PktTypeData:
-
+		// TODO: Find a better solution here.
 		if len(pkt) < PktTypeRelayBoardDataLen+2 {
 			return nil, fmt.Errorf("bad packet len")
 		}

@@ -101,7 +101,7 @@ uint8_t DiscoverRFChannel(void) {
         CLRWDT(); // Needed so we dont trip up WDT until we get to main loop.
         nrf24_write_register(NRF24_MEM_RF_CH, rf);
         nrf24_send_rf_data(bufferTX, ADDR_LEN + 1);
-        __delay_us(10);
+        __delay_us(50);
 
         // Wait for successful TX or MAX_RT assertion.
         uint8_t status = 0;
@@ -125,6 +125,7 @@ uint8_t DiscoverRFChannel(void) {
 #endif
         // Found the channel. Reset Flip counter. 
         ResetFlipCounter();
+        isRelayAvail = true; 
         return rf;
     }
     // Channel not found. retry.
@@ -331,6 +332,10 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 }
 
 void MotionInterruptHandler(void) {
+   // Only send interrupts if relay is available. 
+    if(!isRelayAvail) {
+        return;
+    }
     data[0] = 0;
     LED_SetLow();
     if (MOTIONGetValue()) {
