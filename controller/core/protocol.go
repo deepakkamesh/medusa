@@ -198,6 +198,16 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 			pktInfo: p,
 			Volt:    (2.048 * 1023) / float32(x),
 		}, nil
+
+	case ActionLight:
+		var x uint
+		x = uint(data[1])
+		x = x<<8 | uint(data[0])
+		return Light{
+			pktInfo: p,
+			Light:   (3.3 * 1023) / float32(x),
+		}, nil
+
 	default:
 		return nil, fmt.Errorf("unknown action %v", action)
 	}

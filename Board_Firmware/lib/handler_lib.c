@@ -125,7 +125,7 @@ uint8_t DiscoverRFChannel(void) {
 #endif
         // Found the channel. Reset Flip counter. 
         ResetFlipCounter();
-        isRelayAvail = true; 
+        isRelayAvail = true;
         return rf;
     }
     // Channel not found. retry.
@@ -278,7 +278,7 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
 
 void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
     uint8_t buff[10];
-    adc_result_t volts;
+    adc_result_t adcRes;
     union conv temp, humidity;
 
     switch (actionID) {
@@ -316,12 +316,19 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             break;
 
         case ACTION_GET_VOLTS:
-            volts = ADC_GetConversion(channel_FVR);
-            buff[0] = volts & 0x00FF;
-            buff[1] = volts >> 8;
+            adcRes = ADC_GetConversion(channel_FVR);
+            buff[0] = adcRes & 0x00FF;
+            buff[1] = adcRes >> 8;
             SendData(ACTION_GET_VOLTS, buff, 2);
             break;
 
+        case ACTION_GET_LIGHT:
+            adcRes = ADC_GetConversion(ADC_LIGHT);
+            buff[0] = adcRes & 0x00FF;
+            buff[1] = adcRes >> 8;
+            SendData(ACTION_GET_LIGHT, buff, 2);
+            break;
+            
         case ACTION_TEST:
             TestFunc();
             break;
@@ -332,8 +339,8 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 }
 
 void MotionInterruptHandler(void) {
-   // Only send interrupts if relay is available. 
-    if(!isRelayAvail) {
+    // Only send interrupts if relay is available. 
+    if (!isRelayAvail) {
         return;
     }
     data[0] = 0;

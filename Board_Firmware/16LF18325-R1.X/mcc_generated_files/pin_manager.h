@@ -168,6 +168,26 @@
 #define RC2_SetAnalogMode()         do { ANSELCbits.ANSC2 = 1; } while(0)
 #define RC2_SetDigitalMode()        do { ANSELCbits.ANSC2 = 0; } while(0)
 
+// get/set ADC_LIGHT aliases
+#define ADC_LIGHT_TRIS                 TRISCbits.TRISC3
+#define ADC_LIGHT_LAT                  LATCbits.LATC3
+#define ADC_LIGHT_PORT                 PORTCbits.RC3
+#define ADC_LIGHT_WPU                  WPUCbits.WPUC3
+#define ADC_LIGHT_OD                   ODCONCbits.ODCC3
+#define ADC_LIGHT_ANS                  ANSELCbits.ANSC3
+#define ADC_LIGHT_SetHigh()            do { LATCbits.LATC3 = 1; } while(0)
+#define ADC_LIGHT_SetLow()             do { LATCbits.LATC3 = 0; } while(0)
+#define ADC_LIGHT_Toggle()             do { LATCbits.LATC3 = ~LATCbits.LATC3; } while(0)
+#define ADC_LIGHT_GetValue()           PORTCbits.RC3
+#define ADC_LIGHT_SetDigitalInput()    do { TRISCbits.TRISC3 = 1; } while(0)
+#define ADC_LIGHT_SetDigitalOutput()   do { TRISCbits.TRISC3 = 0; } while(0)
+#define ADC_LIGHT_SetPullup()          do { WPUCbits.WPUC3 = 1; } while(0)
+#define ADC_LIGHT_ResetPullup()        do { WPUCbits.WPUC3 = 0; } while(0)
+#define ADC_LIGHT_SetPushPull()        do { ODCONCbits.ODCC3 = 0; } while(0)
+#define ADC_LIGHT_SetOpenDrain()       do { ODCONCbits.ODCC3 = 1; } while(0)
+#define ADC_LIGHT_SetAnalogMode()      do { ANSELCbits.ANSC3 = 1; } while(0)
+#define ADC_LIGHT_SetDigitalMode()     do { ANSELCbits.ANSC3 = 0; } while(0)
+
 // get/set RC4 procedures
 #define RC4_SetHigh()            do { LATCbits.LATC4 = 1; } while(0)
 #define RC4_SetLow()             do { LATCbits.LATC4 = 0; } while(0)

@@ -39,6 +39,10 @@ type Temp struct {
 	Temp     float32
 	Humidity float32
 }
+type Light struct {
+	pktInfo
+	Light float32
+}
 
 type Volt struct {
 	pktInfo

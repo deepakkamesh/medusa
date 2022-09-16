@@ -28,7 +28,7 @@ func main() {
 	app.Commands = []*cli.Command{
 		{
 			Name:    "led",
-			Aliases: []string{"l"},
+			Aliases: []string{"le"},
 			Usage:   "LED control",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
@@ -180,6 +180,26 @@ func main() {
 				params := url.Values{
 					"addr":     {addr},
 					"actionID": {fmt.Sprintf("%X", core.ActionVolt)},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
+		{
+			Name:    "light",
+			Aliases: []string{"l"},
+			Usage:   "get light",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionLight)},
 				}
 				post(c.String("host"), params, "action")
 				return nil
