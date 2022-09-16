@@ -65,32 +65,52 @@
 #define PULL_UP_ENABLED      1
 #define PULL_UP_DISABLED     0
 
+// get/set nRF24_CSN aliases
+#define nRF24_CSN_TRIS                 TRISAbits.TRISA1
+#define nRF24_CSN_LAT                  LATAbits.LATA1
+#define nRF24_CSN_PORT                 PORTAbits.RA1
+#define nRF24_CSN_WPU                  WPUAbits.WPUA1
+#define nRF24_CSN_OD                   ODCONAbits.ODCA1
+#define nRF24_CSN_ANS                  ANSELAbits.ANSA1
+#define nRF24_CSN_SetHigh()            do { LATAbits.LATA1 = 1; } while(0)
+#define nRF24_CSN_SetLow()             do { LATAbits.LATA1 = 0; } while(0)
+#define nRF24_CSN_Toggle()             do { LATAbits.LATA1 = ~LATAbits.LATA1; } while(0)
+#define nRF24_CSN_GetValue()           PORTAbits.RA1
+#define nRF24_CSN_SetDigitalInput()    do { TRISAbits.TRISA1 = 1; } while(0)
+#define nRF24_CSN_SetDigitalOutput()   do { TRISAbits.TRISA1 = 0; } while(0)
+#define nRF24_CSN_SetPullup()          do { WPUAbits.WPUA1 = 1; } while(0)
+#define nRF24_CSN_ResetPullup()        do { WPUAbits.WPUA1 = 0; } while(0)
+#define nRF24_CSN_SetPushPull()        do { ODCONAbits.ODCA1 = 0; } while(0)
+#define nRF24_CSN_SetOpenDrain()       do { ODCONAbits.ODCA1 = 1; } while(0)
+#define nRF24_CSN_SetAnalogMode()      do { ANSELAbits.ANSA1 = 1; } while(0)
+#define nRF24_CSN_SetDigitalMode()     do { ANSELAbits.ANSA1 = 0; } while(0)
+
+// get/set nRF24_CE aliases
+#define nRF24_CE_TRIS                 TRISAbits.TRISA2
+#define nRF24_CE_LAT                  LATAbits.LATA2
+#define nRF24_CE_PORT                 PORTAbits.RA2
+#define nRF24_CE_WPU                  WPUAbits.WPUA2
+#define nRF24_CE_OD                   ODCONAbits.ODCA2
+#define nRF24_CE_ANS                  ANSELAbits.ANSA2
+#define nRF24_CE_SetHigh()            do { LATAbits.LATA2 = 1; } while(0)
+#define nRF24_CE_SetLow()             do { LATAbits.LATA2 = 0; } while(0)
+#define nRF24_CE_Toggle()             do { LATAbits.LATA2 = ~LATAbits.LATA2; } while(0)
+#define nRF24_CE_GetValue()           PORTAbits.RA2
+#define nRF24_CE_SetDigitalInput()    do { TRISAbits.TRISA2 = 1; } while(0)
+#define nRF24_CE_SetDigitalOutput()   do { TRISAbits.TRISA2 = 0; } while(0)
+#define nRF24_CE_SetPullup()          do { WPUAbits.WPUA2 = 1; } while(0)
+#define nRF24_CE_ResetPullup()        do { WPUAbits.WPUA2 = 0; } while(0)
+#define nRF24_CE_SetPushPull()        do { ODCONAbits.ODCA2 = 0; } while(0)
+#define nRF24_CE_SetOpenDrain()       do { ODCONAbits.ODCA2 = 1; } while(0)
+#define nRF24_CE_SetAnalogMode()      do { ANSELAbits.ANSA2 = 1; } while(0)
+#define nRF24_CE_SetDigitalMode()     do { ANSELAbits.ANSA2 = 0; } while(0)
+
 // get/set MOTION aliases
 #define MOTION_PORT                 PORTAbits.RA3
 #define MOTION_WPU                  WPUAbits.WPUA3
 #define MOTION_GetValue()           PORTAbits.RA3
 #define MOTION_SetPullup()          do { WPUAbits.WPUA3 = 1; } while(0)
 #define MOTION_ResetPullup()        do { WPUAbits.WPUA3 = 0; } while(0)
-
-// get/set nRF24_CE aliases
-#define nRF24_CE_TRIS                 TRISAbits.TRISA4
-#define nRF24_CE_LAT                  LATAbits.LATA4
-#define nRF24_CE_PORT                 PORTAbits.RA4
-#define nRF24_CE_WPU                  WPUAbits.WPUA4
-#define nRF24_CE_OD                   ODCONAbits.ODCA4
-#define nRF24_CE_ANS                  ANSELAbits.ANSA4
-#define nRF24_CE_SetHigh()            do { LATAbits.LATA4 = 1; } while(0)
-#define nRF24_CE_SetLow()             do { LATAbits.LATA4 = 0; } while(0)
-#define nRF24_CE_Toggle()             do { LATAbits.LATA4 = ~LATAbits.LATA4; } while(0)
-#define nRF24_CE_GetValue()           PORTAbits.RA4
-#define nRF24_CE_SetDigitalInput()    do { TRISAbits.TRISA4 = 1; } while(0)
-#define nRF24_CE_SetDigitalOutput()   do { TRISAbits.TRISA4 = 0; } while(0)
-#define nRF24_CE_SetPullup()          do { WPUAbits.WPUA4 = 1; } while(0)
-#define nRF24_CE_ResetPullup()        do { WPUAbits.WPUA4 = 0; } while(0)
-#define nRF24_CE_SetPushPull()        do { ODCONAbits.ODCA4 = 0; } while(0)
-#define nRF24_CE_SetOpenDrain()       do { ODCONAbits.ODCA4 = 1; } while(0)
-#define nRF24_CE_SetAnalogMode()      do { ANSELAbits.ANSA4 = 1; } while(0)
-#define nRF24_CE_SetDigitalMode()     do { ANSELAbits.ANSA4 = 0; } while(0)
 
 // get/set LED aliases
 #define LED_TRIS                 TRISAbits.TRISA5
@@ -147,26 +167,6 @@
 #define RC2_ResetPullup()           do { WPUCbits.WPUC2 = 0; } while(0)
 #define RC2_SetAnalogMode()         do { ANSELCbits.ANSC2 = 1; } while(0)
 #define RC2_SetDigitalMode()        do { ANSELCbits.ANSC2 = 0; } while(0)
-
-// get/set nRF24_CSN aliases
-#define nRF24_CSN_TRIS                 TRISCbits.TRISC3
-#define nRF24_CSN_LAT                  LATCbits.LATC3
-#define nRF24_CSN_PORT                 PORTCbits.RC3
-#define nRF24_CSN_WPU                  WPUCbits.WPUC3
-#define nRF24_CSN_OD                   ODCONCbits.ODCC3
-#define nRF24_CSN_ANS                  ANSELCbits.ANSC3
-#define nRF24_CSN_SetHigh()            do { LATCbits.LATC3 = 1; } while(0)
-#define nRF24_CSN_SetLow()             do { LATCbits.LATC3 = 0; } while(0)
-#define nRF24_CSN_Toggle()             do { LATCbits.LATC3 = ~LATCbits.LATC3; } while(0)
-#define nRF24_CSN_GetValue()           PORTCbits.RC3
-#define nRF24_CSN_SetDigitalInput()    do { TRISCbits.TRISC3 = 1; } while(0)
-#define nRF24_CSN_SetDigitalOutput()   do { TRISCbits.TRISC3 = 0; } while(0)
-#define nRF24_CSN_SetPullup()          do { WPUCbits.WPUC3 = 1; } while(0)
-#define nRF24_CSN_ResetPullup()        do { WPUCbits.WPUC3 = 0; } while(0)
-#define nRF24_CSN_SetPushPull()        do { ODCONCbits.ODCC3 = 0; } while(0)
-#define nRF24_CSN_SetOpenDrain()       do { ODCONCbits.ODCC3 = 1; } while(0)
-#define nRF24_CSN_SetAnalogMode()      do { ANSELCbits.ANSC3 = 1; } while(0)
-#define nRF24_CSN_SetDigitalMode()     do { ANSELCbits.ANSC3 = 0; } while(0)
 
 // get/set RC4 procedures
 #define RC4_SetHigh()            do { LATCbits.LATC4 = 1; } while(0)
