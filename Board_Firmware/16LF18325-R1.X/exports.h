@@ -34,25 +34,11 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include "mcc_generated_files/mcc.h"
 
-
-#ifdef	__cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-    // TODO If C++ is being used, regular C code needs function names to have C 
-    // linkage so the functions can be used by the c code. 
-
-#ifdef	__cplusplus
-}
-#endif /* __cplusplus */
-
 #endif	/* XC_HEADER_TEMPLATE_H */
 
-#define HW_REV_1
 
-#ifdef HW_REV_1
 /******************************************************************************/
-// SPI and GPIO Helper Function.
+// SPI and GPIO Helper Mappers
 /******************************************************************************/
 
 #define NRF24L01_CSN_H()            nRF24_CSN_SetHigh()
@@ -72,11 +58,36 @@ extern "C" {
 #define Motion_SetInterruptHandler(ih) IOCAF3_SetInterruptHandler(ih)
 #define MOTIONGetValue()    MOTION_GetValue()
 
+// ADC Functions
+#define zADC_GetConversion(a) ADC_GetConversion(a)
+        
+// I2C Functions.
 #define i2cRead1bReg(a,b)    i2c_read1ByteRegister(a,b)
 #define i2cWriteBytes(a,b,c) i2c_writeNBytes(a,b,c)
 #define i2cReadBytes(a,b,c)  i2c_readNBytes(a,b,c)
 #define i2cAddr i2c2_address_t
-// Available Actions. 
+
+// GPIO Functions
+#define zLED_Toggle() LED_Toggle()
+#define zLED_SetHigh() LED_SetHigh()
+#define zLED_SetLow() LED_SetLow()
+
+#// EEPROM functions
+#define zDATAEE_ReadByte(a) DATAEE_ReadByte(a)
+#define zDATAEE_WriteByte(a,b) DATAEE_WriteByte(a,b)
+
+#define HW_REV_1_1
+
+#ifdef HW_REV_1_1 // Available Actions for Rev 1_1
 #define DEV_STATUS_LED 1
 #define DEV_TEMP_HUMIDITY 1
+#define DEV_VOLTS 1
+#define DEV_LIGHT 1
+#define DEV_MOTION 1
+#endif
+
+#ifdef HW_REV_1_2 // Available Actions for Rev 1_2
+#define DEV_STATUS_LED 1
+#define DEV_VOLTS 1
+#define DEV_MOTION 1
 #endif

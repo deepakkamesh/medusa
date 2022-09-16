@@ -96,7 +96,7 @@ uint8_t DiscoverRFChannel(void) {
     // Cycle through available channels. 
     for (uint8_t rf = 0; rf < 125; rf++) {
 #ifdef DEV_STATUS_LED
-        LED_Toggle();
+        zLED_Toggle();
 #endif
         CLRWDT(); // Needed so we dont trip up WDT until we get to main loop.
         nrf24_write_register(NRF24_MEM_RF_CH, rf);
@@ -121,7 +121,7 @@ uint8_t DiscoverRFChannel(void) {
             continue;
         }
 #ifdef DEV_STATUS_LED
-        LED_SetLow();
+        zLED_SetLow();
 #endif
         // Found the channel. Reset Flip counter. 
         ResetFlipCounter();
@@ -138,8 +138,8 @@ uint8_t DiscoverRFChannel(void) {
 // pipe address after MAX_CONNECT_RETRIES. 
 
 void FlipPipeAddress(void) {
-    uint8_t n = DATAEE_ReadByte(EEPROM_ADDR + EE_RETRY_OFFSET);
-    DATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, n + 1);
+    uint8_t n = zDATAEE_ReadByte(EEPROM_ADDR + EE_RETRY_OFFSET);
+    zDATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, n + 1);
 
     if (n < MAX_CONNECT_RETRIES) {
         return;
@@ -155,7 +155,7 @@ void FlipPipeAddress(void) {
 }
 
 void ResetFlipCounter(void) {
-    DATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, 0);
+    zDATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, 0);
 }
 
 void HandleTimeLoop(void) {
@@ -283,18 +283,21 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 
     switch (actionID) {
         case ACTION_STATUS_LED:
-#ifdef DEV_STATUS_LED
-            LED_SetLow();
+#ifndef DEV_STATUS_LED
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif
+            zLED_SetLow();
             if (data[0]) {
-                LED_SetHigh();
+                zLED_SetHigh();
             }
             break;
-#else
-            SendError(ERR_NOT_IMPL);
-#endif
 
         case ACTION_GET_TEMP_HUMIDITY:
-#ifdef DEV_TEMP_HUMIDITY
+#ifndef DEV_TEMP_HUMIDITY
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif
             AHT10Read(AHT10ADDR, &temp.f, &humidity.f);
             buff[0] = temp.uc[0];
             buff[1] = temp.uc[1];
@@ -307,28 +310,33 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 
             SendData(ACTION_GET_TEMP_HUMIDITY, buff, 8);
             break;
-#else
-            SendError(ERR_NOT_IMPL);
-#endif
 
         case ACTION_RESET_DEVICE:
             RESET();
             break;
 
         case ACTION_GET_VOLTS:
-            adcRes = ADC_GetConversion(channel_FVR);
+#ifndef DEV_VOLTS
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif            
+            adcRes = zADC_GetConversion(channel_FVR);
             buff[0] = adcRes & 0x00FF;
             buff[1] = adcRes >> 8;
             SendData(ACTION_GET_VOLTS, buff, 2);
             break;
 
         case ACTION_GET_LIGHT:
-            adcRes = ADC_GetConversion(ADC_LIGHT);
+#ifndef DEV_LIGHT
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif
+            adcRes = zADC_GetConversion(ADC_LIGHT);
             buff[0] = adcRes & 0x00FF;
             buff[1] = adcRes >> 8;
             SendData(ACTION_GET_LIGHT, buff, 2);
             break;
-            
+
         case ACTION_TEST:
             TestFunc();
             break;
@@ -340,13 +348,21 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 
 void MotionInterruptHandler(void) {
     // Only send interrupts if relay is available. 
+#ifndef DEV_MOTION
+    return;
+#endif
+
     if (!isRelayAvail) {
         return;
     }
     data[0] = 0;
-    LED_SetLow();
+#ifdef DEV_STATUS_LED
+    zLED_SetLow();
+#endif
     if (MOTIONGetValue()) {
-        LED_SetHigh();
+#ifdef DEV_STATUS_LED
+        zLED_SetHigh();
+#endif 
         data[0] = 1;
     }
     SendData(ACTION_MOTION, data, 1);
@@ -382,13 +398,13 @@ void SendPing(void) {
 
 void ResetEE(void) {
     idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
-    DATAEE_WriteByte(idx, 0xFF);
+    zDATAEE_WriteByte(idx, 0xFF);
 }
 
 /* LoadConfigFromEE loads the configuration from memory. If none found default loaded*/
 void LoadConfigFromEE(void) {
     idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
-    uint8_t isConfigured = DATAEE_ReadByte(idx);
+    uint8_t isConfigured = zDATAEE_ReadByte(idx);
     if (isConfigured != IS_CONFIGURED) {
         config.ARD = DEFAULT_ARD;
         config.PingInterval = PingInterval;
@@ -399,33 +415,33 @@ void LoadConfigFromEE(void) {
     }
     config.IsConfigured = true;
     idx++;
-    config.ARD = DATAEE_ReadByte(idx);
+    config.ARD = zDATAEE_ReadByte(idx);
     idx++;
-    config.PingInterval = DATAEE_ReadByte(idx);
+    config.PingInterval = zDATAEE_ReadByte(idx);
     idx++;
     for (uint8_t i = 0; i < PIPE_ADDR_LEN; i++) {
-        config.PipeAddr1[i] = DATAEE_ReadByte(idx + i);
+        config.PipeAddr1[i] = zDATAEE_ReadByte(idx + i);
     }
     idx += PIPE_ADDR_LEN;
     for (uint8_t i = 0; i < ADDR_LEN; i++) {
-        config.Address[i] = DATAEE_ReadByte(idx + i);
+        config.Address[i] = zDATAEE_ReadByte(idx + i);
     }
 }
 
 void WriteConfigToEE(void) {
     idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
-    DATAEE_WriteByte(idx, IS_CONFIGURED);
+    zDATAEE_WriteByte(idx, IS_CONFIGURED);
     idx++;
-    DATAEE_WriteByte(idx, config.ARD);
+    zDATAEE_WriteByte(idx, config.ARD);
     idx++;
-    DATAEE_WriteByte(idx, config.PingInterval);
+    zDATAEE_WriteByte(idx, config.PingInterval);
     idx++;
     for (uint8_t i = 0; i < PIPE_ADDR_LEN; i++) {
-        DATAEE_WriteByte(i + idx, config.PipeAddr1[i]);
+        zDATAEE_WriteByte(i + idx, config.PipeAddr1[i]);
     }
     idx += PIPE_ADDR_LEN;
     for (uint8_t i = 0; i < ADDR_LEN; i++) {
-        DATAEE_WriteByte(i + idx, config.Address[i]);
+        zDATAEE_WriteByte(i + idx, config.Address[i]);
     }
 }
 
@@ -441,7 +457,7 @@ void TestFunc(void) {
     //LoadConfigFromEE();
     //memcpy(DEFAULT_PIPE_ADDR, BoardAddress, ADDR_LEN);
     uint8_t buff[2] = {0, 0};
-    adc_result_t volts = ADC_GetConversion(channel_FVR);
+    adc_result_t volts = zADC_GetConversion(channel_FVR);
     buff[0] = volts & 0x00FF;
     buff[1] = volts >> 8;
     SendData(ACTION_TEST, buff, 2);
