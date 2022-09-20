@@ -25,7 +25,7 @@ const (
 	ActionDoor        = 0x04
 	ActionVolt        = 0x05
 	ActionBuzzer      = 0x10
-	ActionGarage      = 0x11
+	ActionFactoryRst  = 0x11
 	ActionRelay       = 0x12
 	ActionLED         = 0x13
 	ActionReset       = 0x14

@@ -65,6 +65,26 @@
 #define PULL_UP_ENABLED      1
 #define PULL_UP_DISABLED     0
 
+// get/set DOOR aliases
+#define DOOR_TRIS                 TRISAbits.TRISA0
+#define DOOR_LAT                  LATAbits.LATA0
+#define DOOR_PORT                 PORTAbits.RA0
+#define DOOR_WPU                  WPUAbits.WPUA0
+#define DOOR_OD                   ODCONAbits.ODCA0
+#define DOOR_ANS                  ANSELAbits.ANSA0
+#define DOOR_SetHigh()            do { LATAbits.LATA0 = 1; } while(0)
+#define DOOR_SetLow()             do { LATAbits.LATA0 = 0; } while(0)
+#define DOOR_Toggle()             do { LATAbits.LATA0 = ~LATAbits.LATA0; } while(0)
+#define DOOR_GetValue()           PORTAbits.RA0
+#define DOOR_SetDigitalInput()    do { TRISAbits.TRISA0 = 1; } while(0)
+#define DOOR_SetDigitalOutput()   do { TRISAbits.TRISA0 = 0; } while(0)
+#define DOOR_SetPullup()          do { WPUAbits.WPUA0 = 1; } while(0)
+#define DOOR_ResetPullup()        do { WPUAbits.WPUA0 = 0; } while(0)
+#define DOOR_SetPushPull()        do { ODCONAbits.ODCA0 = 0; } while(0)
+#define DOOR_SetOpenDrain()       do { ODCONAbits.ODCA0 = 1; } while(0)
+#define DOOR_SetAnalogMode()      do { ANSELAbits.ANSA0 = 1; } while(0)
+#define DOOR_SetDigitalMode()     do { ANSELAbits.ANSA0 = 0; } while(0)
+
 // get/set nRF24_CSN aliases
 #define nRF24_CSN_TRIS                 TRISAbits.TRISA1
 #define nRF24_CSN_LAT                  LATAbits.LATA1
@@ -111,6 +131,26 @@
 #define MOTION_GetValue()           PORTAbits.RA3
 #define MOTION_SetPullup()          do { WPUAbits.WPUA3 = 1; } while(0)
 #define MOTION_ResetPullup()        do { WPUAbits.WPUA3 = 0; } while(0)
+
+// get/set RELAY aliases
+#define RELAY_TRIS                 TRISAbits.TRISA4
+#define RELAY_LAT                  LATAbits.LATA4
+#define RELAY_PORT                 PORTAbits.RA4
+#define RELAY_WPU                  WPUAbits.WPUA4
+#define RELAY_OD                   ODCONAbits.ODCA4
+#define RELAY_ANS                  ANSELAbits.ANSA4
+#define RELAY_SetHigh()            do { LATAbits.LATA4 = 1; } while(0)
+#define RELAY_SetLow()             do { LATAbits.LATA4 = 0; } while(0)
+#define RELAY_Toggle()             do { LATAbits.LATA4 = ~LATAbits.LATA4; } while(0)
+#define RELAY_GetValue()           PORTAbits.RA4
+#define RELAY_SetDigitalInput()    do { TRISAbits.TRISA4 = 1; } while(0)
+#define RELAY_SetDigitalOutput()   do { TRISAbits.TRISA4 = 0; } while(0)
+#define RELAY_SetPullup()          do { WPUAbits.WPUA4 = 1; } while(0)
+#define RELAY_ResetPullup()        do { WPUAbits.WPUA4 = 0; } while(0)
+#define RELAY_SetPushPull()        do { ODCONAbits.ODCA4 = 0; } while(0)
+#define RELAY_SetOpenDrain()       do { ODCONAbits.ODCA4 = 1; } while(0)
+#define RELAY_SetAnalogMode()      do { ANSELAbits.ANSA4 = 1; } while(0)
+#define RELAY_SetDigitalMode()     do { ANSELAbits.ANSA4 = 0; } while(0)
 
 // get/set LED aliases
 #define LED_TRIS                 TRISAbits.TRISA5
@@ -235,6 +275,90 @@ void PIN_MANAGER_Initialize (void);
     PIN_MANAGER_IOC();
  */
 void PIN_MANAGER_IOC(void);
+
+
+/**
+ * @Param
+    none
+ * @Returns
+    none
+ * @Description
+    Interrupt on Change Handler for the IOCAF0 pin functionality
+ * @Example
+    IOCAF0_ISR();
+ */
+void IOCAF0_ISR(void);
+
+/**
+  @Summary
+    Interrupt Handler Setter for IOCAF0 pin interrupt-on-change functionality
+
+  @Description
+    Allows selecting an interrupt handler for IOCAF0 at application runtime
+    
+  @Preconditions
+    Pin Manager intializer called
+
+  @Returns
+    None.
+
+  @Param
+    InterruptHandler function pointer.
+
+  @Example
+    PIN_MANAGER_Initialize();
+    IOCAF0_SetInterruptHandler(MyInterruptHandler);
+
+*/
+void IOCAF0_SetInterruptHandler(void (* InterruptHandler)(void));
+
+/**
+  @Summary
+    Dynamic Interrupt Handler for IOCAF0 pin
+
+  @Description
+    This is a dynamic interrupt handler to be used together with the IOCAF0_SetInterruptHandler() method.
+    This handler is called every time the IOCAF0 ISR is executed and allows any function to be registered at runtime.
+    
+  @Preconditions
+    Pin Manager intializer called
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    PIN_MANAGER_Initialize();
+    IOCAF0_SetInterruptHandler(IOCAF0_InterruptHandler);
+
+*/
+extern void (*IOCAF0_InterruptHandler)(void);
+
+/**
+  @Summary
+    Default Interrupt Handler for IOCAF0 pin
+
+  @Description
+    This is a predefined interrupt handler to be used together with the IOCAF0_SetInterruptHandler() method.
+    This handler is called every time the IOCAF0 ISR is executed. 
+    
+  @Preconditions
+    Pin Manager intializer called
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    PIN_MANAGER_Initialize();
+    IOCAF0_SetInterruptHandler(IOCAF0_DefaultInterruptHandler);
+
+*/
+void IOCAF0_DefaultInterruptHandler(void);
 
 
 /**

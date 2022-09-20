@@ -1,4 +1,6 @@
 #include "master_exports.h"
+#include "nrf24_lib.h"
+#include "aht10_lib.h"
 
 // Protocol Stuff
 #define ADDR_LEN 3
@@ -25,8 +27,10 @@
 #define ACTION_MOTION 0x01
 #define ACTION_GET_TEMP_HUMIDITY 0x02
 #define ACTION_GET_LIGHT 0x03
+#define ACTION_DOOR 0x04
 #define ACTION_GET_VOLTS 0x05
-
+#define ACTION_FACTORY_RESET 0x11
+#define ACTION_RELAY 0x12
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_TEST 0x16
@@ -58,6 +62,8 @@ uint8_t DiscoverRFChannel(void); // Discover RF Channel.
 void FlipPipeAddress(void);
 void ResetFlipCounter(void);
 void MotionInterruptHandler(void);
+void DoorInterruptHandler(void);
+void HandleInterruptsLoop(void) ;
 
 // EEPROM stuff.
 #define IS_CONFIGURED 0x69 // Denotes if config is written on eeprom. 
@@ -66,6 +72,7 @@ void MotionInterruptHandler(void);
 #define EE_CONFIG_OFFSET 5
 void LoadConfigFromEE(void);
 void WriteConfigToEE(void);
+void ResetEE(void);
 
 // Queue Functions.
 

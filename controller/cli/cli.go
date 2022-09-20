@@ -205,6 +205,55 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:    "factoryreset",
+			Aliases: []string{"fr"},
+			Usage:   "factory reset board",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionFactoryRst)},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
+		{
+			Name:    "relay",
+			Aliases: []string{"re"},
+			Usage:   "turn on relay",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+				&cli.StringFlag{
+					Name:  "i",
+					Usage: "Time interval (s) to keep on. 0 - momemtary, 255 - forever",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				i := c.String("i")
+				if i == "" {
+					i = "0"
+				}
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionRelay)},
+					"data":     {i},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
 	}
 	app.Run(os.Args)
 

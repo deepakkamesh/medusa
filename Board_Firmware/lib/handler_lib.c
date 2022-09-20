@@ -9,10 +9,7 @@
 #include <string.h>
 #include "handler_lib.h"
 
-#include "nrf24_lib.h"
-#include "aht10_lib.h"
-
-uint32_t prevTicks = 0;
+uint32_t prevTicks, relayStartTicks = 0;
 uint32_t Ticks = 0; // Ticks of timer.
 struct Config config; // Board config.
 
@@ -22,8 +19,15 @@ uint8_t data[5];
 uint8_t sentPktCnt = 0;
 uint8_t failedPktCnt = 0;
 uint8_t i = 0;
+uint8_t relayInt = 0; // Interval (secs) to turn on relay. 0 = intermittent FF = infinite.
 Queue TXQueue; //Transmit Queue;
 unsigned int idx;
+bool triggerRelay, RelayOn = false;
+
+enum interruptsType {
+    Motion, Door, None
+};
+enum interruptsType gotInterrupt;
 
 union conv {
     float f;
@@ -35,6 +39,7 @@ void InitHandlerLib(void) {
     InitRadio();
     TMR1_SetInterruptHandler(TimerInterruptHandler);
     Motion_SetInterruptHandler(MotionInterruptHandler);
+    Door_SetInterruptHandler(DoorInterruptHandler);
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
     AHT10Init(AHT10ADDR);
@@ -43,7 +48,7 @@ void InitHandlerLib(void) {
 void HandlerLoop(void) {
     HandlePacketLoop();
     HandleTimeLoop();
-    NOP();
+    HandleInterruptsLoop();
     CLRWDT();
 }
 
@@ -159,7 +164,7 @@ void ResetFlipCounter(void) {
 }
 
 void HandleTimeLoop(void) {
-
+    // Only execute if ticks changes to not run multiple times each tick.
     uint32_t currTicks = Ticks;
     if (currTicks == prevTicks) {
         return;
@@ -167,8 +172,30 @@ void HandleTimeLoop(void) {
     prevTicks = currTicks;
 
     // Perform any timed activity here.
+
+    // Send Ping every PingInterval.
     if (currTicks % PingInterval == 0) {
         SendPing();
+    }
+
+    // Handle relay on time. 
+    if (triggerRelay) {
+        triggerRelay = false;
+        relayStartTicks = currTicks;
+        zRELAY_SetHigh();
+        // if interval is 0xFF do not turn off. 
+        if (relayInt != 0xFF) {
+            RelayOn = true;
+        }
+    }
+    if (RelayOn) {
+        // check if interval is met handling rollover edge case. 
+        if ((currTicks >= relayStartTicks && (currTicks - relayStartTicks) == relayInt) ||
+                (currTicks < relayStartTicks && (2^32 - relayStartTicks + currTicks) == relayInt)) {
+            RelayOn = false;
+            __delay_ms(100);
+            zRELAY_SetLow();
+        }
     }
 }
 
@@ -337,8 +364,21 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
             SendData(ACTION_GET_LIGHT, buff, 2);
             break;
 
+        case ACTION_RELAY:
+#ifndef DEV_RELAY
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif
+            relayInt = data[0];
+            triggerRelay = true;
+            break;
+
         case ACTION_TEST:
             TestFunc();
+            break;
+
+        case ACTION_FACTORY_RESET:
+            ResetEE();
             break;
 
         default:
@@ -346,26 +386,57 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
     }
 }
 
+void HandleInterruptsLoop(void) {
+
+    switch (gotInterrupt) {
+        case Motion:
+            // Only send interrupts if relay is available. 
+            if (!isRelayAvail) {
+                break;
+            }
+            data[0] = 0;
+#ifdef DEV_STATUS_LED
+            zLED_SetLow();
+#endif
+            if (MOTIONGetValue()) {
+#ifdef DEV_STATUS_LED
+                zLED_SetHigh();
+#endif 
+                data[0] = 1;
+            }
+            SendData(ACTION_MOTION, data, 1);
+            break;
+
+        case Door:
+            // Only send interrupts if relay is available. 
+            if (!isRelayAvail) {
+                break;
+            }
+            data[0] = 0;
+            if (zDOOR_GetValue()) {
+                data[0] = 1;
+            }
+            SendData(ACTION_DOOR, data, 1);
+            break;
+
+        case None:
+            return;
+    }
+    gotInterrupt = None;
+}
+
+void DoorInterruptHandler(void) {
+#ifndef DEV_DOOR
+    return;
+#endif
+    gotInterrupt = Door;
+}
+
 void MotionInterruptHandler(void) {
-    // Only send interrupts if relay is available. 
 #ifndef DEV_MOTION
     return;
 #endif
-
-    if (!isRelayAvail) {
-        return;
-    }
-    data[0] = 0;
-#ifdef DEV_STATUS_LED
-    zLED_SetLow();
-#endif
-    if (MOTIONGetValue()) {
-#ifdef DEV_STATUS_LED
-        zLED_SetHigh();
-#endif 
-        data[0] = 1;
-    }
-    SendData(ACTION_MOTION, data, 1);
+    gotInterrupt = Motion;
 }
 
 void SendError(uint8_t errorCode) {

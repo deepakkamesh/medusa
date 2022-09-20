@@ -40,7 +40,7 @@
 /******************************************************************************/
 // SPI and GPIO Helper Mappers
 /******************************************************************************/
-
+// NRF24 Functions. 
 #define NRF24L01_CSN_H()            nRF24_CSN_SetHigh()
 #define NRF24L01_CSN_L()            nRF24_CSN_SetLow()
 #define NRF24L01_CSN_SetOutput()    nRF24_CSN_SetDigitalOutput()
@@ -55,27 +55,38 @@
 #define SPI_READ_BYTE(dt)           SPI1_ExchangeByte(dt)
 #define SPI_INIT()                  SPI1_Open(SPI1_DEFAULT)
 
+// Motion Functions. 
 #define Motion_SetInterruptHandler(ih) IOCAF3_SetInterruptHandler(ih)
 #define MOTIONGetValue()    MOTION_GetValue()
 
-// ADC Functions
+// Door Functions.
+#define Door_SetInterruptHandler(ih) IOCAF0_SetInterruptHandler(ih)
+#define zDOOR_GetValue() DOOR_GetValue()
+
+// ADC Functions.
 #define zADC_GetConversion(a) ADC_GetConversion(a)
-        
+
 // I2C Functions.
 #define i2cRead1bReg(a,b)    i2c_read1ByteRegister(a,b)
 #define i2cWriteBytes(a,b,c) i2c_writeNBytes(a,b,c)
 #define i2cReadBytes(a,b,c)  i2c_readNBytes(a,b,c)
 #define i2cAddr i2c2_address_t
 
-// GPIO Functions
+// LED Functions.
 #define zLED_Toggle() LED_Toggle()
 #define zLED_SetHigh() LED_SetHigh()
 #define zLED_SetLow() LED_SetLow()
 
-#// EEPROM functions
+// Relay Functions. 
+#define zRELAY_Toggle() RELAY_Toggle()
+#define zRELAY_SetHigh() RELAY_SetHigh()
+#define zRELAY_SetLow() RELAY_SetLow()
+
+#// EEPROM functions.
 #define zDATAEE_ReadByte(a) DATAEE_ReadByte(a)
 #define zDATAEE_WriteByte(a,b) DATAEE_WriteByte(a,b)
 
+// Set Hardware revision here. 
 #define HW_REV_1_1
 
 #ifdef HW_REV_1_1 // Available Actions for Rev 1_1
@@ -84,6 +95,8 @@
 #define DEV_VOLTS 1
 #define DEV_LIGHT 1
 #define DEV_MOTION 1
+#define DEV_RELAY 1
+#define DEV_DOOR 1
 #endif
 
 #ifdef HW_REV_1_2 // Available Actions for Rev 1_2

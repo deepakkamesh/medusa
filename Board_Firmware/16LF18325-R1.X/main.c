@@ -41,9 +41,7 @@
     SOFTWARE.
  */
 #include "mcc_generated_files/mcc.h"
-#include "../lib/nrf24_lib.h"
 #include "../lib/handler_lib.h"
-#include "../lib/aht10_lib.h"
 
 /*
                          Main application
