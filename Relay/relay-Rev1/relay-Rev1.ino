@@ -27,7 +27,8 @@
 #define ERROR_PIPE_ADDR_404 0x06
 #define ERROR_UNKNOWN_PKT 0x05
 
-#define ACTION_TEMP 0x2
+#define ACTION_MOTION 0x01
+#define ACTION_TEMP 0x02
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_FLUSH_TX_FIFO 0x17
@@ -49,10 +50,12 @@ struct RelayConfig Config = {
 RF24 radio(5, 4); // CE, CSN.
 #define DHTTYPE DHT11
 #define DHTPIN D4
+#define MOTIONPIN D3
 
 void setup() {
   Serial.begin(9600);
   pinMode(LED_ONBOARD, OUTPUT);
+  pinMode(MOTIONPIN, INPUT);
   int ok ;
   WifiConnect();
   OTAInit();
@@ -79,4 +82,5 @@ void loop() {
   RadioSendLoop();
   WifiKeepAlive();
   PingLoop();
+ HandleMotionSensorLoop();
 }

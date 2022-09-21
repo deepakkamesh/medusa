@@ -49,9 +49,36 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
   }
 }
 
+bool motionFlag = false;
+unsigned long startTicks = 0;
+
+void HandleMotionSensorLoop() {
+  uint8_t buff[1];
+
+  // Wait 2s to prevent flapping. The sensor is super sensitive
+  // and senses continuously. 
+  if (millis() - startTicks < 2000) {
+    return;
+  }
+
+  buff[0] = digitalRead(MOTIONPIN);
+
+  if (buff[0] && !motionFlag) {
+    SendData(ACTION_MOTION, buff, 1);
+    motionFlag = true;
+    startTicks = millis();
+    return;
+  }
+
+  if (!buff[0] && motionFlag) {
+    SendData(ACTION_MOTION, buff, 1);
+    motionFlag = false;
+    startTicks = millis();
+    return;
+  }
+}
 
 int SendPing() {
-
   uint8_t i = 0;
 
   bufferTX[i] = PKT_TYPE_BOARD_DATA_RELAY;
@@ -106,7 +133,7 @@ void TempHumidity() {
   humidity.f = dht.readHumidity();
   // Read temperature as Celsius (the default)
   temp.f = dht.readTemperature();
-  
+
   buff[0] = temp.uc[0];
   buff[1] = temp.uc[1];
   buff[2] = temp.uc[2];
@@ -122,5 +149,5 @@ void TempHumidity() {
     return;
   }
 
- SendData(ACTION_TEMP,buff,8);
+  SendData(ACTION_TEMP, buff, 8);
 }
