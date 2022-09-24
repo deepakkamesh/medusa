@@ -190,6 +190,16 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 			Motion:  motion,
 		}, nil
 
+	case ActionDoor:
+		door := false
+		if data[0] == 1 {
+			door = true
+		}
+		return Door{
+			pktInfo: p,
+			Door:    door,
+		}, nil
+
 	case ActionVolt:
 		var x uint
 		x = uint(data[1])

@@ -34,6 +34,11 @@ type Motion struct {
 	Motion bool
 }
 
+type Door struct {
+	pktInfo
+	Door bool
+}
+
 type Temp struct {
 	pktInfo
 	Temp     float32
