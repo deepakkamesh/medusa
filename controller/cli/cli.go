@@ -56,7 +56,26 @@ func main() {
 				return nil
 			},
 		},
-
+		{
+			Name:    "flushtx",
+			Aliases: []string{"fl"},
+			Usage:   "Flush relay TX buffer",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionFlushTXFIFO)},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
 		{
 			Name:    "temp",
 			Aliases: []string{"t"},
