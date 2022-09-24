@@ -42,7 +42,7 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
       radio.flush_tx();
       break;
     case ACTION_TEMP:
-#ifndef DHT11
+#ifndef DHT11SENSOR
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);
       break;
 #endif

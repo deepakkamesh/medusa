@@ -51,25 +51,26 @@ struct RelayConfig Config = {
 #define BOARD_TYPE_WEMOS
 //#define BOARD_TYPE_NODEMCU
 
+
 #ifdef BOARD_TYPE_NODEMCU
 #define LED_ONBOARD 16
-RF24 radio(5, 4); // CE, CSN.
 #define DHTTYPE DHT11
 #define DHTPIN D4
 #define MOTIONPIN D3
+RF24 radio(5, 4); // CE, CSN.
 #endif
 
 #ifdef BOARD_TYPE_WEMOS
 #define LED_ONBOARD LED_BUILTIN // LED is on D4.
-RF24 radio(D0, D8); // CE, CSN.
+#define MOTIONPIN D1
 #define DHTTYPE DHT11
-#define DHTPIN D4
-#define MOTIONPIN D3
+#define DHTPIN D2
+RF24 radio(D0, D8); // CE, CSN.
 #endif
 
 //  Sensors onboard.
-//#define DHT11
-//#define RCWL516
+#define DHT11SENSOR
+#define RCWL516SENSOR
 
 /*************** END CONFIGURE HERE *************************/
 
@@ -79,7 +80,9 @@ void setup() {
   // Setup Basics.
   Serial.begin(9600);
   pinMode(LED_ONBOARD, OUTPUT);
+#ifdef RCWL516
   pinMode(MOTIONPIN, INPUT);
+#endif
 
   // Setup Wifi and get configs.
   WifiConnect();
@@ -103,7 +106,7 @@ void setup() {
   }
 
   // Setup Onboard Sensors.
-#ifdef DHT11
+#ifdef DHT11SENSOR
   dhtstart();
 #endif
 
@@ -116,7 +119,7 @@ void loop() {
   RadioSendLoop();
   WifiKeepAlive();
   PingLoop();
-#ifdef RCWL516
+#ifdef RCWL516SENSOR
   HandleMotionSensorLoop();
 #endif
 }
