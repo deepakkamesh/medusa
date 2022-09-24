@@ -85,6 +85,15 @@ void PrintPkt(char *str, uint8_t buff[], int len) {
 #endif
 }
 
+void DbgPrint(const char *format, ... ) {
+#ifdef DEBUG
+  va_list args;
+  va_start( args, format );
+  Serial.printf(format, args);
+  va_end( args );
+#endif
+}
+
 /* Handle Wifi Disconnects */
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;

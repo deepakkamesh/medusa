@@ -42,6 +42,10 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
       radio.flush_tx();
       break;
     case ACTION_TEMP:
+#ifndef DHT11
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
+      break;
+#endif
       TempHumidity();
       break;
     default:
@@ -56,7 +60,7 @@ void HandleMotionSensorLoop() {
   uint8_t buff[1];
 
   // Wait 2s to prevent flapping. The sensor is super sensitive
-  // and senses continuously. 
+  // and senses continuously.
   if (millis() - startTicks < 2000) {
     return;
   }
