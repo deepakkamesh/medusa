@@ -63,6 +63,7 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
       buzzerOn = data[0];
       buzzInt = data[1];
       buzzInt = (buzzInt << 8) | data[2];
+      break;
 
     default:
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);

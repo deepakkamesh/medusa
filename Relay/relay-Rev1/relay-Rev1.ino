@@ -71,9 +71,9 @@ RF24 radio(D0, D8); // CE, CSN.
 #endif
 
 //  Sensors onboard.
-//#define DHT11SENSOR
-//#define RCWL516SENSOR
-//#define BUZZERDEV
+#define DHT11SENSOR
+#define RCWL516SENSOR
+#define BUZZERDEV
 
 /*************** END CONFIGURE HERE *************************/
 
