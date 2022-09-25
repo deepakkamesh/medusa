@@ -57,6 +57,46 @@ func main() {
 			},
 		},
 		{
+			Name:    "buzzer",
+			Aliases: []string{"bz"},
+			Usage:   "Buzzer control",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "a",
+					Usage: "Board Address hex -a AB,FF,3A",
+				},
+				&cli.BoolFlag{
+					Name:  "on",
+					Usage: "on",
+				},
+				&cli.UintFlag{
+					Name:  "d",
+					Usage: "On duration in ms 65,000 millisec max",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				addr := c.String("a")
+				on := c.Bool("on")
+				d := c.Uint("d")
+				onV := "1"
+				if !on {
+					onV = "0"
+				}
+				hiD := fmt.Sprintf("%X", byte(d>>8))
+				loD := fmt.Sprintf("%X", byte(d&0xFF))
+				strData := []string{onV, hiD, loD}
+				data := strings.Join(strData, ",")
+
+				params := url.Values{
+					"addr":     {addr},
+					"actionID": {fmt.Sprintf("%X", core.ActionBuzzer)},
+					"data":     {data},
+				}
+				post(c.String("host"), params, "action")
+				return nil
+			},
+		},
+		{
 			Name:    "flushtx",
 			Aliases: []string{"fl"},
 			Usage:   "Flush relay TX buffer",

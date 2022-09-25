@@ -1,4 +1,7 @@
 /* Handles the virtual board configuration */
+uint16_t buzzInt = 500;
+bool buzzerOn = false;
+
 unsigned long prevTicks = 0;
 
 void PingLoop() {
@@ -35,12 +38,15 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
     case ACTION_RESET_DEVICE:
       ESP.restart();
       break;
+
     case ACTION_STATUS_LED:
       digitalWrite(LED_ONBOARD, !data[0]); // For some reason 0 turns on LED.
       break;
+
     case ACTION_FLUSH_TX_FIFO:
       radio.flush_tx();
       break;
+
     case ACTION_TEMP:
 #ifndef DHT11SENSOR
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);
@@ -48,10 +54,37 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
 #endif
       TempHumidity();
       break;
+
+    case ACTION_BUZZER:
+#ifndef BUZZERDEV
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
+      break;
+#endif
+      buzzerOn = data[0];
+      buzzInt = data[1];
+      buzzInt = (buzzInt << 8) | data[2];
+
     default:
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);
   }
 }
+
+unsigned long prevBuzzTicks = 0;
+void HandleBuzzerLoop() {
+
+  unsigned long currTicks = millis();
+
+  if (currTicks - prevBuzzTicks >= buzzInt) {
+    prevBuzzTicks = currTicks;
+
+    if (!buzzerOn) {
+      digitalWrite(BUZZERPIN, LOW);
+      return;
+    }
+    digitalWrite(BUZZERPIN, !digitalRead(BUZZERPIN));
+  }
+}
+
 
 bool motionFlag = false;
 unsigned long startTicks = 0;

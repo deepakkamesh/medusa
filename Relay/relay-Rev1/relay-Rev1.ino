@@ -29,6 +29,7 @@
 
 #define ACTION_MOTION 0x01
 #define ACTION_TEMP 0x02
+#define ACTION_BUZZER 0x10
 #define ACTION_STATUS_LED 0x13
 #define ACTION_RESET_DEVICE 0x14
 #define ACTION_FLUSH_TX_FIFO 0x17
@@ -65,12 +66,14 @@ RF24 radio(5, 4); // CE, CSN.
 #define MOTIONPIN D1
 #define DHTTYPE DHT11
 #define DHTPIN D2
+#define BUZZERPIN D3
 RF24 radio(D0, D8); // CE, CSN.
 #endif
 
 //  Sensors onboard.
-#define DHT11SENSOR
-#define RCWL516SENSOR
+//#define DHT11SENSOR
+//#define RCWL516SENSOR
+//#define BUZZERDEV
 
 /*************** END CONFIGURE HERE *************************/
 
@@ -80,6 +83,9 @@ void setup() {
   // Setup Basics.
   Serial.begin(9600);
   pinMode(LED_ONBOARD, OUTPUT);
+#ifdef BUZZERDEV
+  pinMode(BUZZERPIN,  OUTPUT);
+#endif
 #ifdef RCWL516
   pinMode(MOTIONPIN, INPUT);
 #endif
@@ -112,6 +118,7 @@ void setup() {
 
 }
 
+
 void loop() {
   ArduinoOTA.handle();
   RadioRcvLoop();
@@ -121,5 +128,8 @@ void loop() {
   PingLoop();
 #ifdef RCWL516SENSOR
   HandleMotionSensorLoop();
+#endif
+#ifdef BUZZERDEV
+  HandleBuzzerLoop();
 #endif
 }
