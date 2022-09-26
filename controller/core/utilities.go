@@ -6,7 +6,7 @@ import "fmt"
 func PrintPkt(preamble string, b []byte) string {
 	logMsg := preamble
 	for i := 0; i < len(b); i++ {
-		logMsg = logMsg + fmt.Sprintf("%X ", b[i])
+		logMsg = logMsg + fmt.Sprintf("%X,", b[i])
 	}
 	return logMsg
 }
@@ -15,7 +15,7 @@ func PrintPkt(preamble string, b []byte) string {
 func PP(b []byte, format string, a ...any) string {
 	logMsg := fmt.Sprintf(format, a...)
 	for i := 0; i < len(b); i++ {
-		logMsg = logMsg + fmt.Sprintf("%X ", b[i])
+		logMsg = logMsg + fmt.Sprintf("%X,", b[i])
 	}
 	return logMsg
 }
@@ -24,7 +24,7 @@ func PP(b []byte, format string, a ...any) string {
 func PP2(b []byte) string {
 	logMsg := ""
 	for i := 0; i < len(b); i++ {
-		logMsg = logMsg + fmt.Sprintf("%X ", b[i])
+		logMsg = logMsg + fmt.Sprintf("%X,", b[i])
 	}
 	return logMsg
 }

@@ -161,15 +161,40 @@ func (c *Core) handleRequest(conn net.Conn, hwaddr []byte) {
 			return
 		}
 		buf = buf[:n]
-		glog.Info(PP(buf, "%v - Pkt:", conn.RemoteAddr()))
+		glog.Info(PP(buf, "%v - Pkt(%v):", conn.RemoteAddr(), n))
 
-		// Translate packet to event and send to channel.
-		event, err := translatePacket(buf, hwaddr)
-		if err != nil {
-			glog.Errorf("Unable to translate packet:%v", err)
-			continue
+		// Break buffer into packets.
+		pkts, e := splitPackets(buf)
+		// log the warning but parse any good packets.
+		if e != nil {
+			glog.Warningf("%v", e)
 		}
-		c.Event <- event
+		for _, pkt := range pkts {
+			// Translate packet to event and send to channel.
+			event, err := translatePacket(pkt, hwaddr)
+			if err != nil {
+				glog.Errorf("Unable to translate packet:%v", err)
+				continue
+			}
+			c.Event <- event
+		}
+	}
+}
+
+func splitPackets(a []byte) (b [][]byte, err error) {
+	st := 0
+	l := 0
+	for {
+		if st >= len(a) {
+			return
+		}
+		l = int(a[st])
+		if len(a[st+1:]) < l {
+			err = fmt.Errorf("bad len")
+			return
+		}
+		b = append(b, a[st+1:st+l+1])
+		st = st + l + 1
 	}
 }
 

@@ -58,7 +58,11 @@ IPAddress GetBroadcastIP() {
 }
 
 int NetSend(uint8_t *buff, uint8_t sz) {
-  return clientConn.write(buff, sz);
+  // Send packet on network with a header byter (size).
+  uint8_t buff1[255];
+  buff1[0] = sz;
+  SuperMemCpy(buff1,1,buff,0,sz);
+  return clientConn.write(buff1, sz+1);
 }
 
 // NetSend sends the buff of size sz over the network.
