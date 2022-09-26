@@ -577,7 +577,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="I2CSIMPLE" name="pubSubI2CSIMPLE_I2CMASTER/Functions"/>
-         <value>6109.0688825012585</value>
+         <value>2202.74722371446</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="I2CSIMPLE" name="useCaseComboBoxSettings"/>
@@ -5616,22 +5616,54 @@
          <value>OFF</value>
       </entry>
    </tokenMap>
-   <generatedFileHashHistoryMap class="java.util.HashMap">
+   <generatedFileHashHistoryMap class="java.util.TreeMap">
       <entry>
-         <file>mcc_generated_files/interrupt_manager.h</file>
-         <hash>96877ef137ff493b2fad171144877e479704ba889ce24d59cb4fab8f3a86b151</hash>
+         <file>main.c</file>
+         <hash>d5ae311b1f7d1f6b384b5410a4f896da1a772e5ddc5db5d8bb6ce2eac9866fa2</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/spi1.c</file>
-         <hash>7c110785b480a2269b6d3845a691322a913b20b36c4456303d38856d2b851ab9</hash>
+         <file>mcc_generated_files/adc.c</file>
+         <hash>3bd0e560864e3e79e96b0c89ff91e4fb16364b1bb9ccbfe52304afa48dbaadc8</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/adc.h</file>
          <hash>6a4f09a71f95d830a9fe7e4c070127d38063f46a15c4715c31a1fd0145be3b17</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/spi1.h</file>
-         <hash>71ee2b22be31ffad4407f0c1f661b678350b3247a6838689b89678fb728532fe</hash>
+         <file>mcc_generated_files/device_config.c</file>
+         <hash>3686effc8f4069a687af7cf1137f8e4a57d10ae347dd54c054bff504057c7c2a</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/device_config.h</file>
+         <hash>5f6737f2e156ebd51092cbdbb70854f7f50380da7ca784add986e778fe825ddd</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/docs/i2c_simple.dox</file>
+         <hash>1192d1c2a9473538887a2fae1d9c6e67d9d7833010dccb831311a503f3a29da6</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/drivers/i2c_simple_master.c</file>
+         <hash>9415a6cbde22ed9c1805ce43c0f32ba0c4de870b97e6e4ec50f4b81a91dd902a</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/drivers/i2c_simple_master.h</file>
+         <hash>f0cb18fbdf1ee466a23162cd349a4b244d257ba954ca2d5f9ab568554e65bcc1</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/examples/i2c2_master_example.c</file>
+         <hash>3473ebaa2b64fb7c80308b237fab6bbfc025aeb92a83252e73d189745588646e</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/examples/i2c2_master_example.h</file>
+         <hash>f5a52878b942b85935cc1ff429baf635a346e23b0e3ff169985bc8f29fa48046</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/fvr.c</file>
+         <hash>2a01c8a0c6d1d4955a74eeac8be78ce3f3733c534332340da9b2174921ad0f15</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/fvr.h</file>
+         <hash>396ff67f315a5b9ccb7ff5d02fe71744c4b33974088baf7c2a30fe9aded0d057</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/i2c2_master.c</file>
@@ -5642,84 +5674,52 @@
          <hash>ccd9cc52216b1f4e3330a2611415ce4e0eac404186cc4b0ee0b0830f42e54a98</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/mcc.h</file>
-         <hash>ff2816e75771aed8acbcc26a379fd0e851a84a61b34c6ddb57a878a28c8d901b</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/examples/i2c2_master_example.c</file>
-         <hash>3473ebaa2b64fb7c80308b237fab6bbfc025aeb92a83252e73d189745588646e</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files/interrupt_manager.c</file>
          <hash>54476fbc9d2e3921e6c066491e890c2748b5ad48e49edd8d2ce8369b0f19441b</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/fvr.h</file>
-         <hash>396ff67f315a5b9ccb7ff5d02fe71744c4b33974088baf7c2a30fe9aded0d057</hash>
+         <file>mcc_generated_files/interrupt_manager.h</file>
+         <hash>96877ef137ff493b2fad171144877e479704ba889ce24d59cb4fab8f3a86b151</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/mcc.c</file>
          <hash>c003db87373321b9b568463b429e8fa3d921566a6842c0d449aec0dd420f68b3</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/pin_manager.c</file>
-         <hash>f380623db27ae83c2c45a231c17c33ff70181b4ff5f01c21f76dace793aa2b28</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/fvr.c</file>
-         <hash>2a01c8a0c6d1d4955a74eeac8be78ce3f3733c534332340da9b2174921ad0f15</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/examples/i2c2_master_example.h</file>
-         <hash>f5a52878b942b85935cc1ff429baf635a346e23b0e3ff169985bc8f29fa48046</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/pin_manager.h</file>
-         <hash>e2a6123065c04975cbf64c9a55f12a8773cb4738b4ddad0a16f99db2e2723048</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/tmr1.c</file>
-         <hash>ab479a370bb795c0fef88abcb23f331c00c60cec07f44ad8be416b4325c33b8f</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/memory.h</file>
-         <hash>648fddf0a76d1ab5be7bca213e8e4af11737fd5533c7a457bd6fa53e6755e9b7</hash>
-      </entry>
-      <entry>
-         <file>main.c</file>
-         <hash>d5ae311b1f7d1f6b384b5410a4f896da1a772e5ddc5db5d8bb6ce2eac9866fa2</hash>
+         <file>mcc_generated_files/mcc.h</file>
+         <hash>ff2816e75771aed8acbcc26a379fd0e851a84a61b34c6ddb57a878a28c8d901b</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/memory.c</file>
          <hash>2959a866292419c3e9fc00423ab3219586e94cdaeb9d1ea27d2af69b7be0e081</hash>
       </entry>
       <entry>
+         <file>mcc_generated_files/memory.h</file>
+         <hash>648fddf0a76d1ab5be7bca213e8e4af11737fd5533c7a457bd6fa53e6755e9b7</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/pin_manager.c</file>
+         <hash>f380623db27ae83c2c45a231c17c33ff70181b4ff5f01c21f76dace793aa2b28</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/pin_manager.h</file>
+         <hash>e2a6123065c04975cbf64c9a55f12a8773cb4738b4ddad0a16f99db2e2723048</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/spi1.c</file>
+         <hash>7c110785b480a2269b6d3845a691322a913b20b36c4456303d38856d2b851ab9</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/spi1.h</file>
+         <hash>71ee2b22be31ffad4407f0c1f661b678350b3247a6838689b89678fb728532fe</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/tmr1.c</file>
+         <hash>ab479a370bb795c0fef88abcb23f331c00c60cec07f44ad8be416b4325c33b8f</hash>
+      </entry>
+      <entry>
          <file>mcc_generated_files/tmr1.h</file>
          <hash>5276729140922ae2860bc044b04ce71265ee349e51d05262290b32c1dac9569c</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/device_config.h</file>
-         <hash>5f6737f2e156ebd51092cbdbb70854f7f50380da7ca784add986e778fe825ddd</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/drivers/i2c_simple_master.h</file>
-         <hash>f0cb18fbdf1ee466a23162cd349a4b244d257ba954ca2d5f9ab568554e65bcc1</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/drivers/i2c_simple_master.c</file>
-         <hash>9415a6cbde22ed9c1805ce43c0f32ba0c4de870b97e6e4ec50f4b81a91dd902a</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/adc.c</file>
-         <hash>3bd0e560864e3e79e96b0c89ff91e4fb16364b1bb9ccbfe52304afa48dbaadc8</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/device_config.c</file>
-         <hash>3686effc8f4069a687af7cf1137f8e4a57d10ae347dd54c054bff504057c7c2a</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/docs/i2c_simple.dox</file>
-         <hash>1192d1c2a9473538887a2fae1d9c6e67d9d7833010dccb831311a503f3a29da6</hash>
       </entry>
    </generatedFileHashHistoryMap>
 </config>

@@ -215,7 +215,7 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 		x = x<<8 | uint(data[0])
 		return Light{
 			pktInfo: p,
-			Light:   (3.3 * 1023) / float32(x),
+			Light:   3.3 * float32(x) / 1023,
 		}, nil
 
 	default:
