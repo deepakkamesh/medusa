@@ -33,19 +33,19 @@ func (c *Controller) Run() {
 			glog.Infof("Event Ping -  Addr:%v Paddr:%v HWaddr:%v\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()))
 
 		case core.Temp:
-			glog.Infof("Event Temp - Addr:%v paddr:%v hwaddr:%v temp:%v humi:%v\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Temp, f.Humidity)
+			glog.Infof("Event Temp - Addr:%v Paddr:%v Hwaddr:%v temp:%v humi:%v\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Temp, f.Humidity)
 
 		case core.Motion:
-			glog.Infof("Event Motion addr:%v addr:%v addr:%v %t\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Motion)
+			glog.Infof("Event Motion addr:%v Paddr:%v Hwaddr:%v %t\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Motion)
 
 		case core.Door:
-			glog.Infof("Event Door addr:%v addr:%v addr:%v %t\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Door)
+			glog.Infof("Event Door addr:%v Paddr:%v Hwaddr:%v %t\n", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Door)
 
 		case core.Volt:
-			glog.Infof("Event Volt - Addr:%v paddr:%v hwaddr:%v volts:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Volt)
+			glog.Infof("Event Volt - addr:%v Paddr:%v Hwaddr:%v volts:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Volt)
 
 		case core.Light:
-			glog.Infof("Event Volt - Addr:%v paddr:%v hwaddr:%v light:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Light)
+			glog.Infof("Event Volt - addr:%v Paddr:%v Hwaddr:%v light:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Light)
 		}
 
 	}
