@@ -41,10 +41,8 @@
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
 #define FAILURE_SAMPLE_RATE 10 // Number of packets to count.
 #define FAILED_PERCENT 0.80 // Percent of failed packets. 
-uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
-uint8_t PingInterval = 2; // Default ping interval.
-uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
-bool isRelayAvail = false; // Relay comms. If false dont sent any but ping packets and dont enqueue packets for retry.
+
+// Function declarations. 
 void TimerInterruptHandler(void);
 void InitRadio(void);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
@@ -102,4 +100,32 @@ struct Config {
     uint8_t RFChannel; // Frequency channel.
     uint8_t PipeAddr1[5];
     uint8_t ARD; // Auto Retry Duration. 
+} config;
+
+// Interrupts Type.
+
+enum interruptsType {
+    Motion, Door, None
 };
+enum interruptsType gotInterrupt;
+
+// Convertor for float to bytes. 
+
+union conv {
+    float f;
+    uint8_t uc[4];
+};
+
+// Global Variables / Configs.
+uint8_t DEFAULT_PIPE_ADDR[] = "hello"; // Default pipe address to bootstrap.
+uint8_t PingInterval = 2; // Default ping interval.
+uint8_t BoardAddress[3] = {0xFF, 0xFF, 0xFF}; // Default board address.
+bool isRelayAvail = false; // Relay comms. If false dont sent any but ping packets and dont enqueue packets for retry.
+uint32_t Ticks = 0; // Ticks of timer.
+uint8_t sentPktCnt = 0; // Count of sent packets. 
+uint8_t failedPktCnt = 0; // Count of failed packets. 
+Queue TXQueue; //Transmit Queue;
+uint8_t relayInt = 0; // Interval (secs) to turn on relay. 0 = intermittent FF = infinite.
+bool triggerRelay = false; // Starts the relay.
+bool RelayOn = false; // True is relay is running 
+uint32_t prevTicks, relayStartTicks = 0; // Ticks trackers. 

@@ -9,37 +9,13 @@
 #include <string.h>
 #include "handler_lib.h"
 
-uint32_t prevTicks, relayStartTicks = 0;
-uint32_t Ticks = 0; // Ticks of timer.
-struct Config config; // Board config.
-
-uint8_t bufferTX[32];
-uint8_t bufferRX[32];
-uint8_t data[5];
-uint8_t sentPktCnt = 0;
-uint8_t failedPktCnt = 0;
-uint8_t i = 0;
-uint8_t relayInt = 0; // Interval (secs) to turn on relay. 0 = intermittent FF = infinite.
-Queue TXQueue; //Transmit Queue;
-unsigned int idx;
-bool triggerRelay, RelayOn = false;
-
-enum interruptsType {
-    Motion, Door, None
-};
-enum interruptsType gotInterrupt;
-
-union conv {
-    float f;
-    uint8_t uc[4];
-};
-
 void InitHandlerLib(void) {
     LoadConfigFromEE();
     InitRadio();
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
     AHT10Init(AHT10ADDR);
+    // Set handlers at the end to prevent flood of messages. 
     TMR1_SetInterruptHandler(TimerInterruptHandler);
     Motion_SetInterruptHandler(MotionInterruptHandler);
     Door_SetInterruptHandler(DoorInterruptHandler);
@@ -90,6 +66,7 @@ void InitRadio(void) {
 // send a packet. If no response after set retries it tries the default pipe address.
 
 uint8_t DiscoverRFChannel(void) {
+    uint8_t bufferTX[32];
     bufferTX[0] = PKT_NOOP;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
 
@@ -163,6 +140,8 @@ void ResetFlipCounter(void) {
     zDATAEE_WriteByte(EEPROM_ADDR + EE_RETRY_OFFSET, 0);
 }
 
+// HandleTimeLoop handles any timed events. 
+
 void HandleTimeLoop(void) {
     // Only execute if ticks changes to not run multiple times each tick.
     uint32_t currTicks = Ticks;
@@ -205,6 +184,7 @@ void HandleTimeLoop(void) {
 void HandlePacketLoop(void) {
     uint8_t TXPacket[MAX_PKT_SZ];
     uint8_t TXPktSz = 0;
+    uint8_t bufferRX[32];
 
     TXPktSz = deQueue(TXPacket, &TXQueue);
 
@@ -394,13 +374,10 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 }
 
 void HandleInterruptsLoop(void) {
+    uint8_t data[5];
 
     switch (gotInterrupt) {
         case Motion:
-            // Only send interrupts if relay is available. 
-            if (!isRelayAvail) {
-                break;
-            }
             data[0] = 0;
 #ifdef DEV_STATUS_LED
             zLED_SetLow();
@@ -415,10 +392,6 @@ void HandleInterruptsLoop(void) {
             break;
 
         case Door:
-            // Only send interrupts if relay is available. 
-            if (!isRelayAvail) {
-                break;
-            }
             data[0] = 0;
             if (zDOOR_GetValue()) {
                 data[0] = 1;
@@ -447,7 +420,8 @@ void MotionInterruptHandler(void) {
 }
 
 void SendError(uint8_t errorCode) {
-    i = 0;
+    uint8_t bufferTX[32];
+    uint8_t i = 0;
     bufferTX[i] = PKT_DATA;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     i += ADDR_LEN;
@@ -457,7 +431,8 @@ void SendError(uint8_t errorCode) {
 }
 
 void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
-    i = 0;
+    uint8_t bufferTX[32];
+    uint8_t i = 0;
     bufferTX[i] = PKT_DATA;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     i += ADDR_LEN;
@@ -469,18 +444,21 @@ void SendData(uint8_t actionID, uint8_t *data, uint8_t dataSz) {
 }
 
 void SendPing(void) {
+    uint8_t bufferTX[32];
     bufferTX[0] = PKT_PING;
     SuperMemCpy(bufferTX, 1, BoardAddress, 0, ADDR_LEN);
     enQueue(bufferTX, (ADDR_LEN + 1), &TXQueue);
 }
 
 void ResetEE(void) {
+    unsigned int idx;
     idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     zDATAEE_WriteByte(idx, 0xFF);
 }
 
 /* LoadConfigFromEE loads the configuration from memory. If none found default loaded*/
 void LoadConfigFromEE(void) {
+    unsigned int idx;
     idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     uint8_t isConfigured = zDATAEE_ReadByte(idx);
     if (isConfigured != IS_CONFIGURED) {
@@ -507,6 +485,7 @@ void LoadConfigFromEE(void) {
 }
 
 void WriteConfigToEE(void) {
+    unsigned int idx;
     idx = EEPROM_ADDR + EE_CONFIG_OFFSET;
     zDATAEE_WriteByte(idx, IS_CONFIGURED);
     idx++;
