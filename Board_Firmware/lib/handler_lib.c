@@ -37,12 +37,12 @@ union conv {
 void InitHandlerLib(void) {
     LoadConfigFromEE();
     InitRadio();
-    TMR1_SetInterruptHandler(TimerInterruptHandler);
-    Motion_SetInterruptHandler(MotionInterruptHandler);
-    Door_SetInterruptHandler(DoorInterruptHandler);
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
     AHT10Init(AHT10ADDR);
+    TMR1_SetInterruptHandler(TimerInterruptHandler);
+    Motion_SetInterruptHandler(MotionInterruptHandler);
+    Door_SetInterruptHandler(DoorInterruptHandler);
 }
 
 void HandlerLoop(void) {
@@ -184,8 +184,9 @@ void HandleTimeLoop(void) {
         relayStartTicks = currTicks;
         zRELAY_SetHigh();
         // if interval is 0xFF do not turn off. 
-        if (relayInt != 0xFF) {
-            RelayOn = true;
+        RelayOn = true;
+        if (relayInt == 0xFF) {
+            RelayOn = false;
         }
     }
     if (RelayOn) {
@@ -379,6 +380,12 @@ void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
 
         case ACTION_FACTORY_RESET:
             ResetEE();
+            break;
+
+        case ACTION_GET_VER:
+            buff[0] = VER_LOW_BYTE;
+            buff[1] = VER_HIGH_BYTE;
+            SendData(ACTION_GET_LIGHT, buff, 2);
             break;
 
         default:

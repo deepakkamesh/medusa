@@ -29,6 +29,7 @@
 #define ACTION_GET_LIGHT 0x03
 #define ACTION_DOOR 0x04
 #define ACTION_GET_VOLTS 0x05
+#define ACTION_GET_VER 0x06
 #define ACTION_FACTORY_RESET 0x11
 #define ACTION_RELAY 0x12
 #define ACTION_STATUS_LED 0x13
@@ -63,7 +64,7 @@ void FlipPipeAddress(void);
 void ResetFlipCounter(void);
 void MotionInterruptHandler(void);
 void DoorInterruptHandler(void);
-void HandleInterruptsLoop(void) ;
+void HandleInterruptsLoop(void);
 
 // EEPROM stuff.
 #define IS_CONFIGURED 0x69 // Denotes if config is written on eeprom. 

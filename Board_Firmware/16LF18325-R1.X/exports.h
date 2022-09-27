@@ -86,21 +86,27 @@
 #define zDATAEE_ReadByte(a) DATAEE_ReadByte(a)
 #define zDATAEE_WriteByte(a,b) DATAEE_WriteByte(a,b)
 
+// Version:
+// TODO: Update with every major change. 
+#define VER_LOW_BYTE 0x01 // Software version updates. 
+#define VER_HIGH_BYTE 0x1 // HW Version Major number
+
 // Set Hardware revision here. 
 #define HW_REV_1_1
 
 #ifdef HW_REV_1_1 // Available Actions for Rev 1_1
-#define DEV_STATUS_LED 1
-#define DEV_TEMP_HUMIDITY 1
-#define DEV_VOLTS 1
-#define DEV_LIGHT 1
-#define DEV_MOTION 1
-#define DEV_RELAY 1
-#define DEV_DOOR 1
+#define DEV_STATUS_LED 
+#define DEV_TEMP_HUMIDITY 
+#define DEV_VOLTS 
+#define DEV_LIGHT 
+#define DEV_MOTION 
+#define DEV_RELAY 
+#define DEV_DOOR 
 #endif
 
 #ifdef HW_REV_1_2 // Available Actions for Rev 1_2
-#define DEV_STATUS_LED 1
-#define DEV_VOLTS 1
-#define DEV_MOTION 1
+#define DEV_STATUS_LED 
+#define DEV_VOLTS 
+#define DEV_MOTION 
+#define DEV_LIGHT 
 #endif
