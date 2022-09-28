@@ -46,7 +46,7 @@
 void TimerInterruptHandler(void);
 void InitRadio(void);
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz);
-void ProcessActionRequest(uint8_t actionID, uint8_t * data);
+void HandleActionRequestLoop(void);
 bool VerifyBoardAddress(uint8_t *bufferRX);
 void HandlePacketLoop(void);
 void SendError(uint8_t errorCode);
@@ -125,6 +125,7 @@ uint32_t Ticks = 0; // Ticks of timer.
 uint8_t sentPktCnt = 0; // Count of sent packets. 
 uint8_t failedPktCnt = 0; // Count of failed packets. 
 Queue TXQueue; //Transmit Queue;
+Queue ActQueue; //Action Queue;
 uint8_t relayInt = 0; // Interval (secs) to turn on relay. 0 = intermittent FF = infinite.
 bool triggerRelay = false; // Starts the relay.
 bool RelayOn = false; // True is relay is running 

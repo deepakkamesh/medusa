@@ -45,7 +45,7 @@ func (c *Controller) Run() {
 			glog.Infof("Event Volt - addr:%v Paddr:%v Hwaddr:%v volts:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Volt)
 
 		case core.Light:
-			glog.Infof("Event Volt - addr:%v Paddr:%v Hwaddr:%v light:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Light)
+			glog.Infof("Event Light - addr:%v Paddr:%v Hwaddr:%v light:%v", core.PP2(f.Addr()), core.PP2(f.PAddr()), core.PP2(f.HWAddr()), f.Light)
 		}
 
 	}

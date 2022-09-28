@@ -11,6 +11,8 @@
 
 void InitHandlerLib(void) {
     LoadConfigFromEE();
+    initQ(&TXQueue);
+    initQ(&ActQueue);
     InitRadio();
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
@@ -25,6 +27,7 @@ void HandlerLoop(void) {
     HandlePacketLoop();
     HandleTimeLoop();
     HandleInterruptsLoop();
+    HandleActionRequestLoop();
     CLRWDT();
 }
 
@@ -59,8 +62,6 @@ void InitRadio(void) {
     PingInterval = config.PingInterval;
     memcpy(BoardAddress, config.Address, ADDR_LEN);
 
-    // Initialize Transmit buffer.
-    initQ(&TXQueue);
 }
 // DiscoverRFChannel iterates through the list of RF channels and attempts to 
 // send a packet. If no response after set retries it tries the default pipe address.
@@ -261,15 +262,14 @@ bool VerifyBoardAddress(uint8_t * buffer) {
 }
 
 void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
-    uint8_t data[32];
-    uint8_t actionID;
+    uint8_t actionReq[MAX_PKT_SZ];
 
     uint8_t pktType = buffer[0];
     switch (pktType) {
         case PKT_ACTION:
-            actionID = buffer[4];
-            SuperMemCpy(data, 0, buffer, 5, sz - 5);
-            ProcessActionRequest(actionID, data);
+            actionReq[0] = buffer[4];
+            SuperMemCpy(actionReq, 1, buffer, 5, sz - 5);
+            enQueue(actionReq, (sz - 5 + 1), &ActQueue);
             break;
         case PKT_CFG:
             config.ARD = buffer[4];
@@ -284,10 +284,20 @@ void ProcessAckPayload(uint8_t * buffer, uint8_t sz) {
     }
 }
 
-void ProcessActionRequest(uint8_t actionID, uint8_t * data) {
+void HandleActionRequestLoop() {
     uint8_t buff[10];
     adc_result_t adcRes;
     union conv temp, humidity;
+    uint8_t actionReq[MAX_PKT_SZ];
+    uint8_t actionID;
+    uint8_t data[MAX_PKT_SZ];
+
+    uint8_t sz = deQueue(actionReq, &ActQueue);
+    if (sz == 0) {
+        return;
+    }
+    actionID = actionReq[0];
+    SuperMemCpy(data, 0, actionReq, 1, sz - 1);
 
     switch (actionID) {
         case ACTION_STATUS_LED:
