@@ -107,7 +107,7 @@ struct Config {
 enum interruptsType {
     Motion, Door, None
 };
-enum interruptsType gotInterrupt;
+enum interruptsType gotInterrupt = None;
 
 // Convertor for float to bytes. 
 

@@ -16,11 +16,18 @@ void InitHandlerLib(void) {
     InitRadio();
     uint8_t rfChan = DiscoverRFChannel(); // Roughly 10sec delay to discover channel.
     config.RFChannel = rfChan;
+#ifdef  DEV_TEMP_HUMIDITY
     AHT10Init(AHT10ADDR);
+#endif
+
     // Set handlers at the end to prevent flood of messages. 
     TMR1_SetInterruptHandler(TimerInterruptHandler);
+#ifdef MOTION
     Motion_SetInterruptHandler(MotionInterruptHandler);
+#endif
+#ifdef DOOR
     Door_SetInterruptHandler(DoorInterruptHandler);
+#endif
 }
 
 void HandlerLoop(void) {
@@ -301,21 +308,19 @@ void HandleActionRequestLoop() {
 
     switch (actionID) {
         case ACTION_STATUS_LED:
-#ifndef DEV_STATUS_LED
-            SendError(ERR_NOT_IMPL);
-            break;
-#endif
+#ifdef DEV_STATUS_LED
             zLED_SetLow();
             if (data[0]) {
                 zLED_SetHigh();
             }
             break;
-
-        case ACTION_GET_TEMP_HUMIDITY:
-#ifndef DEV_TEMP_HUMIDITY
+#else
             SendError(ERR_NOT_IMPL);
             break;
 #endif
+
+        case ACTION_GET_TEMP_HUMIDITY:
+#ifdef DEV_TEMP_HUMIDITY
             AHT10Read(AHT10ADDR, &temp.f, &humidity.f);
             buff[0] = temp.uc[0];
             buff[1] = temp.uc[1];
@@ -328,41 +333,49 @@ void HandleActionRequestLoop() {
 
             SendData(ACTION_GET_TEMP_HUMIDITY, buff, 8);
             break;
+#else
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif 
 
         case ACTION_RESET_DEVICE:
             RESET();
             break;
 
         case ACTION_GET_VOLTS:
-#ifndef DEV_VOLTS
-            SendError(ERR_NOT_IMPL);
-            break;
-#endif            
+#ifdef DEV_VOLTS
             adcRes = zADC_GetConversion(channel_FVR);
             buff[0] = adcRes & 0x00FF;
             buff[1] = adcRes >> 8;
             SendData(ACTION_GET_VOLTS, buff, 2);
             break;
-
-        case ACTION_GET_LIGHT:
-#ifndef DEV_LIGHT
+#else
             SendError(ERR_NOT_IMPL);
             break;
-#endif
+#endif 
+
+        case ACTION_GET_LIGHT:
+#ifdef DEV_LIGHT
+
             adcRes = zADC_GetConversion(ADC_LIGHT);
             buff[0] = adcRes & 0x00FF;
             buff[1] = adcRes >> 8;
             SendData(ACTION_GET_LIGHT, buff, 2);
             break;
-
-        case ACTION_RELAY:
-#ifndef DEV_RELAY
+#else
             SendError(ERR_NOT_IMPL);
             break;
 #endif
+
+        case ACTION_RELAY:
+#ifdef DEV_RELAY
             relayInt = data[0];
             triggerRelay = true;
             break;
+#else
+            SendError(ERR_NOT_IMPL);
+            break;
+#endif
 
         case ACTION_TEST:
             TestFunc();
