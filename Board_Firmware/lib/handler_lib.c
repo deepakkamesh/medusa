@@ -383,6 +383,7 @@ void HandleActionRequestLoop() {
 
         case ACTION_FACTORY_RESET:
             ResetEE();
+            RESET();
             break;
 
         case ACTION_GET_VER:
