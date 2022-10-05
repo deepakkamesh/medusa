@@ -34,7 +34,10 @@ func main() {
 	}
 
 	//  Init Controller.
-	ctrl := controller.NewController(core, *httpHostPort)
+	ctrl, err := controller.NewController(core, *httpHostPort)
+	if err != nil {
+		glog.Fatalf("Failed init controller %v", err)
+	}
 	if err := ctrl.Startup(); err != nil {
 		glog.Fatalf("Failed to startup Controller:%v", err)
 	}
