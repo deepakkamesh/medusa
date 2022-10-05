@@ -7,11 +7,26 @@ import (
 	"github.com/golang/glog"
 )
 
+//go:generate mockgen -destination=../mocks/core_mock.go -package=mocks github.com/deepakkamesh/medusa/controller/core MedusaCore
+
+// Interface definition.
+type MedusaCore interface {
+	Action(addr []byte, actionID byte, data []byte) error
+	Light(addr []byte) error
+	Temp(addr []byte) error
+	LEDOn(addr []byte, on bool) error
+	BoardConfig(addr []byte, paddr []byte, hwaddr []byte, naddr []byte) error
+	RelayConfigMode(hwaddr []byte, yes bool) error
+	StartCore()
+	Event() <-chan Event
+	GetBoardByAddr(b []byte) *Board
+}
+
 // Core is the main struct for the Medusa Core handling.
 type Core struct {
 	hostPort string     // IP Port for TCP & UDP bindings.
 	conf     *Config    // Config holds the hardware configuration.
-	Event    chan Event // Channel to receive events.
+	event    chan Event // Channel to send events.
 }
 
 // NewCore returns an initialized Core.
@@ -24,8 +39,18 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 	return &Core{
 		hostPort: hostPort,
 		conf:     config,
-		Event:    make(chan Event),
+		event:    make(chan Event),
 	}, nil
+}
+
+// GetBoardByAddr returns board info.
+func (c *Core) GetBoardByAddr(addr []byte) *Board {
+	return c.conf.getBoardByAddr(addr)
+}
+
+// Event returns the channel for events.
+func (c *Core) Event() <-chan Event {
+	return c.event
 }
 
 // Action sends an action request to the board addr.
@@ -176,7 +201,7 @@ func (c *Core) handleRequest(conn net.Conn, hwaddr []byte) {
 				glog.Errorf("Unable to translate packet:%v", err)
 				continue
 			}
-			c.Event <- event
+			c.event <- event
 		}
 	}
 }

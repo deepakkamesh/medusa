@@ -110,8 +110,8 @@ func makePktTypeActionReq(actionID byte, addr []byte, paddr []byte, data []byte)
 // TODO make more readable and add some length validation.
 func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 
-	p := pktInfo{
-		hwaddr: hwaddr,
+	p := PktInfo{
+		HardwareAddr: hwaddr,
 	}
 
 	// Handle if relay error.
@@ -130,8 +130,8 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 		return nil, fmt.Errorf("unknown relay packet type %v", pkt[0])
 	}
 
-	p.paddr = pkt[1:6]
-	p.addr = pkt[7:10]
+	p.PipeAddr = pkt[1:6]
+	p.BoardAddr = pkt[7:10]
 	switch pkt[6] {
 	case PktTypePing:
 		return translatePingPacket(p)
@@ -155,27 +155,27 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 	}
 }
 
-func translatePingPacket(p pktInfo) (Event, error) {
+func translatePingPacket(p PktInfo) (Event, error) {
 	return Ping{
-		pktInfo: p,
+		PktInfo: p,
 	}, nil
 }
 
-func translateErrorPacket(p pktInfo, errCode byte) (Event, error) {
+func translateErrorPacket(p PktInfo, errCode byte) (Event, error) {
 	return Error{
-		pktInfo: p,
+		PktInfo: p,
 		ErrCode: errCode,
 	}, nil
 }
 
-func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
+func translateActionPacket(p PktInfo, action byte, data []byte) (Event, error) {
 
 	switch action {
 
 	case ActionTemp:
 		t, h := readTemp(data)
 		return Temp{
-			pktInfo:  p,
+			PktInfo:  p,
 			Temp:     t,
 			Humidity: h,
 		}, nil
@@ -186,7 +186,7 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 			motion = true
 		}
 		return Motion{
-			pktInfo: p,
+			PktInfo: p,
 			Motion:  motion,
 		}, nil
 
@@ -196,7 +196,7 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 			door = true
 		}
 		return Door{
-			pktInfo: p,
+			PktInfo: p,
 			Door:    door,
 		}, nil
 
@@ -205,7 +205,7 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 		x = uint(data[1])
 		x = x<<8 | uint(data[0])
 		return Volt{
-			pktInfo: p,
+			PktInfo: p,
 			Volt:    (2.048 * 1023) / float32(x),
 		}, nil
 
@@ -214,7 +214,7 @@ func translateActionPacket(p pktInfo, action byte, data []byte) (Event, error) {
 		x = uint(data[1])
 		x = x<<8 | uint(data[0])
 		return Light{
-			pktInfo: p,
+			PktInfo: p,
 			Light:   3.3 * float32(x) / 1023,
 		}, nil
 

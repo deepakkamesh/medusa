@@ -6,54 +6,54 @@ type Event interface {
 	HWAddr() []byte
 }
 
-type pktInfo struct {
-	addr   []byte // Board address.
-	paddr  []byte // Pipe address.
-	hwaddr []byte // Hardware address.
+type PktInfo struct {
+	BoardAddr    []byte // Board address.
+	PipeAddr     []byte // Pipe address.
+	HardwareAddr []byte // Hardware address.
 }
 
-func (f pktInfo) Addr() []byte {
-	return f.addr
+func (f PktInfo) Addr() []byte {
+	return f.BoardAddr
 }
 
-func (f pktInfo) PAddr() []byte {
-	return f.paddr
+func (f PktInfo) PAddr() []byte {
+	return f.PipeAddr
 }
 
-func (f pktInfo) HWAddr() []byte {
-	return f.hwaddr
+func (f PktInfo) HWAddr() []byte {
+	return f.HardwareAddr
 }
 
 // The following implement the Event Interface.
 type Ping struct {
-	pktInfo
+	PktInfo
 }
 
 type Motion struct {
-	pktInfo
+	PktInfo
 	Motion bool
 }
 
 type Door struct {
-	pktInfo
+	PktInfo
 	Door bool
 }
 
 type Temp struct {
-	pktInfo
+	PktInfo
 	Temp     float32
 	Humidity float32
 }
 type Light struct {
-	pktInfo
+	PktInfo
 	Light float32
 }
 
 type Volt struct {
-	pktInfo
+	PktInfo
 	Volt float32
 }
 type Error struct {
-	pktInfo
+	PktInfo
 	ErrCode byte
 }

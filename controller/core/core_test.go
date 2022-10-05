@@ -146,7 +146,7 @@ func TestDataPacket(t *testing.T) {
 			ticker := time.NewTicker(1 * time.Second)
 			for {
 				select {
-				case event = <-core.Event:
+				case event = <-core.Event():
 					return
 				case <-ticker.C:
 					t.Fatalf("Timeout on channel")
