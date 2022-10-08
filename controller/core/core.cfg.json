@@ -43,7 +43,22 @@
          "Channel":0x76,
          "Description":"Wemos D1",
          "Room":"hallway-down",
-         "Name":"r1"
+         "Name":"r-1-1"
+      },
+      {
+         "HWAddr":[0xA4,0xE5,0x7C,0xB6,0x21,0x1F], 
+         "PAddr0":[0x1,0x7C,0xB6,0x21,0x1F],
+         "PAddr1":[0x2,0x7C,0xB6,0x21,0x1F],
+         "PAddr2":[0x3,0x7C,0xB6,0x21,0x1F],
+         "PAddr3":[0x4,0x7C,0xB6,0x21,0x1F],
+         "PAddr4":[0x5,0x7C,0xB6,0x21,0x1F],
+         "PAddr5":[0x6,0x7C,0xB6,0x21,0x1F],
+         "PAddr6":[0x7,0x7C,0xB6,0x21,0x1F],
+         "Addr":[0xB6,0x21,0x1F],
+         "Channel":0x35,
+         "Description":"Wemos D1",
+         "Room":"dining",
+         "Name":"r-1-2"
       },
       {
          "HWAddr":[0xA4,0xE5,0x7C,0xB6,0x1F,0x52], 
@@ -57,8 +72,8 @@
          "Addr":[0xB6,0x1F,0x52],
          "Channel":0x35,
          "Description":"Wemos D1",
-         "Room":"nowhere",
-         "Name":"test"
+         "Room":"sjp-office",
+         "Name":"r-2-1"
       }
    ],
    "Boards":[
@@ -67,14 +82,14 @@
          "PAddr":[0x4,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
          "PingInt":0x1,
-         "Description":"board on relay1",
-         "Room":"living",
-         "Name":"board1",
+         "Description":"board on r2-1",
+         "Room":"test",
+         "Name":"b1",
          "Actions":[1,2,3]
       },
       {
          "Addr":[0x2,0x2,0x2],
-         "PAddr":[0x2,0x7C,0xB6,0x1F,0xD9],
+         "PAddr":[0x2,0x7C,0xB6,0x21,0x1F],
          "ARD":0xB,
          "PingInt":0x1,
          "Description":"board on relay1",
@@ -117,9 +132,19 @@
          "PAddr":[0x7,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
          "PingInt":0x1,
-         "Description":"vboard nowhere.test",
-         "Room":"nowhere",
-         "Name":"b1",
+         "Description":"vboard r-2-1",
+         "Room":"shruti-office",
+         "Name":"b-2-1",
+         "Actions":[1,2,3]
+      },
+      {
+         "Addr":[0xB6,0x21,0x1F],
+         "PAddr":[0x7,0x7C,0xB6,0x21,0x1F],
+         "ARD":0xB,
+         "PingInt":0x1,
+         "Description":"vboard dining r-1-2",
+         "Room":"dining",
+         "Name":"r-1-2",
          "Actions":[1,2,3]
       }
    ]
