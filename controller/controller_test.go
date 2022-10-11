@@ -61,10 +61,7 @@ func TestMotion(t *testing.T) {
 	}()
 
 	m.EXPECT().Event().AnyTimes().Return(eventChan)
-	//gomock.InOrder(
 	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "living"})
-	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway"})
-	//)
+	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down"})
 	c.Run()
-
 }
