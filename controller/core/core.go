@@ -20,6 +20,7 @@ type MedusaCore interface {
 	StartCore()
 	Event() <-chan Event
 	GetBoardByAddr(b []byte) *Board
+	CoreConfig() *Config
 }
 
 // Core is the main struct for the Medusa Core handling.
@@ -31,7 +32,7 @@ type Core struct {
 
 // NewCore returns an initialized Core.
 func NewCore(hostPort string, cfgFname string) (*Core, error) {
-	config, err := newConfig(cfgFname)
+	config, err := NewConfig(cfgFname)
 	if err != nil {
 		return nil, err
 	}
@@ -41,6 +42,11 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 		conf:     config,
 		event:    make(chan Event),
 	}, nil
+}
+
+// CoreConfig returns the core config struct.
+func (c *Core) CoreConfig() *Config {
+	return c.conf
 }
 
 // GetBoardByAddr returns board info.

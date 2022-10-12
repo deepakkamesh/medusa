@@ -7,7 +7,7 @@ import (
 
 func TestConfigFileLoad(t *testing.T) {
 
-	conf, err := newConfig("core.cfg.test.json")
+	conf, err := NewConfig("core.cfg.test.json")
 	if err != nil {
 		t.Errorf("Error loading config %v", err)
 	}

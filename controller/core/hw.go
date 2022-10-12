@@ -42,7 +42,7 @@ type Config struct {
 	Boards []*Board
 }
 
-func newConfig(filepath string) (*Config, error) {
+func NewConfig(filepath string) (*Config, error) {
 	cfg, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, err
