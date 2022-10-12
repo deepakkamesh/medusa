@@ -14,6 +14,7 @@ func main() {
 		httpHostPort = flag.String("http_port", ":8080", "host port for http server")
 		hostPort     = flag.String("host_port", ":3334", "host port for medusa server")
 		cfgFname     = flag.String("core_conf", "core.cfg.test.json", "config file for core hardware")
+		mqttHost     = flag.String("mqtt_host", "homeassistant.local:1883", "hostport for home assistant")
 	)
 
 	flag.Parse()
@@ -33,8 +34,11 @@ func main() {
 		glog.Fatalf("Failed to init core:%v", err)
 	}
 
+	// HomeAssistant connector.
+	ha := controller.NewHA(*mqttHost)
+
 	//  Init Controller.
-	ctrl, err := controller.NewController(core, *httpHostPort)
+	ctrl, err := controller.NewController(core, ha, *httpHostPort)
 	if err != nil {
 		glog.Fatalf("Failed init controller %v", err)
 	}

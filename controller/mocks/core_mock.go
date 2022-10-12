@@ -62,6 +62,20 @@ func (mr *MockMedusaCoreMockRecorder) BoardConfig(arg0, arg1, arg2, arg3 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BoardConfig", reflect.TypeOf((*MockMedusaCore)(nil).BoardConfig), arg0, arg1, arg2, arg3)
 }
 
+// CoreConfig mocks base method.
+func (m *MockMedusaCore) CoreConfig() *core.Config {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CoreConfig")
+	ret0, _ := ret[0].(*core.Config)
+	return ret0
+}
+
+// CoreConfig indicates an expected call of CoreConfig.
+func (mr *MockMedusaCoreMockRecorder) CoreConfig() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CoreConfig", reflect.TypeOf((*MockMedusaCore)(nil).CoreConfig))
+}
+
 // Event mocks base method.
 func (m *MockMedusaCore) Event() <-chan core.Event {
 	m.ctrl.T.Helper()
