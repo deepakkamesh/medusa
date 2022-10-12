@@ -1,21 +1,6 @@
 {
    "Relays":[
       {
-         "HWAddr":[0x4C,0x75,0x25,0x36,0x54,0x22], 
-         "PAddr0":[0x1,0x25,0x36,0x54,0x22],
-         "PAddr1":[0x2,0x25,0x36,0x54,0x22],
-         "PAddr2":[0x3,0x25,0x36,0x54,0x22],
-         "PAddr3":[0x4,0x25,0x36,0x54,0x22],
-         "PAddr4":[0x5,0x25,0x36,0x54,0x22],
-         "PAddr5":[0x6,0x25,0x36,0x54,0x22],
-         "PAddr6":[0x7,0x25,0x36,0x54,0x22],
-         "Addr":[0x36,0x54,0x22],
-         "Channel":0x73,
-         "Description":"Nodemcu Test DEPRECATED",
-         "Room":"nowhere",
-         "Name":"untitled"
-      },
-      {
          "HWAddr":[0xA4,0xE5,0x7C,0xB6,0x1F,0xD9], 
          "PAddr0":[0x1,0x7C,0xB6,0x1F,0xD9],
          "PAddr1":[0x2,0x7C,0xB6,0x1F,0xD9],
@@ -72,7 +57,7 @@
          "Addr":[0xB6,0x1F,0x52],
          "Channel":0x35,
          "Description":"Wemos D1",
-         "Room":"sjp-office",
+         "Room":"hallway-up",
          "Name":"r-2-1"
       }
    ],
@@ -85,7 +70,7 @@
          "Description":"board on r2-1",
          "Room":"test",
          "Name":"b1",
-         "Actions":[1,2,3]
+         "Actions":[2,3]
       },
       {
          "Addr":[0x2,0x2,0x2],
@@ -94,58 +79,48 @@
          "PingInt":0x1,
          "Description":"board on relay1",
          "Room":"living",
-         "Name":"board1",
-         "Actions":[1,2,3]
-      },
-      {
-         "Addr":[0x36,0x54,0x22],
-         "PAddr":[0x7,0x25,0x36,0x54,0x22],
-         "ARD":0xB,
-         "PingInt":0x1,
-         "Description":"DEPRECATED vboard living relay1",
-         "Room":"living",
-         "Name":"board2",
-         "Actions":[1,2,3]
+         "Name":"b2",
+         "Actions":[2,3]
       },
       {
          "Addr":[0xB6,0x1F,0xD9],
          "PAddr":[0x7,0x7C,0xB6,0x1F,0xD9],
          "ARD":0xB,
          "PingInt":0x1,
-         "Description":"vboard dkg-office.test",
+         "Description":"vboard",
          "Room":"dkg-office",
          "Name":"b1",
-         "Actions":[1,2,3]
+         "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
          "Addr":[0xB6,0x20,0xB6],
          "PAddr":[0x7,0x7C,0xB6,0x20,0xB6],
          "ARD":0xB,
          "PingInt":0x1,
-         "Description":"vboard hallyway-down.r1",
+         "Description":"vboard",
          "Room":"hallway-down",
          "Name":"b1",
-         "Actions":[1,2,3]
+         "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
          "Addr":[0xB6,0x1F,0x52],
          "PAddr":[0x7,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
          "PingInt":0x1,
-         "Description":"vboard r-2-1",
-         "Room":"shruti-office",
-         "Name":"b-2-1",
-         "Actions":[1,2,3]
+         "Description":"vboard",
+         "Room":"hallway-up",
+         "Name":"b1",
+         "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
          "Addr":[0xB6,0x21,0x1F],
          "PAddr":[0x7,0x7C,0xB6,0x21,0x1F],
          "ARD":0xB,
          "PingInt":0x1,
-         "Description":"vboard dining r-1-2",
+         "Description":"vboard",
          "Room":"dining",
-         "Name":"r-1-2",
-         "Actions":[1,2,3]
+         "Name":"b1",
+         "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       }
    ]
 }
