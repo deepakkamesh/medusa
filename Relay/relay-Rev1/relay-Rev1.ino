@@ -90,6 +90,8 @@ void setup() {
   pinMode(MOTIONPIN, INPUT);
 #endif
 
+  // Find the strongest Wifi
+  WifiAPFinder() ;
   // Setup Wifi and get configs.
   WifiConnect();
   OTAInit();

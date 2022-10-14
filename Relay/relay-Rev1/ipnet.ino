@@ -10,23 +10,56 @@ uint8_t bufferRX[255];
 uint8_t bufferTX[255];
 
 // TODO: get from wifimanager.
-const char* ssid     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
+char ssid[20];
+const char* ssidPrefix     = "utopia";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "0d9f48a148";     // The password of the Wi-Fi network
 
 uint16_t ctrPort = 3345;
 IPAddress ctrIP;
 
+/* Find the strongest signal and connect */
+void WifiAPFinder() {
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+  int n = WiFi.scanNetworks();
+  if (n == 0) {
+    Serial.println("no networks found");
+    delay(2000);
+    ESP.restart();
+  }
+
+  int strength = -80; // Assume some initial strength.
+  bool sel = false;
+
+  for (int i = 0; i < n; ++i) {
+    if (!strstr(WiFi.SSID(i).c_str(), ssidPrefix)) {
+      continue;
+    }
+    if (WiFi.RSSI(i) >  strength) {
+      strength = WiFi.RSSI(i);
+      strcpy(ssid, WiFi.SSID(i).c_str());
+      sel = true;
+    }
+  }
+
+  if (!sel) {
+    Serial.printf("no network with prefix found %s or strength below -80", ssidPrefix);
+    delay(2000);
+    ESP.restart();
+  }
+  Serial.printf("\nWifi selected %s (%i)\n", ssid, strength);
+
+}
 
 /* WifiConnect establishes connection to the specified access point*/
 void WifiConnect(void) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("Connection Failed! Rebooting...");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.printf(".");
     digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
-    delay(3000);
-    ESP.restart();
+    delay(1000);
   }
   digitalWrite(LED_ONBOARD, true); // For some reason true turns this off.
 
