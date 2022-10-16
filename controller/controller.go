@@ -53,8 +53,6 @@ func (c *Controller) Startup() error {
 		return err
 	}
 
-	// Startup message handlers.
-
 	return nil
 }
 

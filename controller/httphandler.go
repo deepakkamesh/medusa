@@ -17,6 +17,7 @@ type response struct {
 func (c *Controller) StartHTTP() error {
 	http.HandleFunc("/api/action", c.action)
 	http.HandleFunc("/api/relayconfigmode", c.relayConfigMode)
+	http.HandleFunc("/api/mqttConfigSend", c.mqttConfigSend)
 	http.HandleFunc("/api/boardconfig", c.boardConfig)
 	return http.ListenAndServe(c.httpPort, nil)
 }
@@ -33,6 +34,21 @@ func (c *Controller) action(w http.ResponseWriter, r *http.Request) {
 	data := parseStr(strings.TrimSpace(r.Form.Get("data")))
 
 	if err := c.core.Action(addr, byte(actionID), data); err != nil {
+		writeErr(w, err.Error())
+		return
+	}
+	writeData(w, "ok")
+}
+
+func (c *Controller) mqttConfigSend(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		writeErr(w, "Err parsing form")
+		return
+	}
+
+	clean, _ := strconv.ParseBool(strings.TrimSpace(r.Form.Get("clean")))
+
+	if err := c.ha.SendSensorConfig(clean); err != nil {
 		writeErr(w, err.Error())
 		return
 	}

@@ -75,3 +75,17 @@ func (mr *MockHAMockRecorder) SendMotion(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMotion", reflect.TypeOf((*MockHA)(nil).SendMotion), arg0, arg1)
 }
+
+// SendSensorConfig mocks base method.
+func (m *MockHA) SendSensorConfig(arg0 bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendSensorConfig", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendSensorConfig indicates an expected call of SendSensorConfig.
+func (mr *MockHAMockRecorder) SendSensorConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendSensorConfig", reflect.TypeOf((*MockHA)(nil).SendSensorConfig), arg0)
+}

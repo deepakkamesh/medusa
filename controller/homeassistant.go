@@ -27,6 +27,7 @@ type HA interface {
 	Connect() error
 	HAMessage() <-chan HAMsg
 	SendMotion(room string, motion bool) error
+	SendSensorConfig(clean bool) error
 }
 
 // MQState represents the state json from HA MQ message.
@@ -34,6 +35,7 @@ type MQState struct {
 	State string `json:"state"`
 }
 
+// MQBinarySensorConfig represents the HA Binary Sensor.
 type MQBinarySensorConfig struct {
 	Name        string            `json:"name"`
 	ObjectID    string            `json:"object_id"`
@@ -41,6 +43,17 @@ type MQBinarySensorConfig struct {
 	StateTopic  string            `json:"state_topic"`
 	UniqueID    string            `json:"unique_id"`
 	Device      map[string]string `json:"device"`
+}
+
+// MQSirenConfig represents the HA Binary Sensor.
+type MQSirenConfig struct {
+	Name         string            `json:"name"`
+	ObjectID     string            `json:"object_id"`
+	CommandTopic string            `json:"command_topic"`
+	UniqueID     string            `json:"unique_id"`
+	Device       map[string]string `json:"device"`
+	PayloadOn    string            `json:"payload_on"`
+	PayloadOff   string            `json:"payload_off"`
 }
 
 // Struct to hold message from HA.
@@ -55,16 +68,18 @@ type HomeAssistant struct {
 	mqttHost   string
 	user       string
 	passwd     string
-	MQTTClient mqtt.Client // MqTT client. Exportable for testing.
-	HAMsg      chan HAMsg  // HA received message. Exportable for testing.
+	MQTTClient mqtt.Client  // MqTT client. Exportable for testing.
+	HAMsg      chan HAMsg   // HA received message. Exportable for testing.
+	CoreCfg    *core.Config // Core Config.
 }
 
-func NewHA(mqttHost string, user string, pass string) *HomeAssistant {
+func NewHA(mqttHost string, user string, pass string, cfg *core.Config) *HomeAssistant {
 	return &HomeAssistant{
 		mqttHost: mqttHost,
 		user:     user,
 		passwd:   pass,
 		HAMsg:    make(chan HAMsg),
+		CoreCfg:  cfg,
 	}
 }
 
@@ -165,45 +180,86 @@ func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
 }
 
 // SendSensorConfig sends sensors via auto discovery.
-func (m *HomeAssistant) SendSensorConfig(c *core.Config) error {
+func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 
 	if m.MQTTClient == nil {
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
 	}
 
-	binarySensors := []byte{core.ActionMotion} //TODO move elsewhere.
+	binarySensors := []byte{core.ActionMotion, core.ActionDoor} //TODO move elsewhere.
+	sirens := []byte{core.ActionBuzzer}
 
-	for _, brd := range c.Boards {
+	for _, brd := range m.CoreCfg.Boards {
+		for _, actionID := range brd.Actions {
+			_, actionStr := core.ActionLookup(actionID, "")
 
-		for _, act := range brd.Actions {
-			_, actionStr := core.ActionLookup(act, "")
-			if !slices.Contains(binarySensors, act) {
-				continue
+			mqttType := ""
+			configMsg := ""
+
+			// Common stuff.
+			name := brd.Room + " " + actionStr
+			objectID := fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr)
+			uniqueID := fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr)
+			stateTopic := fmt.Sprintf("giant/%v/%v/state", brd.Room, actionStr)
+			commandTopic := fmt.Sprintf("giant/%v/%v/set", brd.Room, actionStr)
+			device := map[string]string{
+				"identifiers":    core.PP2(brd.Addr),
+				"suggested_area": brd.Room,
+				//		"name":           brd.Name,
+				"manufacturer": "Medusa",
 			}
-			sensorConfig := MQBinarySensorConfig{
-				Name:        actionStr,
-				ObjectID:    fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr),
-				DeviceClass: DeviceClass(act),
-				StateTopic:  fmt.Sprintf("homeassistant/%v_%v_%v/state", brd.Room, brd.Name, actionStr),
-				UniqueID:    fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr),
-				Device: map[string]string{
-					"identifiers":    core.PP2(brd.Addr),
-					"suggested_area": brd.Room,
-					"name":           brd.Name,
-				},
+
+			switch {
+			case slices.Contains(binarySensors, actionID):
+				sensorConfig := MQBinarySensorConfig{
+					Name:        name,
+					ObjectID:    objectID,
+					DeviceClass: DeviceClass(actionID),
+					StateTopic:  stateTopic,
+					UniqueID:    uniqueID,
+					Device:      device,
+				}
+				// Marshall string.
+				a, err := json.Marshal(sensorConfig)
+				if err != nil {
+					return err
+				}
+				configMsg = string(a)
+				mqttType = "binary_sensor"
+
+			case slices.Contains(sirens, actionID):
+				deviceConfig := MQSirenConfig{
+					Name:         name,
+					ObjectID:     objectID,
+					CommandTopic: commandTopic,
+					UniqueID:     uniqueID,
+					PayloadOn:    "true",
+					PayloadOff:   "false",
+					Device:       device,
+				}
+				// Marshall string.
+				a, err := json.Marshal(deviceConfig)
+				if err != nil {
+					return err
+				}
+				configMsg = string(a)
+				mqttType = "siren"
 			}
 
-			// Marshall string.
-			a, err := json.Marshal(sensorConfig)
-			if err != nil {
-				return err
+			// Send the discovery message.
+			if configMsg != "" {
+				configTopic := fmt.Sprintf("homeassistant/%v/%v_%v_%v/config", mqttType, brd.Room, brd.Name, actionStr)
+				// Send empty message to delete HA entity.
+				if clean {
+					configMsg = ""
+				}
+				token := m.MQTTClient.Publish(configTopic, 0, false, configMsg)
+				token.Wait()
+				time.Sleep(1 * time.Second)
+				fmt.Println(configTopic)
+				fmt.Println(configMsg)
+				fmt.Println()
 			}
-			configTopic := fmt.Sprintf("homeassistant/binary_sensor/%v_%v_%v/config", brd.Room, brd.Name, actionStr)
-
-			token := m.MQTTClient.Publish(configTopic, 0, false, fmt.Sprintf("%s", a))
-			token.Wait()
-			time.Sleep(time.Second)
-
 		}
 	}
 

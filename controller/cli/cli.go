@@ -136,7 +136,27 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name:    "MqttConfigSend",
+			Aliases: []string{"mq"},
+			Usage:   "Send HA MQTT discovery message",
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:  "clean",
+					Usage: "clean to delete Home Assistant Entities",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				clean := c.Bool("clean")
 
+				params := url.Values{
+					"clean": {fmt.Sprintf("%t", clean)},
+				}
+				post(c.String("host"), params, "mqttConfigSend")
+
+				return nil
+			},
+		},
 		{
 			Name:    "RelayConfigMode",
 			Aliases: []string{"rcm"},

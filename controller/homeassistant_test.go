@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/deepakkamesh/medusa/controller"
+	"github.com/deepakkamesh/medusa/controller/core"
 	"github.com/deepakkamesh/medusa/controller/mocks"
 	"github.com/golang/mock/gomock"
 )
@@ -52,4 +53,25 @@ func TestHASend(t *testing.T) {
 	m.EXPECT().Publish("giant/living/motion/state", gomock.Any(), false, "ON").Return(tk)
 	tk.EXPECT().Wait()
 	ha.SendMotion("living", true)
+}
+
+func TestHASendConfig(t *testing.T) {
+	cfg, e := core.NewConfig("./core/core.cfg.json")
+	if e != nil {
+		t.Errorf("failed to load config %v", e)
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	m := mocks.NewMockClient(ctrl)
+	tk := mocks.NewMockToken(ctrl)
+
+	ha := controller.HomeAssistant{
+		MQTTClient: m,
+		CoreCfg:    cfg,
+	}
+
+	m.EXPECT().Publish(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(tk)
+	tk.EXPECT().Wait().AnyTimes()
+	ha.SendSensorConfig(false)
 }

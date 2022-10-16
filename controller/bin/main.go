@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// HomeAssistant connector.
-	ha := controller.NewHA(*mqttHost, *mqUser, *mqPass)
+	ha := controller.NewHA(*mqttHost, *mqUser, *mqPass, core.CoreConfig())
 
 	//  Init Controller.
 	ctrl, err := controller.NewController(core, ha, *httpHostPort)
