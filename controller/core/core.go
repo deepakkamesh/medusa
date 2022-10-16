@@ -15,11 +15,13 @@ type MedusaCore interface {
 	Light(addr []byte) error
 	Temp(addr []byte) error
 	LEDOn(addr []byte, on bool) error
+	BuzzerOn(addr []byte, on bool, d int) error
 	BoardConfig(addr []byte, paddr []byte, hwaddr []byte, naddr []byte) error
 	RelayConfigMode(hwaddr []byte, yes bool) error
 	StartCore()
 	Event() <-chan Event
 	GetBoardByAddr(b []byte) *Board
+	GetBoardByRoom(room string) []Board
 	CoreConfig() *Config
 }
 
@@ -52,6 +54,10 @@ func (c *Core) CoreConfig() *Config {
 // GetBoardByAddr returns board info.
 func (c *Core) GetBoardByAddr(addr []byte) *Board {
 	return c.conf.getBoardByAddr(addr)
+}
+
+func (c *Core) GetBoardByRoom(room string) []Board {
+	return c.conf.getBoardByRoom(room)
 }
 
 // Event returns the channel for events.
@@ -91,6 +97,18 @@ func (c *Core) Light(addr []byte) error {
 // Temp - temp and humidity.
 func (c *Core) Temp(addr []byte) error {
 	return c.Action(addr, ActionTemp, []byte{})
+}
+
+// Sets buzzer on/off.
+func (c *Core) BuzzerOn(addr []byte, on bool, d int) error {
+	var data byte = 0
+	if on {
+		data = 1
+	}
+	hiD := byte(d >> 8)
+	loD := byte(d & 0xFF)
+
+	return c.Action(addr, ActionBuzzer, []byte{data, hiD, loD})
 }
 
 // LEDOn sets led on or off.

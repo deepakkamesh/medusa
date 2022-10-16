@@ -47,21 +47,33 @@ const (
 // Default config pipe address.
 var defPipeAdress []byte = []byte{0x68, 0x65, 0x6C, 0x6C, 0x6F}
 
-// ActionFriendlyName returns the friendly string of action ID. if ID does not exist
-// returns blank string.
-func ActionFriendlyName(id byte) string {
+// ActionLookup returns the action string if ID provided or
+// ID if string provided.
+// No match return 0 or "".
+func ActionLookup(id byte, str string) (byte, string) {
 
 	actions := map[byte]string{
 		0x01: "motion",
 		0x02: "temp",
 		0x03: "light",
 		0x04: "door",
+		0x05: "volt",
+		0x10: "buzzer",
 	}
 
-	if val, ok := actions[id]; ok {
-		return val
+	if id != 0 {
+		if val, ok := actions[id]; ok {
+			return id, val
+		}
+		return id, ""
 	}
-	return ""
+
+	for k, v := range actions {
+		if str == v {
+			return k, v
+		}
+	}
+	return 0, str
 }
 
 func okPktTypeRelayCfgReq(buffer []byte) bool {

@@ -62,6 +62,20 @@ func (mr *MockMedusaCoreMockRecorder) BoardConfig(arg0, arg1, arg2, arg3 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BoardConfig", reflect.TypeOf((*MockMedusaCore)(nil).BoardConfig), arg0, arg1, arg2, arg3)
 }
 
+// BuzzerOn mocks base method.
+func (m *MockMedusaCore) BuzzerOn(arg0 []byte, arg1 bool, arg2 int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BuzzerOn", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BuzzerOn indicates an expected call of BuzzerOn.
+func (mr *MockMedusaCoreMockRecorder) BuzzerOn(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BuzzerOn", reflect.TypeOf((*MockMedusaCore)(nil).BuzzerOn), arg0, arg1, arg2)
+}
+
 // CoreConfig mocks base method.
 func (m *MockMedusaCore) CoreConfig() *core.Config {
 	m.ctrl.T.Helper()
@@ -102,6 +116,20 @@ func (m *MockMedusaCore) GetBoardByAddr(arg0 []byte) *core.Board {
 func (mr *MockMedusaCoreMockRecorder) GetBoardByAddr(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBoardByAddr", reflect.TypeOf((*MockMedusaCore)(nil).GetBoardByAddr), arg0)
+}
+
+// GetBoardByRoom mocks base method.
+func (m *MockMedusaCore) GetBoardByRoom(arg0 string) []core.Board {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBoardByRoom", arg0)
+	ret0, _ := ret[0].([]core.Board)
+	return ret0
+}
+
+// GetBoardByRoom indicates an expected call of GetBoardByRoom.
+func (mr *MockMedusaCoreMockRecorder) GetBoardByRoom(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBoardByRoom", reflect.TypeOf((*MockMedusaCore)(nil).GetBoardByRoom), arg0)
 }
 
 // LEDOn mocks base method.

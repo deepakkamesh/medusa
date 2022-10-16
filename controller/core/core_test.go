@@ -83,11 +83,20 @@ func TestAction(t *testing.T) {
 	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x1, 0xc1, 0xd1, 0xe1, 0xf1, PktTypeActionReq, 0x1, 0x1, 0x1, ActionTemp}); err != nil {
 		t.Error(err)
 	}
+
 	// LedOn.
 	if err := core.LEDOn([]byte{0xd1, 0xe1, 0xf1}, true); err != nil {
 		t.Fatalf("Failed to call ledon: %v", err)
 	}
 	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x7, 0xc1, 0xd1, 0xe1, 0xf1, PktTypeActionReq, 0xd1, 0xe1, 0xf1, ActionLED, 1}); err != nil {
+		t.Error(err)
+	}
+
+	// Buzzer.
+	if err := core.BuzzerOn([]byte{0xd1, 0xe1, 0xf1}, true, 500); err != nil {
+		t.Fatalf("Failed to call ledon: %v", err)
+	}
+	if err := readandCompare(conn, []byte{PktTypeRelayBoardData, 0x7, 0xc1, 0xd1, 0xe1, 0xf1, PktTypeActionReq, 0xd1, 0xe1, 0xf1, ActionBuzzer, 1, 0x01, 0xf4}); err != nil {
 		t.Error(err)
 	}
 

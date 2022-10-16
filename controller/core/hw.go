@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/flynn/json5"
+	"golang.org/x/exp/slices"
 )
 
 type Relay struct {
@@ -35,6 +36,11 @@ type Board struct {
 	Room        string
 	Name        string
 	Actions     []byte // Supported actions.
+}
+
+// IsActionCapable returns true if the board is capable of the action.
+func (b *Board) IsActionCapable(actionID byte) bool {
+	return slices.Contains(b.Actions, actionID)
 }
 
 type Config struct {
@@ -108,4 +114,15 @@ func (f *Config) getBoardByAddr(addr []byte) *Board {
 		}
 	}
 	return nil
+}
+
+func (f *Config) getBoardByRoom(room string) []Board {
+	boards := []Board{}
+	for _, v := range f.Boards {
+		if v.Room != room {
+			continue
+		}
+		boards = append(boards, *v)
+	}
+	return boards
 }
