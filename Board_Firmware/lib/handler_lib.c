@@ -22,10 +22,10 @@ void InitHandlerLib(void) {
 
     // Set handlers at the end to prevent flood of messages. 
     TMR1_SetInterruptHandler(TimerInterruptHandler);
-#ifdef MOTION
+#ifdef DEV_MOTION
     Motion_SetInterruptHandler(MotionInterruptHandler);
 #endif
-#ifdef DOOR
+#ifdef DEV_DOOR
     Door_SetInterruptHandler(DoorInterruptHandler);
 #endif
 }
