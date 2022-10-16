@@ -15,6 +15,8 @@ func main() {
 		hostPort     = flag.String("host_port", ":3334", "host port for medusa server")
 		cfgFname     = flag.String("core_conf", "core.cfg.test.json", "config file for core hardware")
 		mqttHost     = flag.String("mqtt_host", "homeassistant.local:1883", "hostport for home assistant")
+		mqUser       = flag.String("mq_user", "mq", "username for mqtt")
+		mqPass       = flag.String("mq_pass", "mqtt", "passwd for mqtt")
 	)
 
 	flag.Parse()
@@ -35,7 +37,7 @@ func main() {
 	}
 
 	// HomeAssistant connector.
-	ha := controller.NewHA(*mqttHost)
+	ha := controller.NewHA(*mqttHost, *mqUser, *mqPass)
 
 	//  Init Controller.
 	ctrl, err := controller.NewController(core, ha, *httpHostPort)
@@ -46,8 +48,8 @@ func main() {
 		glog.Fatalf("Failed to startup Controller:%v", err)
 	}
 
-	go ctrl.Run()
-
+	go ctrl.CoreMsgHandler()
+	go ctrl.HAMsgHandler()
 	if err := ctrl.StartHTTP(); err != nil {
 		glog.Fatalf("Failed to start http server %v", err)
 	}

@@ -10,72 +10,64 @@ import (
 	"github.com/golang/mock/gomock"
 )
 
-/*
-func TestConfigGen(t *testing.T) {
+func TestHAMsgHandler(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
+
 	m := mocks.NewMockMedusaCore(ctrl)
+	h := mocks.NewMockHA(ctrl)
 
-	c, e := controller.NewController(m, ":3344" )
+	c, e := controller.NewController(m, h, ":3344")
 	if e != nil {
-		t.Fatalf("Failed init Controller %v", e)
-
-	}
-
-	cr, e := core.NewConfig("core/core.cfg.json")
-	if e != nil {
-		t.Errorf("failed to open %v %v", "core.dev", e)
+		t.Errorf("Failed init Controller %v", e)
 	}
 
 	// Startup Core.
 	m.EXPECT().StartCore()
-	m.EXPECT().CoreConfig().Return(cr)
+	h.EXPECT().Connect()
 	if err := c.Startup(); err != nil {
-		t.Fatalf("Failed to startup Core: %v", err)
+		t.Errorf("Failed to startup Core: %v", err)
 	}
 
-	// Send some events.
-	eventChan := make(chan core.Event)
+	// Channel to send events from HA.
+	msgChan := make(chan controller.HAMsg)
 
-	p1 := core.Motion{
-		PktInfo: core.PktInfo{
-			BoardAddr:    []byte{1, 1, 1},
-			PipeAddr:     []byte{},
-			HardwareAddr: []byte{},
+	// HA messages to send.
+	msgs := []controller.HAMsg{
+		{
+			Room:   "living",
+			Action: "buzzer",
+			State:  true,
 		},
-		Motion: true,
 	}
-	p2 := core.Motion{
-		PktInfo: core.PktInfo{
-			BoardAddr:    []byte{1, 1, 1},
-			PipeAddr:     []byte{},
-			HardwareAddr: []byte{},
-		},
-		Motion: false,
-	}
-
-	pkts := []core.Event{p1, p2}
 
 	go func() {
-		i := 0
-		for i = 0; i < len(pkts); i++ {
-
-			time.Sleep(500 * time.Millisecond)
-			eventChan <- pkts[i]
+		for _, msg := range msgs {
+			time.Sleep(100 * time.Millisecond)
+			msgChan <- msg
 		}
 		// To kill the forever loop.
 		time.Sleep(1 * time.Second)
-		close(eventChan)
+		close(msgChan)
 	}()
 
-	m.EXPECT().Event().AnyTimes().Return(eventChan)
-	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "dining", Name: "b1"})
-	//m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down"})
-	c.Run()
+	h.EXPECT().HAMessage().AnyTimes().Return(msgChan)
+	m.EXPECT().GetBoardByRoom("living").Times(1).Return([]core.Board{
+		{
+			Addr:    []byte{1, 1, 1},
+			Actions: []byte{0x10},
+		},
+		{
+			Addr:    []byte{1, 1, 2},
+			Actions: []byte{0x10},
+		},
+	})
+	m.EXPECT().BuzzerOn([]byte{1, 1, 1}, true, 100)
+	m.EXPECT().BuzzerOn([]byte{1, 1, 2}, true, 100)
+	c.HAMsgHandler()
+}
 
-}*/
-
-func TestMotion(t *testing.T) {
+func TestCoreMsgHandler(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -128,9 +120,14 @@ func TestMotion(t *testing.T) {
 		close(eventChan)
 	}()
 
+	// Test Motion Events.
 	m.EXPECT().Event().AnyTimes().Return(eventChan)
-	h.EXPECT().SendSensorData(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
+	h.EXPECT().SendMotion("living", true)
+	h.EXPECT().SendMotion("hallway-down", true)
 	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "living", Name: "b1"})
 	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down", Name: "b1"})
-	c.Run()
+
+	// TODO: Add tests for other events.
+
+	c.CoreMsgHandler()
 }

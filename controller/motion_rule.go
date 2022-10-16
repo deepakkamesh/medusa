@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/deepakkamesh/medusa/controller/core"
@@ -29,11 +28,10 @@ func (c *Controller) motionRule(in chan core.Event) {
 		if !ok {
 			glog.Error("Cast of event to core.Motion failed")
 		}
-		motion := "OFF"
-		if m.Motion {
-			motion = "ON"
+
+		if err := c.ha.SendMotion(board.Room, m.Motion); err != nil {
+			glog.Warningf("Failed to send motion event to HA:%v", err)
 		}
-		c.ha.SendSensorData(fmt.Sprintf("homeassistant/%v_%v_motion/state", board.Room, board.Name), 0, false, motion)
 
 		// Check if adjancey motion detected.
 		/*		highC := false

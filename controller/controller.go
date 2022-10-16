@@ -12,7 +12,7 @@ type Controller struct {
 	core     core.MedusaCore                           // medusa Core struct.
 	eventDB  *EventDB                                  // Event log struct.
 	ha       HA                                        // HomeAssistant
-	rules    map[chan core.Event]func(chan core.Event) // rules is the array of rules functions.
+	handlers map[chan core.Event]func(chan core.Event) // rules is the array of rules functions.
 
 }
 
@@ -30,11 +30,11 @@ func NewController(c core.MedusaCore, ha HA, httpPort string) (*Controller, erro
 		httpPort: httpPort,
 		ha:       ha,
 		eventDB:  eventDB,
-		rules:    make(map[chan core.Event]func(chan core.Event)),
+		handlers: make(map[chan core.Event]func(chan core.Event)),
 	}
 
-	// Add rule engines.
-	ct.rules[make(chan core.Event)] = ct.motionRule
+	// Add handlers.
+	ct.handlers[make(chan core.Event)] = ct.motionRule
 
 	return ct, nil
 }
@@ -43,8 +43,8 @@ func NewController(c core.MedusaCore, ha HA, httpPort string) (*Controller, erro
 func (c *Controller) Startup() error {
 	c.core.StartCore()
 
-	// Startup rules engines.
-	for c, f := range c.rules {
+	// Startup handlers.
+	for c, f := range c.handlers {
 		go f(c)
 	}
 
@@ -53,11 +53,13 @@ func (c *Controller) Startup() error {
 		return err
 	}
 
+	// Startup message handlers.
+
 	return nil
 }
 
-// Run main loop.
-func (c *Controller) Run() {
+// CoreMsgHandler main loop.
+func (c *Controller) CoreMsgHandler() {
 	for {
 		event, ok := <-c.core.Event()
 		if !ok {
@@ -128,34 +130,33 @@ func (c *Controller) Run() {
 		}
 
 		// Send event to all rules engines only after logging into eventDB first.
-		for ch, f := range c.rules {
+		for ch, f := range c.handlers {
 			_ = f
 			ch <- event
 		}
 	}
 }
 
-/*
-case core.Ping:
-			glog.Infof("Event Ping -  Addr:%v Paddr:%v HWaddr:%v\n", core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr))
+// HAMsgHandler main loop.
+func (c *Controller) HAMsgHandler() {
+	for {
+		msg, ok := <-c.ha.HAMessage()
+		if !ok {
+			return
+		}
 
-		case core.Temp:
-			glog.Infof("Event Temp - Addr:%v Paddr:%v Hwaddr:%v temp:%v humi:%v\n", core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr), f.Temp, f.Humidity)
+		actionID, _ := core.ActionLookup(0, msg.Action)
 
-		case core.Motion:
-			glog.Infof("Event Motion addr:%v Paddr:%v Hwaddr:%v %t\n", core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr), f.Motion)
-			motion := "OFF"
-			if f.Motion {
-				motion = "ON"
+		brds := c.core.GetBoardByRoom(msg.Room)
+
+		for _, brd := range brds {
+			if brd.IsActionCapable(actionID) {
+
+				switch actionID {
+				case core.ActionBuzzer:
+					c.core.BuzzerOn(brd.Addr, msg.State, 100)
+				}
 			}
-			c.ha.SendSensorData(fmt.Sprintf("homeassistant/%v_%v_motion/state", board.Room, board.Name), 0, false, motion)
-
-		case core.Door:
-			glog.Infof("Event Door addr:%v Paddr:%v Hwaddr:%v %t\n", core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr), f.Door)
-
-		case core.Volt:
-			glog.Infof("Event Volt - addr:%v Paddr:%v Hwaddr:%v volts:%v", core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr), f.Volt)
-
-		case core.Light:
-
-*/
+		}
+	}
+}
