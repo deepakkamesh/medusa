@@ -7,7 +7,7 @@ package mocks
 import (
 	reflect "reflect"
 
-	core "github.com/deepakkamesh/medusa/controller/core"
+	controller "github.com/deepakkamesh/medusa/controller"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -48,30 +48,30 @@ func (mr *MockHAMockRecorder) Connect() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockHA)(nil).Connect))
 }
 
-// SendSensorConfig mocks base method.
-func (m *MockHA) SendSensorConfig(arg0 *core.Config) error {
+// HAMessage mocks base method.
+func (m *MockHA) HAMessage() <-chan controller.HAMsg {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendSensorConfig", arg0)
+	ret := m.ctrl.Call(m, "HAMessage")
+	ret0, _ := ret[0].(<-chan controller.HAMsg)
+	return ret0
+}
+
+// HAMessage indicates an expected call of HAMessage.
+func (mr *MockHAMockRecorder) HAMessage() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HAMessage", reflect.TypeOf((*MockHA)(nil).HAMessage))
+}
+
+// SendMotion mocks base method.
+func (m *MockHA) SendMotion(arg0 string, arg1 bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendMotion", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SendSensorConfig indicates an expected call of SendSensorConfig.
-func (mr *MockHAMockRecorder) SendSensorConfig(arg0 interface{}) *gomock.Call {
+// SendMotion indicates an expected call of SendMotion.
+func (mr *MockHAMockRecorder) SendMotion(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendSensorConfig", reflect.TypeOf((*MockHA)(nil).SendSensorConfig), arg0)
-}
-
-// SendSensorData mocks base method.
-func (m *MockHA) SendSensorData(arg0 string, arg1 byte, arg2 bool, arg3 string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendSensorData", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SendSensorData indicates an expected call of SendSensorData.
-func (mr *MockHAMockRecorder) SendSensorData(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendSensorData", reflect.TypeOf((*MockHA)(nil).SendSensorData), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMotion", reflect.TypeOf((*MockHA)(nil).SendMotion), arg0, arg1)
 }
