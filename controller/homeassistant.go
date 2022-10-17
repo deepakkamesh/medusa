@@ -166,7 +166,9 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 
 func (m *HomeAssistant) mqttConnectHandler(client mqtt.Client) {
 	glog.Infof("MQTT connected:%v", m.mqttHost)
-	// TODO: Use this to send dynamic mqtt discovery messages.
+
+	// Send configuration after connection successful.
+	m.SendSensorConfig(false)
 }
 
 func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
@@ -256,9 +258,6 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 				token := m.MQTTClient.Publish(configTopic, 0, false, configMsg)
 				token.Wait()
 				time.Sleep(1 * time.Second)
-				fmt.Println(configTopic)
-				fmt.Println(configMsg)
-				fmt.Println()
 			}
 		}
 	}
