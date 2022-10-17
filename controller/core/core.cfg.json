@@ -84,7 +84,7 @@
          "PingInt":0x1,
          "Description":"vboard",
          "Room":"hallway-down",
-         "Name":"b1",
+         "Name":"hallway-down_b1",
          "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
@@ -94,7 +94,7 @@
          "PingInt":0x1,
          "Description":"vboard",
          "Room":"hallway-up",
-         "Name":"b1",
+         "Name":"hallway-up_b1",
          "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
@@ -104,8 +104,8 @@
          "PingInt":0x1,
          "Description":"vboard",
          "Room":"dining",
-         "Name":"b1",
-         "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
+         "Name":"dining_b1",
+         "Actions":[0x02,0x10,0x13,0x14,0x17]
       }
    ]
 }
