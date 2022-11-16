@@ -51,7 +51,7 @@
          "Addr":[0x1,0x1,0x1],
          "PAddr":[0x4,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
-         "PingInt":0x1,
+         "PingInt":0x1E,
          "Description":"board on r2-1",
          "Room":"test",
          "Name":"b1",
@@ -63,7 +63,7 @@
          "ARD":0xB,
          "PingInt":0x1,
          "Description":"board on relay1",
-         "Room":"living",
+         "Room":"test",
          "Name":"b2",
          "Actions":[2,3]
       },
@@ -84,7 +84,7 @@
          "PingInt":0x1,
          "Description":"vboard",
          "Room":"hallway-down",
-         "Name":"hallway-down_b1",
+         "Name":"b1",
          "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
@@ -94,7 +94,7 @@
          "PingInt":0x1,
          "Description":"vboard",
          "Room":"hallway-up",
-         "Name":"hallway-up_b1",
+         "Name":"b1",
          "Actions":[0x01,0x02,0x10,0x13,0x14,0x17]
       },
       {
@@ -104,7 +104,7 @@
          "PingInt":0x1,
          "Description":"vboard",
          "Room":"dining",
-         "Name":"dining_b1",
+         "Name":"b1",
          "Actions":[0x02,0x10,0x13,0x14,0x17]
       }
    ]

@@ -166,9 +166,6 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 
 func (m *HomeAssistant) mqttConnectHandler(client mqtt.Client) {
 	glog.Infof("MQTT connected:%v", m.mqttHost)
-
-	// Send configuration after connection successful.
-	m.SendSensorConfig(false)
 }
 
 func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
@@ -207,8 +204,8 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 			device := map[string]string{
 				"identifiers":    core.PP2(brd.Addr),
 				"suggested_area": brd.Room,
-				//		"name":           brd.Name,
-				"manufacturer": "Medusa",
+				"name":           fmt.Sprintf("%v_%v", brd.Room, brd.Name),
+				"manufacturer":   "Medusa",
 			}
 
 			switch {
@@ -255,9 +252,10 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 				if clean {
 					configMsg = ""
 				}
-				token := m.MQTTClient.Publish(configTopic, 0, false, configMsg)
+				token := m.MQTTClient.Publish(configTopic, 0, true, configMsg)
 				token.Wait()
 				time.Sleep(1 * time.Second)
+				glog.Infof("%v:{{%v}}", configTopic, configMsg)
 			}
 		}
 	}
