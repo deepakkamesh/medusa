@@ -174,7 +174,7 @@ func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
 	time.Sleep(1 * time.Second)
 	// Attempt to reconnect.
 	if err := m.Connect(); err != nil {
-		glog.Errorf("Failed reconnecting to mqtt:%v", err)
+		glog.Fatalf("Giving Up. Failed reconnecting to MQTT:%v", err)
 	}
 }
 
