@@ -53,6 +53,11 @@ func TestHASend(t *testing.T) {
 	m.EXPECT().Publish("giant/living/motion/state", gomock.Any(), false, "ON").Return(tk)
 	tk.EXPECT().Wait()
 	ha.SendMotion("living", true)
+
+	// Test Temp Humidity
+	m.EXPECT().Publish("giant/living/temp/state", gomock.Any(), false, "{\"temperature\":70.1,\"humidity\":45.3}").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendTemp("living", 70.1, 45.3)
 }
 
 func TestHASendConfig(t *testing.T) {

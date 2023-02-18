@@ -22,6 +22,10 @@ import (
 
 const topicSubscribe string = "giant/+/+/set"
 
+var (
+	templTopicState string = "giant/%v/%v/state"
+)
+
 // HA represents HomeAssistant Interface.
 type HA interface {
 	Connect() error
@@ -33,6 +37,12 @@ type HA interface {
 // MQState represents the state json from HA MQ message.
 type MQState struct {
 	State string `json:"state"`
+}
+
+// MQTempHumidity represents a temp, humidity message to HA.
+type MQTempHumidity struct {
+	Temp     float32 `json:"temperature"`
+	Humidity float32 `json:"humidity"`
 }
 
 // MQBinarySensorConfig represents the HA Binary Sensor.
@@ -143,12 +153,32 @@ func (m *HomeAssistant) SendMotion(room string, motion bool) error {
 	if motion {
 		state = "ON"
 	}
-	topic := fmt.Sprintf("giant/%v/motion/state", room)
+
+	_, actStr := core.ActionLookup(core.ActionMotion, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionMotion)
+	}
+	topic := fmt.Sprintf(templTopicState, room, actStr)
 	return m.sendSensorData(topic, 0, false, state)
 }
 
 // SendTemp sends Temp and Humidity to HA.
 func (m *HomeAssistant) SendTemp(room string, temp, humidity float32) error {
+	t := MQTempHumidity{temp, humidity}
+
+	a, e := json.Marshal(t)
+	if e != nil {
+		return e
+	}
+
+	_, actStr := core.ActionLookup(core.ActionTemp, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionTemp)
+	}
+
+	topic := fmt.Sprintf(templTopicState, room, actStr)
+	return m.sendSensorData(topic, 0, false, string(a))
+
 	return nil
 }
 
@@ -199,7 +229,7 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 			name := brd.Room + " " + actionStr
 			objectID := fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr)
 			uniqueID := fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr)
-			stateTopic := fmt.Sprintf("giant/%v/%v/state", brd.Room, actionStr)
+			stateTopic := fmt.Sprintf(templTopicState, brd.Room, actionStr)
 			commandTopic := fmt.Sprintf("giant/%v/%v/set", brd.Room, actionStr)
 			device := map[string]string{
 				"identifiers":    core.PP2(brd.Addr),
