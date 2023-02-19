@@ -23,14 +23,21 @@ import (
 const topicSubscribe string = "giant/+/+/set"
 
 var (
-	templTopicState string = "giant/%v/%v/state"
+	templTopicState   string = "giant/%v/%v/%v/state"             // room/board_name/action.
+	templTopicConfig  string = "homeassistant/%v/%v_%v_%v/config" //Sensor type/room/board_name/action
+	templTopicCommand string = "giant/%v/%v/%v/set"               // room/board_name/action
+	templEntityName   string = "%v %v"
+	templEntityUniqID string = "%v_%v_%v"
+	templEntityObjID  string = "%v_%v_%v"
+	templDeviceName   string = "%v_%v"
 )
 
 // HA represents HomeAssistant Interface.
 type HA interface {
 	Connect() error
 	HAMessage() <-chan HAMsg
-	SendMotion(room string, motion bool) error
+	SendMotion(room string, name string, motion bool) error
+	SendTemp(room string, name string, temp, humidity float32) error
 	SendSensorConfig(clean bool) error
 }
 
@@ -55,6 +62,17 @@ type MQBinarySensorConfig struct {
 	Device      map[string]string `json:"device"`
 }
 
+// MQSensorConfig represents a HA Sensor.
+type MQSensorConfig struct {
+	Name        string            `json:"name"`
+	ObjectID    string            `json:"object_id"`
+	DeviceClass string            `json:"device_class"`
+	StateTopic  string            `json:"state_topic"`
+	UniqueID    string            `json:"unique_id"`
+	Device      map[string]string `json:"device"`
+	ValueTempl  string            `json:"value_template"`
+}
+
 // MQSirenConfig represents the HA Binary Sensor.
 type MQSirenConfig struct {
 	Name         string            `json:"name"`
@@ -68,10 +86,11 @@ type MQSirenConfig struct {
 
 // Struct to hold message from HA.
 type HAMsg struct {
-	MQMsg  mqtt.Message // Full topic.
-	Room   string
-	Action string
-	State  bool
+	MQMsg     mqtt.Message // Full topic.
+	Room      string
+	BoardName string
+	Action    string
+	State     bool
 }
 
 type HomeAssistant struct {
@@ -139,16 +158,41 @@ func (m *HomeAssistant) MQTTPubHandler(client mqtt.Client, msg mqtt.Message) {
 	}
 
 	b := HAMsg{
-		MQMsg:  msg,
-		Room:   data[1],
-		Action: data[2],
-		State:  state,
+		MQMsg:     msg,
+		Room:      data[1],
+		BoardName: data[2],
+		Action:    data[2],
+		State:     state,
 	}
 	m.HAMsg <- b
 }
 
+// mqttConnectHandler is the callback once the mqtt connection is established.
+func (m *HomeAssistant) mqttConnectHandler(client mqtt.Client) {
+	glog.Infof("MQTT connected:%v", m.mqttHost)
+}
+
+// mqttConnLostHandler is the callback when connection to mqtt server is lost.
+func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
+	glog.Warningf("MQTT Connection Lost. Retrying: %v", err)
+	m.MQTTClient = nil
+	time.Sleep(1 * time.Second)
+
+	// Try every 5 seconds for 1 hr.
+	for i := 0; i < 720; i++ {
+		if err := m.Connect(); err == nil {
+			glog.Infof("MQTT reconnected after %v attempts", i)
+			return
+		}
+		glog.Warningf("MQTT Connection Lost. Retrying attempt #%v:%v", i, err)
+		time.Sleep(5 * time.Second)
+	}
+
+	glog.Fatalf("Giving up on MQTT connection. Exiting..")
+}
+
 // SendMotion sends motion event to HA.
-func (m *HomeAssistant) SendMotion(room string, motion bool) error {
+func (m *HomeAssistant) SendMotion(room string, name string, motion bool) error {
 	state := "OFF"
 	if motion {
 		state = "ON"
@@ -158,12 +202,12 @@ func (m *HomeAssistant) SendMotion(room string, motion bool) error {
 	if actStr == "" {
 		return fmt.Errorf("action string not found for action %v", core.ActionMotion)
 	}
-	topic := fmt.Sprintf(templTopicState, room, actStr)
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
 	return m.sendSensorData(topic, 0, false, state)
 }
 
 // SendTemp sends Temp and Humidity to HA.
-func (m *HomeAssistant) SendTemp(room string, temp, humidity float32) error {
+func (m *HomeAssistant) SendTemp(room, name string, temp, humidity float32) error {
 	t := MQTempHumidity{temp, humidity}
 
 	a, e := json.Marshal(t)
@@ -176,7 +220,7 @@ func (m *HomeAssistant) SendTemp(room string, temp, humidity float32) error {
 		return fmt.Errorf("action string not found for action %v", core.ActionTemp)
 	}
 
-	topic := fmt.Sprintf(templTopicState, room, actStr)
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
 	return m.sendSensorData(topic, 0, false, string(a))
 
 	return nil
@@ -194,20 +238,6 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 	return nil
 }
 
-func (m *HomeAssistant) mqttConnectHandler(client mqtt.Client) {
-	glog.Infof("MQTT connected:%v", m.mqttHost)
-}
-
-func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
-	glog.Warningf("MQTT Connection Lost. Retrying: %v", err)
-	m.MQTTClient = nil
-	time.Sleep(1 * time.Second)
-	// Attempt to reconnect.
-	if err := m.Connect(); err != nil {
-		glog.Fatalf("Giving Up. Failed reconnecting to MQTT:%v", err)
-	}
-}
-
 // SendSensorConfig sends sensors via auto discovery.
 func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 
@@ -215,26 +245,29 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
 	}
 
-	binarySensors := []byte{core.ActionMotion, core.ActionDoor} //TODO move elsewhere.
+	binarySensors := []byte{core.ActionMotion, core.ActionDoor}
 	sirens := []byte{core.ActionBuzzer}
+	sensors := []byte{core.ActionTemp}
 
 	for _, brd := range m.CoreCfg.Boards {
 		for _, actionID := range brd.Actions {
+
 			_, actionStr := core.ActionLookup(actionID, "")
+			if actionStr == "" {
+				glog.Warningf("Action not found for value %v", actionID)
+				continue
+			}
 
-			mqttType := ""
-			configMsg := ""
-
-			// Common stuff.
-			name := brd.Room + " " + actionStr
-			objectID := fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr)
-			uniqueID := fmt.Sprintf("%v_%v_%v", brd.Room, brd.Name, actionStr)
-			stateTopic := fmt.Sprintf(templTopicState, brd.Room, actionStr)
-			commandTopic := fmt.Sprintf("giant/%v/%v/set", brd.Room, actionStr)
+			// Common config for HA entity.
+			name := fmt.Sprintf(templEntityName, brd.Room, actionStr)
+			objectID := fmt.Sprintf(templEntityObjID, brd.Room, brd.Name, actionStr)
+			uniqueID := fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, actionStr)
+			stateTopic := fmt.Sprintf(templTopicState, brd.Room, brd.Name, actionStr)
+			commandTopic := fmt.Sprintf(templTopicCommand, brd.Room, brd.Name, actionStr)
 			device := map[string]string{
 				"identifiers":    core.PP2(brd.Addr),
 				"suggested_area": brd.Room,
-				"name":           fmt.Sprintf("%v_%v", brd.Room, brd.Name),
+				"name":           fmt.Sprintf(templDeviceName, brd.Room, brd.Name),
 				"manufacturer":   "Medusa",
 			}
 
@@ -248,13 +281,46 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 					UniqueID:    uniqueID,
 					Device:      device,
 				}
-				// Marshall string.
-				a, err := json.Marshal(sensorConfig)
-				if err != nil {
+
+				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "binary_sensor", fmt.Sprintf(templTopicConfig, "binary_sensor", brd.Room, brd.Name, actionStr)); err != nil {
 					return err
 				}
-				configMsg = string(a)
-				mqttType = "binary_sensor"
+
+			case slices.Contains(sensors, actionID):
+				sensorConfig := MQSensorConfig{
+					Name:        name,
+					ObjectID:    objectID,
+					DeviceClass: DeviceClass(actionID),
+					StateTopic:  stateTopic,
+					UniqueID:    uniqueID,
+					Device:      device,
+				}
+
+				// Set value template since Medusa sends both temp and humidity together.
+				if actionID == core.ActionTemp {
+					sensorConfig.ValueTempl = "{{ value_json.temperature }}"
+				}
+
+				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
+					return err
+				}
+
+				// Handle special case of humidity entity which needs to be created  in HA for every temperature device in Medusa 'cause  medusa a temperature action retrieves both temp and humidity.
+				if actionID == core.ActionTemp {
+					sensorConfig := MQSensorConfig{
+						Name:        fmt.Sprintf(templEntityName, brd.Room, "humidity"),
+						ObjectID:    fmt.Sprintf(templEntityObjID, brd.Room, brd.Name, "humidity"),
+						DeviceClass: "humidity",
+						StateTopic:  stateTopic, // State topic is shared with temperature entity.
+						UniqueID:    fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, "humidity"),
+						Device:      device,
+						ValueTempl:  "{{ value_json.humidity }}",
+					}
+
+					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
+						return err
+					}
+				}
 
 			case slices.Contains(sirens, actionID):
 				deviceConfig := MQSirenConfig{
@@ -266,29 +332,33 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 					PayloadOff:   "false",
 					Device:       device,
 				}
-				// Marshall string.
-				a, err := json.Marshal(deviceConfig)
-				if err != nil {
+
+				if err := m.packAndSendEntityDiscovery(clean, deviceConfig, "siren", fmt.Sprintf(templTopicConfig, "siren", brd.Room, brd.Name, actionStr)); err != nil {
 					return err
 				}
-				configMsg = string(a)
-				mqttType = "siren"
-			}
-
-			// Send the discovery message.
-			if configMsg != "" {
-				configTopic := fmt.Sprintf("homeassistant/%v/%v_%v_%v/config", mqttType, brd.Room, brd.Name, actionStr)
-				// Send empty message to delete HA entity.
-				if clean {
-					configMsg = ""
-				}
-				token := m.MQTTClient.Publish(configTopic, 0, true, configMsg)
-				token.Wait()
-				time.Sleep(1 * time.Second)
-				glog.Infof("%v:{{%v}}", configTopic, configMsg)
-			}
+			} // End of switch.
 		}
 	}
+
+	return nil
+}
+
+func (m *HomeAssistant) packAndSendEntityDiscovery(clean bool, v interface{}, mqttType string, discTopic string) error {
+	// Marshall string.
+	a, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	discMsg := string(a)
+
+	// Send empty message to delete HA entity.
+	if clean {
+		discMsg = ""
+	}
+	token := m.MQTTClient.Publish(discTopic, 0, true, discMsg)
+	token.Wait()
+	time.Sleep(300 * time.Millisecond)
+	glog.Infof("%v:%v", discTopic, discMsg)
 
 	return nil
 }

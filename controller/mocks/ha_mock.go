@@ -63,17 +63,17 @@ func (mr *MockHAMockRecorder) HAMessage() *gomock.Call {
 }
 
 // SendMotion mocks base method.
-func (m *MockHA) SendMotion(arg0 string, arg1 bool) error {
+func (m *MockHA) SendMotion(arg0, arg1 string, arg2 bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendMotion", arg0, arg1)
+	ret := m.ctrl.Call(m, "SendMotion", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SendMotion indicates an expected call of SendMotion.
-func (mr *MockHAMockRecorder) SendMotion(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockHAMockRecorder) SendMotion(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMotion", reflect.TypeOf((*MockHA)(nil).SendMotion), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMotion", reflect.TypeOf((*MockHA)(nil).SendMotion), arg0, arg1, arg2)
 }
 
 // SendSensorConfig mocks base method.
@@ -88,4 +88,18 @@ func (m *MockHA) SendSensorConfig(arg0 bool) error {
 func (mr *MockHAMockRecorder) SendSensorConfig(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendSensorConfig", reflect.TypeOf((*MockHA)(nil).SendSensorConfig), arg0)
+}
+
+// SendTemp mocks base method.
+func (m *MockHA) SendTemp(arg0, arg1 string, arg2, arg3 float32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendTemp", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendTemp indicates an expected call of SendTemp.
+func (mr *MockHAMockRecorder) SendTemp(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendTemp", reflect.TypeOf((*MockHA)(nil).SendTemp), arg0, arg1, arg2, arg3)
 }

@@ -50,18 +50,18 @@ func TestHASend(t *testing.T) {
 	}
 
 	// Test SendMotion.
-	m.EXPECT().Publish("giant/living/motion/state", gomock.Any(), false, "ON").Return(tk)
+	m.EXPECT().Publish("giant/living/b1/motion/state", gomock.Any(), false, "ON").Return(tk)
 	tk.EXPECT().Wait()
-	ha.SendMotion("living", true)
+	ha.SendMotion("living", "b1", true)
 
 	// Test Temp Humidity
-	m.EXPECT().Publish("giant/living/temp/state", gomock.Any(), false, "{\"temperature\":70.1,\"humidity\":45.3}").Return(tk)
+	m.EXPECT().Publish("giant/living/b1/temp/state", gomock.Any(), false, "{\"temperature\":70.1,\"humidity\":45.3}").Return(tk)
 	tk.EXPECT().Wait()
-	ha.SendTemp("living", 70.1, 45.3)
+	ha.SendTemp("living", "b1", 70.1, 45.3)
 }
 
 func TestHASendConfig(t *testing.T) {
-	cfg, e := core.NewConfig("./core/core.cfg.json")
+	cfg, e := core.NewConfig("./core/core.cfg.test.json")
 	if e != nil {
 		t.Errorf("failed to load config %v", e)
 	}
@@ -76,7 +76,18 @@ func TestHASendConfig(t *testing.T) {
 		CoreCfg:    cfg,
 	}
 
+	// Test if Entity MQTT config generation works.
 	m.EXPECT().Publish(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(tk)
 	tk.EXPECT().Wait().AnyTimes()
-	ha.SendSensorConfig(false)
+	if err := ha.SendSensorConfig(false); err != nil {
+		t.Errorf("Test failed %v", err)
+	}
+
+	// Test if clean entity works.
+	m.EXPECT().Publish(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(tk)
+	tk.EXPECT().Wait().AnyTimes()
+	if err := ha.SendSensorConfig(true); err != nil {
+		t.Errorf("Test failed %v", err)
+	}
+
 }

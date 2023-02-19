@@ -118,6 +118,20 @@ func (mr *MockMedusaCoreMockRecorder) GetBoardByAddr(arg0 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBoardByAddr", reflect.TypeOf((*MockMedusaCore)(nil).GetBoardByAddr), arg0)
 }
 
+// GetBoardByName mocks base method.
+func (m *MockMedusaCore) GetBoardByName(arg0 string) *core.Board {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBoardByName", arg0)
+	ret0, _ := ret[0].(*core.Board)
+	return ret0
+}
+
+// GetBoardByName indicates an expected call of GetBoardByName.
+func (mr *MockMedusaCoreMockRecorder) GetBoardByName(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBoardByName", reflect.TypeOf((*MockMedusaCore)(nil).GetBoardByName), arg0)
+}
+
 // GetBoardByRoom mocks base method.
 func (m *MockMedusaCore) GetBoardByRoom(arg0 string) []core.Board {
 	m.ctrl.T.Helper()

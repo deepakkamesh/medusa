@@ -29,7 +29,7 @@ func (c *Controller) motionRule(in chan core.Event) {
 			glog.Error("Cast of event to core.Motion failed")
 		}
 
-		if err := c.ha.SendMotion(board.Room, m.Motion); err != nil {
+		if err := c.ha.SendMotion(board.Room, board.Name, m.Motion); err != nil {
 			glog.Warningf("Failed to send motion event to HA:%v", err)
 		}
 

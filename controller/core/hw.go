@@ -116,6 +116,15 @@ func (f *Config) getBoardByAddr(addr []byte) *Board {
 	return nil
 }
 
+func (f *Config) getBoardByName(name string) *Board {
+	for _, v := range f.Boards {
+		if v.Name == name {
+			return v
+		}
+	}
+	return nil
+}
+
 func (f *Config) getBoardByRoom(room string) []Board {
 	boards := []Board{}
 	for _, v := range f.Boards {

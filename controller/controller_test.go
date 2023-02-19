@@ -67,6 +67,7 @@ func TestHAMsgHandler(t *testing.T) {
 	c.HAMsgHandler()
 }
 
+// Tests is messages from Medusa are routed to HA.
 func TestCoreMsgHandler(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -122,8 +123,8 @@ func TestCoreMsgHandler(t *testing.T) {
 
 	// Test Motion Events.
 	m.EXPECT().Event().AnyTimes().Return(eventChan)
-	h.EXPECT().SendMotion("living", true)
-	h.EXPECT().SendMotion("hallway-down", true)
+	h.EXPECT().SendMotion("living", "b1", true)
+	h.EXPECT().SendMotion("hallway-down", "b1", true)
 	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "living", Name: "b1"})
 	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down", Name: "b1"})
 

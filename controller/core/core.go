@@ -21,6 +21,7 @@ type MedusaCore interface {
 	StartCore()
 	Event() <-chan Event
 	GetBoardByAddr(b []byte) *Board
+	GetBoardByName(name string) *Board
 	GetBoardByRoom(room string) []Board
 	CoreConfig() *Config
 }
@@ -49,6 +50,11 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 // CoreConfig returns the core config struct.
 func (c *Core) CoreConfig() *Config {
 	return c.conf
+}
+
+// GetBoardByName returns board info.
+func (c *Core) GetBoardByName(name string) *Board {
+	return c.conf.getBoardByName(name)
 }
 
 // GetBoardByAddr returns board info.
