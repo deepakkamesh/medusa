@@ -125,13 +125,14 @@ func (f *Config) getBoardByName(name string) *Board {
 	return nil
 }
 
+// getBoardByRoom returns all the boards. If room is "all"
+// it returns all the boards.
 func (f *Config) getBoardByRoom(room string) []Board {
 	boards := []Board{}
 	for _, v := range f.Boards {
-		if v.Room != room {
-			continue
+		if v.Room == room || room == "all" {
+			boards = append(boards, *v)
 		}
-		boards = append(boards, *v)
 	}
 	return boards
 }
