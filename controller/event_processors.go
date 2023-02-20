@@ -1,12 +1,6 @@
 package controller
 
-import (
-	"reflect"
-
-	"github.com/deepakkamesh/medusa/controller/core"
-	"github.com/golang/glog"
-)
-
+/*
 func (c *Controller) motionRule(in chan core.Event) {
 
 	adj := make(map[string][]string)
@@ -34,7 +28,7 @@ func (c *Controller) motionRule(in chan core.Event) {
 		}
 
 		// Check if adjancey motion detected.
-		/*		highC := false
+				highC := false
 				for _, v := range adj[room] {
 					log, e := c.eventDB.GetEvent("motion", v, 150*time.Millisecond)
 					if e != nil {
@@ -51,7 +45,7 @@ func (c *Controller) motionRule(in chan core.Event) {
 					fmt.Println("high confidence motion", room)
 					return
 				}
-				fmt.Println("low confidence motion", room)*/
+				fmt.Println("low confidence motion", room)
 
 	}
-}
+}*/

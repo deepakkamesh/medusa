@@ -22,13 +22,6 @@ func TestHAMsgHandler(t *testing.T) {
 		t.Errorf("Failed init Controller %v", e)
 	}
 
-	// Startup Core.
-	m.EXPECT().StartCore()
-	h.EXPECT().Connect()
-	if err := c.Startup(); err != nil {
-		t.Errorf("Failed to startup Core: %v", err)
-	}
-
 	// Channel to send events from HA.
 	msgChan := make(chan controller.HAMsg)
 
@@ -67,8 +60,7 @@ func TestHAMsgHandler(t *testing.T) {
 	c.HAMsgHandler()
 }
 
-// Tests is messages from Medusa are routed to HA.
-func TestCoreMsgHandler(t *testing.T) {
+func TestEventTrigger(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -80,11 +72,36 @@ func TestCoreMsgHandler(t *testing.T) {
 		t.Errorf("Failed init Controller %v", e)
 	}
 
-	// Startup Core.
-	m.EXPECT().StartCore()
-	h.EXPECT().Connect()
-	if err := c.Startup(); err != nil {
-		t.Errorf("Failed to startup Core: %v", err)
+	boards := []core.Board{
+		{
+			Addr:    []byte{1, 2, 3},
+			Actions: []byte{0x02},
+		},
+		{
+			Addr:    []byte{1, 1, 1},
+			Actions: []byte{1},
+		},
+	}
+
+	m.EXPECT().GetBoardByRoom("all").AnyTimes().Return(boards)
+	m.EXPECT().Temp([]byte{1, 2, 3}).AnyTimes()
+	d := c.EventTrigger(300 * time.Millisecond)
+	time.Sleep(1 * time.Second)
+	d <- true
+
+}
+
+// Tests is messages from Medusa are routed to HA.
+func TestCoreMsgHandler(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m := mocks.NewMockMedusaCore(ctrl)
+	h := mocks.NewMockHA(ctrl)
+
+	c, e := controller.NewController(m, h, ":3344")
+	if e != nil {
+		t.Errorf("Failed init Controller %v", e)
 	}
 
 	// Send some events.
@@ -106,8 +123,17 @@ func TestCoreMsgHandler(t *testing.T) {
 		},
 		Motion: true,
 	}
+	p3 := core.Temp{
+		PktInfo: core.PktInfo{
+			BoardAddr:    []byte{2, 2, 2},
+			PipeAddr:     []byte{},
+			HardwareAddr: []byte{},
+		},
+		Temp:     71.1,
+		Humidity: 50.5,
+	}
 
-	pkts := []core.Event{p1, p2}
+	pkts := []core.Event{p1, p2, p3}
 
 	go func() {
 		i := 0
@@ -125,10 +151,9 @@ func TestCoreMsgHandler(t *testing.T) {
 	m.EXPECT().Event().AnyTimes().Return(eventChan)
 	h.EXPECT().SendMotion("living", "b1", true)
 	h.EXPECT().SendMotion("hallway-down", "b1", true)
+	h.EXPECT().SendTemp("hallway-down", "b1", float32(71.1), float32(50.5))
 	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "living", Name: "b1"})
 	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down", Name: "b1"})
-
-	// TODO: Add tests for other events.
 
 	c.CoreMsgHandler()
 }

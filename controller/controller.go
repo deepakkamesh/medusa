@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/deepakkamesh/medusa/controller/core"
@@ -33,8 +34,10 @@ func NewController(c core.MedusaCore, ha HA, httpPort string) (*Controller, erro
 		handlers: make(map[chan core.Event]func(chan core.Event)),
 	}
 
-	// Add handlers.
-	ct.handlers[make(chan core.Event)] = ct.motionRule
+	// Handlers can be used to process events before sending them their way.
+	// eg. prepocessing motion events or aggregating data etc.
+	// Example below (defined in event_processesor.go)
+	//ct.handlers[make(chan core.Event)] = ct.motionRule
 
 	return ct, nil
 }
@@ -53,10 +56,51 @@ func (c *Controller) Startup() error {
 		return err
 	}
 
+	// Startup Event Trigger
+	c.EventTrigger(10 * time.Second)
+
+	// Startup Handlers.
+	go c.CoreMsgHandler()
+	go c.HAMsgHandler()
+	if err := c.StartHTTP(); err != nil {
+		return fmt.Errorf("failed to start http server %v", err)
+	}
+
 	return nil
 }
 
-// CoreMsgHandler main loop.
+// EventTrigger requests events from sensors at regular interval.
+func (c *Controller) EventTrigger(dur time.Duration) chan bool {
+	done := make(chan bool)
+
+	go func() {
+		tick := time.NewTicker(dur)
+		for {
+			select {
+			case <-tick.C:
+				// TODO: Add other actions.
+				for _, brd := range c.core.GetBoardByRoom("all") {
+					switch {
+					case brd.IsActionCapable(core.ActionTemp):
+						if err := c.core.Temp(brd.Addr); err != nil {
+							glog.Errorf("Failed to get temp %v", err)
+						}
+
+					case brd.IsActionCapable(core.ActionLight):
+					}
+				}
+
+			case <-done:
+				return
+			}
+		}
+	}()
+
+	return done
+}
+
+// CoreMsgHandler main loop. This needs to be started separately (not in startup) so its
+// accessible in tests.
 func (c *Controller) CoreMsgHandler() {
 	for {
 		event, ok := <-c.core.Event()
@@ -93,6 +137,9 @@ func (c *Controller) CoreMsgHandler() {
 			if e := c.eventDB.LogEvent(eventLog{tmstmp, "humidity", f.Humidity, room, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
+			if err := c.ha.SendTemp(board.Room, board.Name, f.Temp, f.Humidity); err != nil {
+				glog.Errorf("Failed to send temp event to HA:%v", err)
+			}
 
 		case core.Motion:
 			glog.Infof("Event Motion addr:%v %v %t\n", core.PP2(addr), room, f.Motion)
@@ -102,6 +149,9 @@ func (c *Controller) CoreMsgHandler() {
 			}
 			if e := c.eventDB.LogEvent(eventLog{tmstmp, "motion", motion, room, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
+			}
+			if err := c.ha.SendMotion(board.Room, board.Name, f.Motion); err != nil {
+				glog.Errorf("Failed to send motion event to HA:%v", err)
 			}
 
 		case core.Door:
@@ -135,7 +185,8 @@ func (c *Controller) CoreMsgHandler() {
 	}
 }
 
-// HAMsgHandler main loop.
+// HAMsgHandler main loop.This needs to be started separately (not in startup) so its
+// accessible in tests.
 func (c *Controller) HAMsgHandler() {
 	for {
 		msg, ok := <-c.ha.HAMessage()

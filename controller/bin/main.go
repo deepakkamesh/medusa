@@ -47,10 +47,4 @@ func main() {
 	if err := ctrl.Startup(); err != nil {
 		glog.Fatalf("Failed to startup Controller:%v", err)
 	}
-
-	go ctrl.CoreMsgHandler()
-	go ctrl.HAMsgHandler()
-	if err := ctrl.StartHTTP(); err != nil {
-		glog.Fatalf("Failed to start http server %v", err)
-	}
 }
