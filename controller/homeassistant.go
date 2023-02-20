@@ -73,6 +73,7 @@ type MQSensorConfig struct {
 	Device      map[string]string `json:"device"`
 	ValueTempl  string            `json:"value_template"`
 	UnitMeasure string            `json:"unit_of_measurement"`
+	ForceUpdate bool              `json:"force_update"`
 }
 
 // MQSirenConfig represents the HA Binary Sensor.
@@ -296,12 +297,13 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 					StateTopic:  stateTopic,
 					UniqueID:    uniqueID,
 					Device:      device,
+					ForceUpdate: true,
 				}
 
 				// Set value template since Medusa sends both temp and humidity together.
 				if actionID == core.ActionTemp {
 					sensorConfig.ValueTempl = "{{ value_json.temperature }}"
-					sensorConfig.UnitMeasure = "F"
+					sensorConfig.UnitMeasure = "°F"
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
