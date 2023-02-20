@@ -55,7 +55,7 @@
          "Description":"board on r2-1",
          "Room":"test",
          "Name":"b1",
-         "Actions":[2,3]
+         "Actions":[]
       },
       {
          "Addr":[0x2,0x2,0x2],
@@ -65,7 +65,7 @@
          "Description":"board on relay1",
          "Room":"test",
          "Name":"b2",
-         "Actions":[2,3]
+         "Actions":[]
       },
       {
          "Addr":[0x1,0x2,0x1],

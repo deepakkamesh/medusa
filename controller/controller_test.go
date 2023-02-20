@@ -17,7 +17,7 @@ func TestHAMsgHandler(t *testing.T) {
 	m := mocks.NewMockMedusaCore(ctrl)
 	h := mocks.NewMockHA(ctrl)
 
-	c, e := controller.NewController(m, h, ":3344")
+	c, e := controller.NewController(m, h, ":3344", 1)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}
@@ -67,7 +67,7 @@ func TestEventTrigger(t *testing.T) {
 	m := mocks.NewMockMedusaCore(ctrl)
 	h := mocks.NewMockHA(ctrl)
 
-	c, e := controller.NewController(m, h, ":3344")
+	c, e := controller.NewController(m, h, ":3344", 1)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}
@@ -99,7 +99,7 @@ func TestCoreMsgHandler(t *testing.T) {
 	m := mocks.NewMockMedusaCore(ctrl)
 	h := mocks.NewMockHA(ctrl)
 
-	c, e := controller.NewController(m, h, ":3344")
+	c, e := controller.NewController(m, h, ":3344", 1)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}

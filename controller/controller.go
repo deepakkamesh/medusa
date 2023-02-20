@@ -14,10 +14,11 @@ type Controller struct {
 	eventDB  *EventDB                                  // Event log struct.
 	ha       HA                                        // HomeAssistant
 	handlers map[chan core.Event]func(chan core.Event) // rules is the array of rules functions.
+	pollInt  int                                       // Poll interval for sensors.
 
 }
 
-func NewController(c core.MedusaCore, ha HA, httpPort string) (*Controller, error) {
+func NewController(c core.MedusaCore, ha HA, httpPort string, pollInt int) (*Controller, error) {
 
 	// EventDB to hold recent events.
 	eventDB, err := NewEventDB()
@@ -32,6 +33,7 @@ func NewController(c core.MedusaCore, ha HA, httpPort string) (*Controller, erro
 		ha:       ha,
 		eventDB:  eventDB,
 		handlers: make(map[chan core.Event]func(chan core.Event)),
+		pollInt:  pollInt,
 	}
 
 	// Handlers can be used to process events before sending them their way.
@@ -57,7 +59,7 @@ func (c *Controller) Startup() error {
 	}
 
 	// Startup Event Trigger
-	c.EventTrigger(10 * time.Second)
+	c.EventTrigger(time.Duration(c.pollInt) * time.Second)
 
 	// Startup Handlers.
 	go c.CoreMsgHandler()

@@ -11,12 +11,13 @@ import (
 
 func main() {
 	var (
-		httpHostPort = flag.String("http_port", ":8080", "host port for http server")
-		hostPort     = flag.String("host_port", ":3334", "host port for medusa server")
-		cfgFname     = flag.String("core_conf", "core.cfg.test.json", "config file for core hardware")
-		mqttHost     = flag.String("mqtt_host", "homeassistant.local:1883", "hostport for home assistant")
-		mqUser       = flag.String("mq_user", "mq", "username for mqtt")
-		mqPass       = flag.String("mq_pass", "mqtt", "passwd for mqtt")
+		httpHostPort  = flag.String("http_port", ":8080", "host port for http server")
+		hostPort      = flag.String("host_port", ":3334", "host port for medusa server")
+		cfgFname      = flag.String("core_conf", "core.cfg.test.json", "config file for core hardware")
+		mqttHost      = flag.String("mqtt_host", "homeassistant.local:1883", "hostport for home assistant")
+		mqUser        = flag.String("mq_user", "mq", "username for mqtt")
+		mqPass        = flag.String("mq_pass", "mqtt", "passwd for mqtt")
+		sensorPollInt = flag.Int("poll_int", 90, "poll interval in seconds for sensors")
 	)
 
 	flag.Parse()
@@ -40,7 +41,7 @@ func main() {
 	ha := controller.NewHA(*mqttHost, *mqUser, *mqPass, core.CoreConfig())
 
 	//  Init Controller.
-	ctrl, err := controller.NewController(core, ha, *httpHostPort)
+	ctrl, err := controller.NewController(core, ha, *httpHostPort, *sensorPollInt)
 	if err != nil {
 		glog.Fatalf("Failed init controller %v", err)
 	}

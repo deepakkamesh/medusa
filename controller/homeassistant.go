@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -71,6 +72,7 @@ type MQSensorConfig struct {
 	UniqueID    string            `json:"unique_id"`
 	Device      map[string]string `json:"device"`
 	ValueTempl  string            `json:"value_template"`
+	UnitMeasure string            `json:"unit_of_measurement"`
 }
 
 // MQSirenConfig represents the HA Binary Sensor.
@@ -208,7 +210,9 @@ func (m *HomeAssistant) SendMotion(room string, name string, motion bool) error 
 
 // SendTemp sends Temp and Humidity to HA.
 func (m *HomeAssistant) SendTemp(room, name string, temp, humidity float32) error {
-	t := MQTempHumidity{temp, humidity}
+	te := float32(math.Floor(float64(temp)*10) / 10)
+	hu := float32(math.Floor(float64(humidity)*10) / 10)
+	t := MQTempHumidity{te, hu}
 
 	a, e := json.Marshal(t)
 	if e != nil {
@@ -297,6 +301,7 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 				// Set value template since Medusa sends both temp and humidity together.
 				if actionID == core.ActionTemp {
 					sensorConfig.ValueTempl = "{{ value_json.temperature }}"
+					sensorConfig.UnitMeasure = "F"
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
@@ -313,9 +318,10 @@ func (m *HomeAssistant) SendSensorConfig(clean bool) error {
 						UniqueID:    fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, "humidity"),
 						Device:      device,
 						ValueTempl:  "{{ value_json.humidity }}",
+						UnitMeasure: "%",
 					}
 
-					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
+					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, "humidity")); err != nil {
 						return err
 					}
 				}

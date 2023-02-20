@@ -54,8 +54,8 @@ func TestHASend(t *testing.T) {
 	tk.EXPECT().Wait()
 	ha.SendMotion("living", "b1", true)
 
-	// Test Temp Humidity
-	m.EXPECT().Publish("giant/living/b1/temp/state", gomock.Any(), false, "{\"temperature\":70.1,\"humidity\":45.3}").Return(tk)
+	// Test Temp Humidity. Rounds off to 1 precision point.
+	m.EXPECT().Publish("giant/living/b1/temp/state", gomock.Any(), false, "{\"temperature\":70,\"humidity\":45.2}").Return(tk)
 	tk.EXPECT().Wait()
 	ha.SendTemp("living", "b1", 70.1, 45.3)
 }
