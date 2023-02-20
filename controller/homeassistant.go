@@ -222,8 +222,6 @@ func (m *HomeAssistant) SendTemp(room, name string, temp, humidity float32) erro
 
 	topic := fmt.Sprintf(templTopicState, room, name, actStr)
 	return m.sendSensorData(topic, 0, false, string(a))
-
-	return nil
 }
 
 // Sends Data on the specified topic.
