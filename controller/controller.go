@@ -114,6 +114,12 @@ func (c *Controller) CoreMsgHandler() {
 		hwaddr := event.HWAddr()
 		tmstmp := time.Now()
 
+		// Handle any relay error events first, since they wont have any addr associated with them.
+		if coreError, ok := event.(core.Error); ok {
+			glog.Errorf("Event Error - Addr:%v Paddr:%v HWaddr:%v ErrorCode:%v \n", core.PP2(addr), core.PP2(paddr), core.PP2(addr), coreError.ErrCode)
+			continue
+		}
+
 		board := c.core.GetBoardByAddr(addr)
 
 		room := "unknown"
