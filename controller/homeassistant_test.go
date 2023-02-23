@@ -21,7 +21,7 @@ func TestHARecv(t *testing.T) {
 		HAMsg: hachan,
 	}
 
-	msg.EXPECT().Topic().Return("giant/living/buzzer/set")
+	msg.EXPECT().Topic().Return("giant/living/b1/buzzer/set")
 	msg.EXPECT().Payload().Return([]byte("{\"state\":\"true\"}"))
 
 	ha.MQTTPubHandler(nil, msg)
@@ -29,6 +29,9 @@ func TestHARecv(t *testing.T) {
 
 	if m.Action != "buzzer" {
 		t.Errorf("got %v want buzzer", m.Action)
+	}
+	if m.BoardName != "b1" {
+		t.Errorf("got %v want b1", m.BoardName)
 	}
 	if m.Room != "living" {
 		t.Errorf("got %v want living", m.Room)

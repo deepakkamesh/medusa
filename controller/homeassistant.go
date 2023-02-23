@@ -21,7 +21,8 @@ import (
 //go:generate mockgen -destination=./mocks/mqtt_mock_2.go -package=mocks  github.com/eclipse/paho.mqtt.golang Token
 //go:generate mockgen -destination=./mocks/mqtt_mock_3.go -package=mocks  github.com/eclipse/paho.mqtt.golang Message
 
-const topicSubscribe string = "giant/+/+/set"
+// Topics to listen from HA.
+const topicSubscribe string = "giant/+/+/+/set"
 
 var (
 	templTopicState   string = "giant/%v/%v/%v/state"             // room/board_name/action.
@@ -164,9 +165,10 @@ func (m *HomeAssistant) MQTTPubHandler(client mqtt.Client, msg mqtt.Message) {
 		MQMsg:     msg,
 		Room:      data[1],
 		BoardName: data[2],
-		Action:    data[2],
+		Action:    data[3],
 		State:     state,
 	}
+	glog.Infof("Got HA message - Room: %v Board:%v Action:%v State: %v", b.Room, b.BoardName, b.Action, b.State)
 	m.HAMsg <- b
 }
 
