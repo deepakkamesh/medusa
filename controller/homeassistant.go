@@ -40,7 +40,10 @@ type HA interface {
 	HAMessage() <-chan HAMsg
 	SendMotion(room string, name string, motion bool) error
 	SendTemp(room string, name string, temp, humidity float32) error
-	SendSensorConfig(clean bool) error
+	SendLight(room, name string, light float32) error
+	SendDoor(room, name string, open bool) error
+	SendVolt(room, name string, light float32) error
+	SendMQTTDiscoveryConfig(clean bool) error
 }
 
 // MQState represents the state json from HA MQ message.
@@ -231,6 +234,21 @@ func (m *HomeAssistant) SendTemp(room, name string, temp, humidity float32) erro
 	return m.sendSensorData(topic, 0, false, string(a))
 }
 
+// SendLight sends the light level in lux to HA.
+func (m *HomeAssistant) SendLight(room, name string, light float32) error {
+	return nil
+}
+
+// SendDoor sends contact sensor to HA.
+func (m *HomeAssistant) SendDoor(room, name string, open bool) error {
+	return nil
+}
+
+// SendVolt sends the voltage reading of board battery to HA.
+func (m *HomeAssistant) SendVolt(room, name string, light float32) error {
+	return nil
+}
+
 // Sends Data on the specified topic.
 func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg string) error {
 	if m.MQTTClient == nil {
@@ -243,8 +261,8 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 	return nil
 }
 
-// SendSensorConfig sends sensors via auto discovery.
-func (m *HomeAssistant) SendSensorConfig(clean bool) error {
+// SendMQTTDiscoveryConfig sends sensors and entities via auto discovery.
+func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 
 	if m.MQTTClient == nil {
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
@@ -371,12 +389,14 @@ func (m *HomeAssistant) packAndSendEntityDiscovery(clean bool, v interface{}, mq
 	return nil
 }
 
-// Returns HA device class for each ActionID.
+// Returns HA device class for each ActionID. Applies only to sensor or binary sensor.
 func DeviceClass(actionID byte) string {
 	m := map[byte]string{
 		0x01: "motion",
 		0x02: "temperature",
 		0x03: "light",
+		0x04: "door",
+		0x05: "voltage",
 	}
 
 	if v, ok := m[actionID]; ok {

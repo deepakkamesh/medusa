@@ -136,6 +136,7 @@ func (c *Controller) CoreMsgHandler() {
 			if e := c.eventDB.LogEvent(eventLog{tmstmp, "ping", 0, room, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
+		// TODO: Ping event needs to send updates on availability topic when device unavailable.
 
 		case core.Temp:
 			glog.Infof("Event Temp - Addr:%v temp:%v humi:%v\n", core.PP2(addr), f.Temp, f.Humidity)

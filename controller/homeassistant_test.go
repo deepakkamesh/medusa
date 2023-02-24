@@ -63,7 +63,7 @@ func TestHASend(t *testing.T) {
 	ha.SendTemp("living", "b1", 70.1, 45.3)
 }
 
-func TestHASendConfig(t *testing.T) {
+func TestMQTTDiscoveryConfig(t *testing.T) {
 	cfg, e := core.NewConfig("./core/core.cfg.test.json")
 	if e != nil {
 		t.Errorf("failed to load config %v", e)
@@ -82,14 +82,14 @@ func TestHASendConfig(t *testing.T) {
 	// Test if Entity MQTT config generation works.
 	m.EXPECT().Publish(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(tk)
 	tk.EXPECT().Wait().AnyTimes()
-	if err := ha.SendSensorConfig(false); err != nil {
+	if err := ha.SendMQTTDiscoveryConfig(false); err != nil {
 		t.Errorf("Test failed %v", err)
 	}
 
 	// Test if clean entity works.
 	m.EXPECT().Publish(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(tk)
 	tk.EXPECT().Wait().AnyTimes()
-	if err := ha.SendSensorConfig(true); err != nil {
+	if err := ha.SendMQTTDiscoveryConfig(true); err != nil {
 		t.Errorf("Test failed %v", err)
 	}
 

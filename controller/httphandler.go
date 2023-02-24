@@ -48,7 +48,7 @@ func (c *Controller) mqttConfigSend(w http.ResponseWriter, r *http.Request) {
 
 	clean, _ := strconv.ParseBool(strings.TrimSpace(r.Form.Get("clean")))
 
-	if err := c.ha.SendSensorConfig(clean); err != nil {
+	if err := c.ha.SendMQTTDiscoveryConfig(clean); err != nil {
 		writeErr(w, err.Error())
 		return
 	}
