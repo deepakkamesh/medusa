@@ -268,9 +268,12 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
 	}
 
+	// TODO: add actions in this list to generate config.
 	binarySensors := []byte{core.ActionMotion, core.ActionDoor}
 	sirens := []byte{core.ActionBuzzer}
-	sensors := []byte{core.ActionTemp}
+	sensors := []byte{core.ActionTemp, core.ActionLight, core.ActionVolt}
+	buttons := []byte{core.ActionReset}
+	_ = buttons
 
 	for _, brd := range m.CoreCfg.Boards {
 		for _, actionID := range brd.Actions {

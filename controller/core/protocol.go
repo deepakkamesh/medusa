@@ -24,6 +24,7 @@ const (
 	ActionLight       = 0x03
 	ActionDoor        = 0x04
 	ActionVolt        = 0x05
+	ActionVer         = 0x06
 	ActionBuzzer      = 0x10
 	ActionFactoryRst  = 0x11
 	ActionRelay       = 0x12
@@ -58,7 +59,13 @@ func ActionLookup(id byte, str string) (byte, string) {
 		0x03: "light",
 		0x04: "door",
 		0x05: "volt",
+		0x06: "ver",
 		0x10: "buzzer",
+		0x11: "FactoryRst",
+		0x12: "Relay",
+		0x13: "LED",
+		0x14: "Rst",
+		0x17: "FlushTXFIFO",
 	}
 
 	if id != 0 {
