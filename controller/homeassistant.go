@@ -278,6 +278,7 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
 	}
 
+	glog.Infof("Sending to HA %v : %v", topic, msg)
 	token := m.MQTTClient.Publish(topic, pri, retain, msg)
 	token.Wait()
 	time.Sleep(time.Second)
@@ -372,6 +373,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 						Device:      device,
 						ValueTempl:  "{{ value_json.humidity }}",
 						UnitMeasure: "%",
+						ForceUpdate: true,
 					}
 
 					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, "humidity")); err != nil {
@@ -426,7 +428,7 @@ func DeviceClass(actionID byte) string {
 	m := map[byte]string{
 		0x01: "motion",
 		0x02: "temperature",
-		0x03: "light",
+		0x03: "illuminance",
 		0x04: "door",
 		0x05: "voltage",
 	}

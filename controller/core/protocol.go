@@ -65,6 +65,7 @@ func ActionLookup(id byte, str string) (byte, string) {
 		0x12: "Relay",
 		0x13: "LED",
 		0x14: "Rst",
+		0x16: "Test",
 		0x17: "FlushTXFIFO",
 	}
 
