@@ -1,5 +1,12 @@
 package controller
 
+import (
+	"time"
+
+	"github.com/deepakkamesh/medusa/controller/core"
+	"github.com/golang/glog"
+)
+
 /*
 func (c *Controller) motionRule(in chan core.Event) {
 
@@ -49,3 +56,33 @@ func (c *Controller) motionRule(in chan core.Event) {
 
 	}
 }*/
+
+// EventProcessorPingCheck calls HA and sets entities offline if ping is not received within timeout.
+func (c *Controller) EventProcessorPingCheck(in chan core.Event) {
+	tick := time.NewTicker(c.pingTimeout)
+	for {
+		select {
+		case _, ok := <-in:
+			if !ok {
+				return
+			}
+
+		case <-tick.C:
+			cfg := c.core.CoreConfig()
+			for _, b := range cfg.Boards {
+
+				events, err := c.eventDB.GetEvent("ping", b.Room, b.Name, c.pingTimeout)
+				if err != nil {
+					glog.Errorf("Error reading from events log DB:%v", err)
+					continue
+				}
+
+				if len(events) != 0 {
+					continue
+				}
+
+				c.ha.SendAvail(b.Room, b.Name, "offline")
+			}
+		}
+	}
+}

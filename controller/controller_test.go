@@ -16,8 +16,9 @@ func TestHAMsgHandler(t *testing.T) {
 
 	m := mocks.NewMockMedusaCore(ctrl)
 	h := mocks.NewMockHA(ctrl)
+	ev, _ := controller.NewEventDB()
 
-	c, e := controller.NewController(m, h, ":3344", 1)
+	c, e := controller.NewController(m, h, ev, ":3344", 1, 1)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}
@@ -66,8 +67,9 @@ func TestEventTrigger(t *testing.T) {
 
 	m := mocks.NewMockMedusaCore(ctrl)
 	h := mocks.NewMockHA(ctrl)
+	ev, _ := controller.NewEventDB()
 
-	c, e := controller.NewController(m, h, ":3344", 1)
+	c, e := controller.NewController(m, h, ev, ":3344", 1, 1)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}
@@ -85,7 +87,7 @@ func TestEventTrigger(t *testing.T) {
 
 	m.EXPECT().GetBoardByRoom("all").AnyTimes().Return(boards)
 	m.EXPECT().Temp([]byte{1, 2, 3}).AnyTimes()
-	d := c.EventTrigger(300 * time.Millisecond)
+	d := c.SensorDataReq(300 * time.Millisecond)
 	time.Sleep(1 * time.Second)
 	d <- true
 
@@ -98,8 +100,9 @@ func TestCoreMsgHandler(t *testing.T) {
 
 	m := mocks.NewMockMedusaCore(ctrl)
 	h := mocks.NewMockHA(ctrl)
+	ev, _ := controller.NewEventDB()
 
-	c, e := controller.NewController(m, h, ":3344", 1)
+	c, e := controller.NewController(m, h, ev, ":3344", 1, 1)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}
@@ -156,4 +159,36 @@ func TestCoreMsgHandler(t *testing.T) {
 	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down", Name: "b1"})
 
 	c.CoreMsgHandler()
+}
+
+// TestEventProcessorPingCheck checks if the PingCheck event processor sets the board offline if ping is late.
+func TestEventProcessorPingCheck(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m := mocks.NewMockMedusaCore(ctrl)
+	h := mocks.NewMockHA(ctrl)
+	ev, _ := controller.NewEventDB()
+
+	c, e := controller.NewController(m, h, ev, ":3344", 1, 500*time.Millisecond)
+	if e != nil {
+		t.Errorf("Failed init Controller %v", e)
+	}
+
+	m.EXPECT().CoreConfig().AnyTimes().Return(&core.Config{
+		Relays: []*core.Relay{},
+		Boards: []*core.Board{
+			{Room: "living", Name: "b1", Addr: []byte{1, 1, 1}, Actions: []byte{0x01}},
+		},
+	})
+
+	h.EXPECT().SendAvail("living", "b1", "offline").MinTimes(1)
+
+	// Add a ping event 500ms older to trigger a offline message.
+	ev.LogEvent(controller.EventLog{time.Now().Add(-500 * time.Millisecond), "ping", 0, "living", "b1", []byte{1, 1, 1}})
+
+	eventChan := make(chan core.Event)
+	go c.EventProcessorPingCheck(eventChan)
+	time.Sleep(1 * time.Second)
+	close(eventChan)
 }

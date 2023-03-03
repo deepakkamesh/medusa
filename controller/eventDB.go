@@ -15,15 +15,17 @@ const createSQL string = `
   metric TEXT NOT NULL,
 	value REAL NOT NULL,
 	room TEXT NOT NULL,
+	name TEXT NOT NULL,
 	addr BLOB NOT NULL
   );`
 
-type eventLog struct {
-	tmstmp time.Time
-	metric string
-	value  float32
-	room   string
-	addr   []byte
+type EventLog struct {
+	Tmstmp time.Time
+	Metric string  // Metric type. eg. Temperature.
+	Value  float32 // value of metric.
+	Room   string  // Room assigned to board.
+	Name   string  // Board Name.
+	Addr   []byte  // Addr of board.
 }
 
 type EventDB struct {
@@ -43,30 +45,37 @@ func NewEventDB() (*EventDB, error) {
 	}, nil
 }
 
-func (e *EventDB) LogEvent(ev eventLog) error {
-
-	_, err := e.db.Exec("INSERT INTO events VALUES(NULL,?,?,?,?,?);", ev.tmstmp, ev.metric, ev.value, ev.room, ev.addr)
+func (e *EventDB) LogEvent(ev EventLog) error {
+	_, err := e.db.Exec("INSERT INTO events VALUES(NULL,?,?,?,?,?,?);", ev.Tmstmp, ev.Metric, ev.Value, ev.Room, ev.Name, ev.Addr)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// returns any event from room in the last secs.
-func (e *EventDB) GetEvent(metric string, room string, last time.Duration) ([]eventLog, error) {
-	qry := "SELECT * FROM events WHERE metric = ? AND room = ? AND tmstmp > ? ORDER BY tmstmp"
-	rows, err := e.db.Query(qry, metric, room, time.Now().Add(-last))
+func (e *EventDB) PurgeEvent(ev EventLog) error {
+	_, err := e.db.Exec("DELETE from events")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetEvent returns any event from room, name in the last duration.
+func (e *EventDB) GetEvent(metric string, room string, name string, last time.Duration) ([]EventLog, error) {
+	qry := "SELECT * FROM events WHERE metric = ? AND room = ? AND name = ? AND tmstmp > ? ORDER BY tmstmp"
+	rows, err := e.db.Query(qry, metric, room, name, time.Now().Add(-last))
 
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	evLogs := []eventLog{}
+	evLogs := []EventLog{}
 	id := 0
 	for rows.Next() {
-		i := eventLog{}
-		err = rows.Scan(&id, &i.tmstmp, &i.metric, &i.value, &i.room, &i.addr)
+		i := EventLog{}
+		err = rows.Scan(&id, &i.Tmstmp, &i.Metric, &i.Value, &i.Room, &i.Name, &i.Addr)
 		if err != nil {
 			return nil, err
 		}
@@ -75,6 +84,6 @@ func (e *EventDB) GetEvent(metric string, room string, last time.Duration) ([]ev
 	return evLogs, nil
 }
 
-func PP(e eventLog) {
-	fmt.Printf("%v %v %v %v %v\n", e.tmstmp, e.metric, e.value, e.room, e.addr)
+func PP(e EventLog) {
+	fmt.Printf("%v %v %v %v %v %v\n", e.Tmstmp, e.Metric, e.Value, e.Room, e.Name, e.Addr)
 }

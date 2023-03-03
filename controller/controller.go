@@ -9,47 +9,36 @@ import (
 )
 
 type Controller struct {
-	httpPort string                                    // http port.
-	core     core.MedusaCore                           // medusa Core struct.
-	eventDB  *EventDB                                  // Event log struct.
-	ha       HA                                        // HomeAssistant
-	handlers map[chan core.Event]func(chan core.Event) // rules is the array of rules functions.
-	pollInt  int                                       // Poll interval for sensors.
-
+	httpPort    string                                    // http port.
+	core        core.MedusaCore                           // medusa Core struct.
+	eventDB     *EventDB                                  // Event log struct.
+	ha          HA                                        // HomeAssistant
+	eventProcs  map[chan core.Event]func(chan core.Event) // eventProcs is the array of event processors.
+	pollInt     time.Duration                             // Poll interval for sensors in seconds.
+	pingTimeout time.Duration                             // Ping timeout before a board is considered dead.
 }
 
-func NewController(c core.MedusaCore, ha HA, httpPort string, pollInt int) (*Controller, error) {
-
-	// EventDB to hold recent events.
-	eventDB, err := NewEventDB()
-	if err != nil {
-		return nil, err
-	}
-
+// NewController returns a new initialized controller.
+func NewController(c core.MedusaCore, ha HA, eventDB *EventDB, httpPort string, pollInt, pingTimeout time.Duration) (*Controller, error) {
 	// Initialize controller.
 	ct := &Controller{
-		core:     c,
-		httpPort: httpPort,
-		ha:       ha,
-		eventDB:  eventDB,
-		handlers: make(map[chan core.Event]func(chan core.Event)),
-		pollInt:  pollInt,
+		core:        c,
+		httpPort:    httpPort,
+		ha:          ha,
+		eventDB:     eventDB,
+		eventProcs:  make(map[chan core.Event]func(chan core.Event)),
+		pollInt:     pollInt,
+		pingTimeout: pingTimeout,
 	}
-
-	// Handlers can be used to process events before sending them their way.
-	// eg. prepocessing motion events or aggregating data etc.
-	// Example below (defined in event_processesor.go)
-	//ct.handlers[make(chan core.Event)] = ct.motionRule
-
 	return ct, nil
 }
 
-// Startup Controller.
+// Startup starts the Controller.
 func (c *Controller) Startup() error {
 	c.core.StartCore()
 
-	// Startup handlers.
-	for c, f := range c.handlers {
+	// Startup EventProcessors.
+	for c, f := range c.eventProcs {
 		go f(c)
 	}
 
@@ -59,7 +48,7 @@ func (c *Controller) Startup() error {
 	}
 
 	// Startup Event Trigger
-	c.EventTrigger(time.Duration(c.pollInt) * time.Second)
+	c.SensorDataReq(c.pollInt)
 
 	// Startup Handlers.
 	go c.CoreMsgHandler()
@@ -71,8 +60,17 @@ func (c *Controller) Startup() error {
 	return nil
 }
 
-// EventTrigger requests events from sensors at regular interval.
-func (c *Controller) EventTrigger(dur time.Duration) chan bool {
+// AddEventProcessor adds event processor routines to be run.
+func (c *Controller) AddEventProcessor(f func(chan core.Event)) {
+	// Handlers can be used to process events before sending them their way.
+	// eg. prepocessing motion events or aggregating data etc.
+	// Example below (defined in event_processesor.go)
+	//ct.handlers[make(chan core.Event)] = ct.motionRule
+	c.eventProcs[make(chan core.Event)] = f
+}
+
+// SensorDataReq requests events from sensors at regular interval.
+func (c *Controller) SensorDataReq(dur time.Duration) chan bool {
 	done := make(chan bool)
 
 	go func() {
@@ -116,34 +114,35 @@ func (c *Controller) CoreMsgHandler() {
 
 		// Handle any relay error events first, since they wont have any addr associated with them.
 		if coreError, ok := event.(core.Error); ok {
-			glog.Errorf("Event Error - Addr:%v Paddr:%v HWaddr:%v ErrorCode:%v \n", core.PP2(addr), core.PP2(paddr), core.PP2(addr), coreError.ErrCode)
+			glog.Errorf("Event Error - Addr:%v Paddr:%v HWaddr:%v ErrorCode:%v \n",
+				core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr), coreError.ErrCode)
 			continue
 		}
 
 		board := c.core.GetBoardByAddr(addr)
 
-		room := "unknown"
 		if board == nil {
-			glog.Warningf("Unable to locate board pkt Addr:%v Paddr:%v HWaddr:%v\n", core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr))
+			glog.Warningf("Unable to locate board pkt Addr:%v Paddr:%v HWaddr:%v\n",
+				core.PP2(addr), core.PP2(paddr), core.PP2(hwaddr))
 			continue
 		}
-		room = board.Room
+		room := board.Room
+		name := board.Name
 
 		// Log Event.
 		switch f := event.(type) {
 		case core.Ping:
 			glog.Infof("Event Ping -  Addr:%v\n", core.PP2(addr))
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "ping", 0, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "ping", 0, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
-		// TODO: Ping event needs to send updates on availability topic when device unavailable.
 
 		case core.Temp:
 			glog.Infof("Event Temp - Addr:%v temp:%v humi:%v\n", core.PP2(addr), f.Temp, f.Humidity)
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "temp", f.Temp, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "temperature", f.Temp, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "humidity", f.Humidity, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "humidity", f.Humidity, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
 			if err := c.ha.SendTemp(board.Room, board.Name, f.Temp, f.Humidity); err != nil {
@@ -156,7 +155,7 @@ func (c *Controller) CoreMsgHandler() {
 			if f.Motion {
 				motion = 1
 			}
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "motion", motion, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "motion", motion, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
 			if err := c.ha.SendMotion(board.Room, board.Name, f.Motion); err != nil {
@@ -169,33 +168,32 @@ func (c *Controller) CoreMsgHandler() {
 			if f.Door {
 				door = 1
 			}
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "door", door, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "door", door, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
 
 		case core.Volt:
 			glog.Infof("Event Volt - addr:%v volts:%v", core.PP2(addr), f.Volt)
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "volt", f.Volt, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "voltage", f.Volt, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
 
 		case core.Light:
 			glog.Infof("Event Light - addr:%v light:%v", core.PP2(addr), f.Light)
-			if e := c.eventDB.LogEvent(eventLog{tmstmp, "light", f.Light, room, addr}); e != nil {
+			if e := c.eventDB.LogEvent(EventLog{tmstmp, "light", f.Light, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
 		}
 
 		// Send event to all rules engines only after logging into eventDB first.
-		for ch, f := range c.handlers {
+		for ch, f := range c.eventProcs {
 			_ = f
 			ch <- event
 		}
 	}
 }
 
-// HAMsgHandler main loop.This needs to be started separately (not in startup) so its
-// accessible in tests.
+// HAMsgHandler main loop.
 func (c *Controller) HAMsgHandler() {
 	for {
 		msg, ok := <-c.ha.HAMessage()
@@ -208,13 +206,15 @@ func (c *Controller) HAMsgHandler() {
 		brds := c.core.GetBoardByRoom(msg.Room)
 
 		for _, brd := range brds {
-			if brd.IsActionCapable(actionID) {
-
-				switch actionID {
-				case core.ActionBuzzer:
-					c.core.BuzzerOn(brd.Addr, msg.State, 100)
-				}
+			if !brd.IsActionCapable(actionID) {
+				continue
 			}
+
+			switch actionID {
+			case core.ActionBuzzer:
+				c.core.BuzzerOn(brd.Addr, msg.State, 100)
+			}
+
 		}
 	}
 }
