@@ -135,8 +135,14 @@ func TestCoreMsgHandler(t *testing.T) {
 		Temp:     71.1,
 		Humidity: 50.5,
 	}
-
-	pkts := []core.Event{p1, p2, p3}
+	p4 := core.Ping{
+		PktInfo: core.PktInfo{
+			BoardAddr:    []byte{1, 1, 1},
+			PipeAddr:     []byte{},
+			HardwareAddr: []byte{},
+		},
+	}
+	pkts := []core.Event{p1, p2, p3, p4}
 
 	go func() {
 		i := 0
@@ -155,6 +161,7 @@ func TestCoreMsgHandler(t *testing.T) {
 	h.EXPECT().SendMotion("living", "b1", true)
 	h.EXPECT().SendMotion("hallway-down", "b1", true)
 	h.EXPECT().SendTemp("hallway-down", "b1", float32(71.1), float32(50.5))
+	h.EXPECT().SendAvail("living", "b1", "online")
 	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "living", Name: "b1"})
 	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down", Name: "b1"})
 

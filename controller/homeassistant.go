@@ -26,18 +26,22 @@ const topicSubscribe string = "giant/+/+/+/set"
 
 var (
 	templTopicState   string = "giant/%v/%v/%v/state"             // room/board_name/action.
+	templTopicAvail   string = "giant/%v/%v/avail"                // room/board_name/action.
 	templTopicConfig  string = "homeassistant/%v/%v_%v_%v/config" //Sensor type/room/board_name/action
 	templTopicCommand string = "giant/%v/%v/%v/set"               // room/board_name/action
 	templEntityName   string = "%v %v"
 	templEntityUniqID string = "%v_%v_%v"
 	templEntityObjID  string = "%v_%v_%v"
 	templDeviceName   string = "%v_%v"
+	payloadOnline     string = "online"
+	payloadOffline    string = "offline"
 )
 
 // HA represents HomeAssistant Interface.
 type HA interface {
 	Connect() error
 	HAMessage() <-chan HAMsg
+	SendAvail(room string, name string, avail string) error
 	SendMotion(room string, name string, motion bool) error
 	SendTemp(room string, name string, temp, humidity float32) error
 	SendLight(room, name string, light float32) error
@@ -65,6 +69,7 @@ type MQBinarySensorConfig struct {
 	StateTopic  string            `json:"state_topic"`
 	UniqueID    string            `json:"unique_id"`
 	Device      map[string]string `json:"device"`
+	AvailTopic  string            `json:"availability_topic"`
 }
 
 // MQSensorConfig represents a HA Sensor.
@@ -78,9 +83,10 @@ type MQSensorConfig struct {
 	ValueTempl  string            `json:"value_template"`
 	UnitMeasure string            `json:"unit_of_measurement"`
 	ForceUpdate bool              `json:"force_update"`
+	AvailTopic  string            `json:"availability_topic"`
 }
 
-// MQSirenConfig represents the HA Binary Sensor.
+// MQSirenConfig represents the HA Siren.
 type MQSirenConfig struct {
 	Name         string            `json:"name"`
 	ObjectID     string            `json:"object_id"`
@@ -89,6 +95,7 @@ type MQSirenConfig struct {
 	Device       map[string]string `json:"device"`
 	PayloadOn    string            `json:"payload_on"`
 	PayloadOff   string            `json:"payload_off"`
+	AvailTopic   string            `json:"availability_topic"`
 }
 
 // Struct to hold message from HA.
@@ -199,6 +206,22 @@ func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
 	glog.Fatalf("Giving up on MQTT connection. Exiting..")
 }
 
+// SetAvail sets the availability on all the entities on the dev board.
+func (m *HomeAssistant) SendAvail(room string, name string, avail string) error {
+
+	for _, brd := range m.CoreCfg.Boards {
+		if brd.Name != name {
+			continue
+		}
+
+		// Send availability topic to offline for all entities for the device. This topic
+		// is shared between all entities on the device.
+		topic := fmt.Sprintf(templTopicAvail, room, name)
+		return m.sendSensorData(topic, 0, false, avail)
+	}
+	return nil
+}
+
 // SendMotion sends motion event to HA.
 func (m *HomeAssistant) SendMotion(room string, name string, motion bool) error {
 	state := "OFF"
@@ -290,6 +313,8 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 			uniqueID := fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, actionStr)
 			stateTopic := fmt.Sprintf(templTopicState, brd.Room, brd.Name, actionStr)
 			commandTopic := fmt.Sprintf(templTopicCommand, brd.Room, brd.Name, actionStr)
+			availTopic := fmt.Sprintf(templTopicAvail, brd.Room, brd.Name) // availTopic is shared by all entities.
+
 			device := map[string]string{
 				"identifiers":    core.PP2(brd.Addr),
 				"suggested_area": brd.Room,
@@ -304,6 +329,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					ObjectID:    objectID,
 					DeviceClass: DeviceClass(actionID),
 					StateTopic:  stateTopic,
+					AvailTopic:  availTopic,
 					UniqueID:    uniqueID,
 					Device:      device,
 				}
@@ -318,6 +344,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					ObjectID:    objectID,
 					DeviceClass: DeviceClass(actionID),
 					StateTopic:  stateTopic,
+					AvailTopic:  availTopic,
 					UniqueID:    uniqueID,
 					Device:      device,
 					ForceUpdate: true,
@@ -340,6 +367,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 						ObjectID:    fmt.Sprintf(templEntityObjID, brd.Room, brd.Name, "humidity"),
 						DeviceClass: "humidity",
 						StateTopic:  stateTopic, // State topic is shared with temperature entity.
+						AvailTopic:  availTopic,
 						UniqueID:    fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, "humidity"),
 						Device:      device,
 						ValueTempl:  "{{ value_json.humidity }}",
@@ -356,6 +384,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					Name:         name,
 					ObjectID:     objectID,
 					CommandTopic: commandTopic,
+					AvailTopic:   availTopic,
 					UniqueID:     uniqueID,
 					PayloadOn:    "true",
 					PayloadOff:   "false",

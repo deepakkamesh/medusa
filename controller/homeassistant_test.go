@@ -47,9 +47,14 @@ func TestHASend(t *testing.T) {
 
 	m := mocks.NewMockClient(ctrl)
 	tk := mocks.NewMockToken(ctrl)
-
 	ha := controller.HomeAssistant{
 		MQTTClient: m,
+		CoreCfg: &core.Config{
+			Relays: []*core.Relay{},
+			Boards: []*core.Board{
+				{Room: "living", Name: "b1", Addr: []byte{1, 1, 1}, Actions: []byte{0x01, 0x02}},
+			},
+		},
 	}
 
 	// Test SendMotion.
@@ -61,6 +66,11 @@ func TestHASend(t *testing.T) {
 	m.EXPECT().Publish("giant/living/b1/temp/state", gomock.Any(), false, "{\"temperature\":70,\"humidity\":45.2}").Return(tk)
 	tk.EXPECT().Wait()
 	ha.SendTemp("living", "b1", 70.1, 45.3)
+
+	// Test ping events.
+	m.EXPECT().Publish("giant/living/b1/avail", gomock.Any(), false, "offline").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendAvail("living", "b1", "offline")
 }
 
 func TestMQTTDiscoveryConfig(t *testing.T) {

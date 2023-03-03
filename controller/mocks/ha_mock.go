@@ -62,6 +62,20 @@ func (mr *MockHAMockRecorder) HAMessage() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HAMessage", reflect.TypeOf((*MockHA)(nil).HAMessage))
 }
 
+// SendAvail mocks base method.
+func (m *MockHA) SendAvail(arg0, arg1, arg2 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendAvail", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendAvail indicates an expected call of SendAvail.
+func (mr *MockHAMockRecorder) SendAvail(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendAvail", reflect.TypeOf((*MockHA)(nil).SendAvail), arg0, arg1, arg2)
+}
+
 // SendDoor mocks base method.
 func (m *MockHA) SendDoor(arg0, arg1 string, arg2 bool) error {
 	m.ctrl.T.Helper()
