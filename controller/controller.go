@@ -136,6 +136,9 @@ func (c *Controller) CoreMsgHandler() {
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "ping", 0, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
+			if err := c.ha.SendAvail(board.Room, board.Name, payloadOnline); err != nil {
+				glog.Errorf("Failed to send ping event to HA:%v", err)
+			}
 
 		case core.Temp:
 			glog.Infof("Event Temp - Addr:%v temp:%v humi:%v\n", core.PP2(addr), f.Temp, f.Humidity)
@@ -171,17 +174,26 @@ func (c *Controller) CoreMsgHandler() {
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "door", door, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
+			if err := c.ha.SendDoor(board.Room, board.Name, f.Door); err != nil {
+				glog.Errorf("Failed to send door event to HA:%v", err)
+			}
 
 		case core.Volt:
 			glog.Infof("Event Volt - addr:%v volts:%v", core.PP2(addr), f.Volt)
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "voltage", f.Volt, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
+			if err := c.ha.SendVolt(board.Room, board.Name, f.Volt); err != nil {
+				glog.Errorf("Failed to send volt event to HA:%v", err)
+			}
 
 		case core.Light:
 			glog.Infof("Event Light - addr:%v light:%v", core.PP2(addr), f.Light)
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "light", f.Light, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
+			}
+			if err := c.ha.SendLight(board.Room, board.Name, f.Light); err != nil {
+				glog.Errorf("Failed to send light event to HA:%v", err)
 			}
 		}
 

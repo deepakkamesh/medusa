@@ -81,7 +81,7 @@ func (c *Controller) EventProcessorPingCheck(in chan core.Event) {
 					continue
 				}
 
-				c.ha.SendAvail(b.Room, b.Name, "offline")
+				c.ha.SendAvail(b.Room, b.Name, payloadOffline)
 			}
 		}
 	}
