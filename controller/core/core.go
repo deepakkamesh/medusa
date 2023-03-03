@@ -14,6 +14,7 @@ type MedusaCore interface {
 	Action(addr []byte, actionID byte, data []byte) error
 	Light(addr []byte) error
 	Temp(addr []byte) error
+	Volt(addr []byte) error
 	LEDOn(addr []byte, on bool) error
 	BuzzerOn(addr []byte, on bool, d int) error
 	BoardConfig(addr []byte, paddr []byte, hwaddr []byte, naddr []byte) error
@@ -103,6 +104,11 @@ func (c *Core) Light(addr []byte) error {
 // Temp - temp and humidity.
 func (c *Core) Temp(addr []byte) error {
 	return c.Action(addr, ActionTemp, []byte{})
+}
+
+// Volt gets the voltage of the board.
+func (c *Core) Volt(addr []byte) error {
+	return c.Action(addr, ActionVolt, []byte{})
 }
 
 // Sets buzzer on/off.

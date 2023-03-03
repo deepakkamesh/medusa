@@ -281,7 +281,6 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 	glog.Infof("Sending to HA %v : %v", topic, msg)
 	token := m.MQTTClient.Publish(topic, pri, retain, msg)
 	token.Wait()
-	time.Sleep(time.Second)
 	return nil
 }
 

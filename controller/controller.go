@@ -78,16 +78,26 @@ func (c *Controller) SensorDataReq(dur time.Duration) chan bool {
 		for {
 			select {
 			case <-tick.C:
-				// TODO: Add other actions.
 				for _, brd := range c.core.GetBoardByRoom("all") {
-					switch {
-					case brd.IsActionCapable(core.ActionTemp):
+
+					if brd.IsActionCapable(core.ActionTemp) {
 						if err := c.core.Temp(brd.Addr); err != nil {
 							glog.Errorf("Failed to get temp %v", err)
 						}
-
-					case brd.IsActionCapable(core.ActionLight):
 					}
+
+					if brd.IsActionCapable(core.ActionLight) {
+						if err := c.core.Light(brd.Addr); err != nil {
+							glog.Errorf("Failed to get light %v", err)
+						}
+					}
+
+					if brd.IsActionCapable(core.ActionVolt) {
+						if err := c.core.Volt(brd.Addr); err != nil {
+							glog.Errorf("Failed to get volt%v", err)
+						}
+					}
+
 				}
 
 			case <-done:
