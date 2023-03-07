@@ -142,7 +142,7 @@ func (c *Controller) CoreMsgHandler() {
 		// Log Event.
 		switch f := event.(type) {
 		case core.Ping:
-			glog.Infof("Event Ping -  Addr:%v\n", core.PP2(addr))
+			glog.Infof("Event Ping - Addr:%v\n", core.PP2(addr))
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "ping", 0, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
@@ -163,7 +163,7 @@ func (c *Controller) CoreMsgHandler() {
 			}
 
 		case core.Motion:
-			glog.Infof("Event Motion addr:%v %v %t\n", core.PP2(addr), room, f.Motion)
+			glog.Infof("Event Motion - Addr:%v %v %t\n", core.PP2(addr), room, f.Motion)
 			var motion float32
 			if f.Motion {
 				motion = 1
@@ -176,7 +176,7 @@ func (c *Controller) CoreMsgHandler() {
 			}
 
 		case core.Door:
-			glog.Infof("Event Door addr:%v %v %t\n", core.PP2(addr), room, f.Door)
+			glog.Infof("Event Door - Addr:%v %v %t\n", core.PP2(addr), room, f.Door)
 			var door float32
 			if f.Door {
 				door = 1
@@ -189,7 +189,7 @@ func (c *Controller) CoreMsgHandler() {
 			}
 
 		case core.Volt:
-			glog.Infof("Event Volt - addr:%v volts:%v", core.PP2(addr), f.Volt)
+			glog.Infof("Event Volt - Addr:%v volts:%v", core.PP2(addr), f.Volt)
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "voltage", f.Volt, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
@@ -198,7 +198,7 @@ func (c *Controller) CoreMsgHandler() {
 			}
 
 		case core.Light:
-			glog.Infof("Event Light - addr:%v light:%v", core.PP2(addr), f.Light)
+			glog.Infof("Event Light - Addr:%v light:%v", core.PP2(addr), f.Light)
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "light", f.Light, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}

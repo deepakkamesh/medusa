@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -44,7 +45,7 @@ func NewCore(hostPort string, cfgFname string) (*Core, error) {
 	return &Core{
 		hostPort: hostPort,
 		conf:     config,
-		event:    make(chan Event),
+		event:    make(chan Event, 50),
 	}, nil
 }
 
@@ -88,8 +89,10 @@ func (c *Core) Action(addr []byte, actionID byte, data []byte) error {
 
 	pkt := makePktTypeActionReq(actionID, brd.Addr, brd.PAddr, data)
 	glog.Info(PP(pkt, "PktTypeActionReq:"))
-
+	// TODO: Packets sent too fast to the same relay can corrupt. Need a delay or
+	// some guarantee of staggered request.(quick fix is to sleep).
 	_, err := relay.conn.Write(pkt)
+	time.Sleep(300 * time.Millisecond)
 	if err != nil {
 		return err
 	}

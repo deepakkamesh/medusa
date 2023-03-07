@@ -278,7 +278,7 @@ func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg 
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
 	}
 
-	glog.Infof("Sending to HA %v : %v", topic, msg)
+	glog.Infof("Publish to mqtt-HA %v : %v", topic, msg)
 	token := m.MQTTClient.Publish(topic, pri, retain, msg)
 	token.Wait()
 	return nil
