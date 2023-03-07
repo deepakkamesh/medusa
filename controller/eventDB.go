@@ -33,7 +33,7 @@ type EventDB struct {
 }
 
 func NewEventDB() (*EventDB, error) {
-	db, err := sql.Open("sqlite", ":memory:")
+	db, err := sql.Open("sqlite", ":memory:?cache=shared") // see https://github.com/mattn/go-sqlite3/blob/master/README.md#faq
 	if err != nil {
 		return nil, err
 	}
