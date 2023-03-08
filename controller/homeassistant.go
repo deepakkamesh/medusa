@@ -80,8 +80,8 @@ type MQSensorConfig struct {
 	StateTopic  string            `json:"state_topic"`
 	UniqueID    string            `json:"unique_id"`
 	Device      map[string]string `json:"device"`
-	ValueTempl  string            `json:"value_template"`
-	UnitMeasure string            `json:"unit_of_measurement"`
+	ValueTempl  string            `json:"value_template,omitempty"`
+	UnitMeasure string            `json:"unit_of_measurement,omitempty"`
 	ForceUpdate bool              `json:"force_update"`
 	AvailTopic  string            `json:"availability_topic"`
 }
