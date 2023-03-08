@@ -3,6 +3,7 @@ package controller
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -30,6 +31,7 @@ type EventLog struct {
 
 type EventDB struct {
 	db *sql.DB
+	mu sync.Mutex
 }
 
 func NewEventDB() (*EventDB, error) {
@@ -46,6 +48,8 @@ func NewEventDB() (*EventDB, error) {
 }
 
 func (e *EventDB) LogEvent(ev EventLog) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	_, err := e.db.Exec("INSERT INTO events VALUES(NULL,?,?,?,?,?,?);", ev.Tmstmp, ev.Metric, ev.Value, ev.Room, ev.Name, ev.Addr)
 	if err != nil {
 		return err
@@ -54,6 +58,8 @@ func (e *EventDB) LogEvent(ev EventLog) error {
 }
 
 func (e *EventDB) PurgeEvent(ev EventLog) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	_, err := e.db.Exec("DELETE from events")
 	if err != nil {
 		return err
@@ -63,6 +69,8 @@ func (e *EventDB) PurgeEvent(ev EventLog) error {
 
 // GetEvent returns any event from room, name in the last duration.
 func (e *EventDB) GetEvent(metric string, room string, name string, last time.Duration) ([]EventLog, error) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	qry := "SELECT * FROM events WHERE metric = ? AND room = ? AND name = ? AND tmstmp > ? ORDER BY tmstmp"
 	rows, err := e.db.Query(qry, metric, room, name, time.Now().Add(-last))
 
