@@ -229,9 +229,9 @@ func (c *Core) handleRequest(conn net.Conn, hwaddr []byte) {
 
 		// Break buffer into packets.
 		pkts, e := splitPackets(buf)
-		// log the warning but parse any good packets.
 		if e != nil {
-			glog.Warningf("%v", e)
+			glog.Errorf("Failed to split packets:%v", e)
+			continue
 		}
 		for _, pkt := range pkts {
 			// Translate packet to event and send to channel.
