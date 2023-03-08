@@ -269,7 +269,15 @@ func (m *HomeAssistant) SendDoor(room, name string, open bool) error {
 
 // SendVolt sends the voltage reading of board battery to HA.
 func (m *HomeAssistant) SendVolt(room, name string, light float32) error {
-	return nil
+	le := float32(math.Floor(float64(light)*100) / 100)
+
+	_, actStr := core.ActionLookup(core.ActionVolt, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionVolt)
+	}
+
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
+	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", le))
 }
 
 // Sends Data on the specified topic.
@@ -350,10 +358,18 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					ForceUpdate: true,
 				}
 
-				// Set value template since Medusa sends both temp and humidity together.
-				if actionID == core.ActionTemp {
+				// Any action Specific template changes.
+				switch actionID {
+				case core.ActionTemp:
+					// Set value template since Medusa sends both temp and humidity together.
 					sensorConfig.ValueTempl = "{{ value_json.temperature }}"
 					sensorConfig.UnitMeasure = "°F"
+
+				case core.ActionVolt:
+					sensorConfig.UnitMeasure = "V"
+
+				case core.ActionLight:
+					sensorConfig.UnitMeasure = "lx"
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {

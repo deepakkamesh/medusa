@@ -67,6 +67,11 @@ func TestHASend(t *testing.T) {
 	tk.EXPECT().Wait()
 	ha.SendTemp("living", "b1", 70.1, 45.3)
 
+	// Test Volt. 2 decimal precision.
+	m.EXPECT().Publish("giant/living/b1/volt/state", gomock.Any(), false, "3.23").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendVolt("living", "b1", 3.23234)
+
 	// Test ping events.
 	m.EXPECT().Publish("giant/living/b1/avail", gomock.Any(), false, "offline").Return(tk)
 	tk.EXPECT().Wait()
