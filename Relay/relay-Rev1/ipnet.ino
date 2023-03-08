@@ -89,13 +89,12 @@ int RelaySetup(void) {
   SuperMemCpy(bufferTX, 1, mac, 0, MAC_ADDR_LEN);
   while (1) {
     digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
-    delay(500);
 
     int ok = NetSendUDP(bufferTX, 7, bcastIP, ctrPort);
     if (!ok) {
       return 0;
     }
-    delay(10);
+    delay(200);
 
     // See if we got a response.
     int packetSize = Udp.parsePacket();
