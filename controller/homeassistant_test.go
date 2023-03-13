@@ -72,6 +72,16 @@ func TestHASend(t *testing.T) {
 	tk.EXPECT().Wait()
 	ha.SendVolt("living", "b1", 3.23234)
 
+	// Test Light. 2 decimal precision.
+	m.EXPECT().Publish("giant/living/b1/light/state", gomock.Any(), false, "3.23").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendLight("living", "b1", 3.23234)
+
+	// Test Door.
+	m.EXPECT().Publish("giant/living/b1/door/state", gomock.Any(), false, "ON").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendDoor("living", "b1", true)
+
 	// Test ping events.
 	m.EXPECT().Publish("giant/living/b1/avail", gomock.Any(), false, "offline").Return(tk)
 	tk.EXPECT().Wait()

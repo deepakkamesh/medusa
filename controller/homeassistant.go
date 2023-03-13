@@ -259,17 +259,35 @@ func (m *HomeAssistant) SendTemp(room, name string, temp, humidity float32) erro
 
 // SendLight sends the light level in lux to HA.
 func (m *HomeAssistant) SendLight(room, name string, light float32) error {
-	return nil
+	le := float32(math.Floor(float64(light)*100) / 100)
+
+	_, actStr := core.ActionLookup(core.ActionLight, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionLight)
+	}
+
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
+	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", le))
 }
 
 // SendDoor sends contact sensor to HA.
 func (m *HomeAssistant) SendDoor(room, name string, open bool) error {
-	return nil
+	state := "OFF"
+	if open {
+		state = "ON"
+	}
+
+	_, actStr := core.ActionLookup(core.ActionDoor, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionDoor)
+	}
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
+	return m.sendSensorData(topic, 0, false, state)
 }
 
 // SendVolt sends the voltage reading of board battery to HA.
-func (m *HomeAssistant) SendVolt(room, name string, light float32) error {
-	le := float32(math.Floor(float64(light)*100) / 100)
+func (m *HomeAssistant) SendVolt(room, name string, volt float32) error {
+	v := float32(math.Floor(float64(volt)*100) / 100)
 
 	_, actStr := core.ActionLookup(core.ActionVolt, "")
 	if actStr == "" {
@@ -277,7 +295,7 @@ func (m *HomeAssistant) SendVolt(room, name string, light float32) error {
 	}
 
 	topic := fmt.Sprintf(templTopicState, room, name, actStr)
-	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", le))
+	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", v))
 }
 
 // Sends Data on the specified topic.
