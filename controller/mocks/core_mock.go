@@ -188,6 +188,20 @@ func (mr *MockMedusaCoreMockRecorder) RelayConfigMode(arg0, arg1 interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RelayConfigMode", reflect.TypeOf((*MockMedusaCore)(nil).RelayConfigMode), arg0, arg1)
 }
 
+// Reset mocks base method.
+func (m *MockMedusaCore) Reset(arg0 []byte) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Reset", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Reset indicates an expected call of Reset.
+func (mr *MockMedusaCoreMockRecorder) Reset(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Reset", reflect.TypeOf((*MockMedusaCore)(nil).Reset), arg0)
+}
+
 // StartCore mocks base method.
 func (m *MockMedusaCore) StartCore() {
 	m.ctrl.T.Helper()

@@ -235,6 +235,9 @@ func (c *Controller) HAMsgHandler() {
 			switch actionID {
 			case core.ActionBuzzer:
 				c.core.BuzzerOn(brd.Addr, msg.State, 100)
+
+			case core.ActionReset:
+				c.core.Reset(brd.Addr)
 			}
 
 		}

@@ -17,7 +17,7 @@ func TestConfigFileLoad(t *testing.T) {
 	}{
 		{got: conf.Boards[0].Addr, want: []byte{0x1, 0x1, 0x1}},
 		{got: conf.Boards[0].PAddr, want: []byte{0x1, 0xc1, 0xd1, 0xe1, 0xf1}},
-		{got: conf.Boards[0].Actions, want: []byte{1, 2, 3}},
+		{got: conf.Boards[0].Actions, want: []byte{1, 2, 3, 5, 0x14}},
 		{got: conf.Relays[0].HWAddr, want: []byte{0xa1, 0xb1, 0xc1, 0xd1, 0xe1, 0xf1}},
 		{got: conf.Relays[0].PAddr0, want: []byte{0x1, 0xc1, 0xd1, 0xe1, 0xf1}},
 	}

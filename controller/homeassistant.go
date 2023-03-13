@@ -98,6 +98,17 @@ type MQSirenConfig struct {
 	AvailTopic   string            `json:"availability_topic"`
 }
 
+// MQButtonConfig represents the HA Binary Sensor.
+type MQButtonConfig struct {
+	Name         string            `json:"name"`
+	ObjectID     string            `json:"object_id"`
+	CommandTopic string            `json:"command_topic"`
+	DeviceClass  string            `json:"device_class"`
+	UniqueID     string            `json:"unique_id"`
+	Device       map[string]string `json:"device"`
+	AvailTopic   string            `json:"availability_topic"`
+}
+
 // Struct to hold message from HA.
 type HAMsg struct {
 	MQMsg     mqtt.Message // Full topic.
@@ -156,26 +167,36 @@ func (m *HomeAssistant) HAMessage() <-chan HAMsg {
 
 // Parse the HA message and pass back to controller.
 func (m *HomeAssistant) MQTTPubHandler(client mqtt.Client, msg mqtt.Message) {
-	// Parse topic to find room. // Format giant/<room>/<device_type>/set.
+	// Parse topic to find room. // Format giant/<room>/<board_name>/<device_type>/set.
 	data := strings.Split(msg.Topic(), "/")
+	room := data[1]
+	boardName := data[2]
+	action := data[3]
+	state := false
 
-	// Parse state.
-	st := MQState{}
-	if err := json.Unmarshal(msg.Payload(), &st); err != nil {
-		glog.Warningf("Unable to unmarshall HA state from MQTT msg:%v", err)
-		return
-	}
+	switch action {
+	case "buzzer":
+		// Parse state.
+		st := MQState{}
+		if err := json.Unmarshal(msg.Payload(), &st); err != nil {
+			glog.Warningf("Unable to unmarshall HA state from MQTT msg:%v", err)
+			return
+		}
+		var err error
+		state, err = strconv.ParseBool(st.State)
+		if err != nil {
+			glog.Warningf("Unable to parsebool:%v", err)
+		}
 
-	state, err := strconv.ParseBool(st.State)
-	if err != nil {
-		glog.Warningf("Unable to parsebool:%v", err)
+	case "rst":
+		state = true
 	}
 
 	b := HAMsg{
 		MQMsg:     msg,
-		Room:      data[1],
-		BoardName: data[2],
-		Action:    data[3],
+		Room:      room,
+		BoardName: boardName,
+		Action:    action,
 		State:     state,
 	}
 	glog.Infof("Got HA message - Room: %v Board:%v Action:%v State: %v", b.Room, b.BoardName, b.Action, b.State)
@@ -317,12 +338,10 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 		return fmt.Errorf("mqtt broker %v not connected", m.mqttHost)
 	}
 
-	// TODO: add actions in this list to generate config.
 	binarySensors := []byte{core.ActionMotion, core.ActionDoor}
 	sirens := []byte{core.ActionBuzzer}
 	sensors := []byte{core.ActionTemp, core.ActionLight, core.ActionVolt}
 	buttons := []byte{core.ActionReset}
-	_ = buttons
 
 	for _, brd := range m.CoreCfg.Boards {
 		for _, actionID := range brd.Actions {
@@ -360,7 +379,8 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					Device:      device,
 				}
 
-				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "binary_sensor", fmt.Sprintf(templTopicConfig, "binary_sensor", brd.Room, brd.Name, actionStr)); err != nil {
+				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "binary_sensor",
+					fmt.Sprintf(templTopicConfig, "binary_sensor", brd.Room, brd.Name, actionStr)); err != nil {
 					return err
 				}
 
@@ -390,7 +410,8 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					sensorConfig.UnitMeasure = "lx"
 				}
 
-				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
+				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor",
+					fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, actionStr)); err != nil {
 					return err
 				}
 
@@ -409,7 +430,8 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 						ForceUpdate: true,
 					}
 
-					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor", fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, "humidity")); err != nil {
+					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor",
+						fmt.Sprintf(templTopicConfig, "sensor", brd.Room, brd.Name, "humidity")); err != nil {
 						return err
 					}
 				}
@@ -426,9 +448,27 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					Device:       device,
 				}
 
-				if err := m.packAndSendEntityDiscovery(clean, deviceConfig, "siren", fmt.Sprintf(templTopicConfig, "siren", brd.Room, brd.Name, actionStr)); err != nil {
+				if err := m.packAndSendEntityDiscovery(clean, deviceConfig, "siren",
+					fmt.Sprintf(templTopicConfig, "siren", brd.Room, brd.Name, actionStr)); err != nil {
 					return err
 				}
+
+			case slices.Contains(buttons, actionID):
+				deviceConfig := MQButtonConfig{
+					Name:         name,
+					ObjectID:     objectID,
+					CommandTopic: commandTopic,
+					AvailTopic:   availTopic,
+					UniqueID:     uniqueID,
+					DeviceClass:  "restart",
+					Device:       device,
+				}
+
+				if err := m.packAndSendEntityDiscovery(clean, deviceConfig, "button",
+					fmt.Sprintf(templTopicConfig, "button", brd.Room, brd.Name, actionStr)); err != nil {
+					return err
+				}
+
 			} // End of switch.
 		}
 	}

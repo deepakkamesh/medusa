@@ -61,12 +61,12 @@ func ActionLookup(id byte, str string) (byte, string) {
 		0x05: "volt",
 		0x06: "ver",
 		0x10: "buzzer",
-		0x11: "FactoryRst",
-		0x12: "Relay",
+		0x11: "factoryRst",
+		0x12: "relay",
 		0x13: "LED",
-		0x14: "Rst",
-		0x16: "Test",
-		0x17: "FlushTXFIFO",
+		0x14: "rst",
+		0x16: "test",
+		0x17: "flushTXFIFO",
 	}
 
 	if id != 0 {

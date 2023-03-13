@@ -40,7 +40,7 @@
          "Description":"board on relay1",
          "Room":"living",
          "Name":"board1",
-         "Actions":[1,2,3,5]
+         "Actions":[1,2,3,5,0x14]
       },
       {
          "Addr":[0xd1,0xe1,0xf1],
