@@ -12,6 +12,7 @@ const (
 	PktTypeData      = 0x01
 	PktTypeActionReq = 0x10
 	PktTypeConfig    = 0x05
+	PktTypeFinder    = 0xFF // Packet type send by board finding relay.
 
 	PktTypeRelayCfgReq    = 0xAA
 	PktTypeRelayCfgResp   = 0xAB
@@ -169,7 +170,11 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 
 	p.PipeAddr = pkt[1:6]
 	p.BoardAddr = pkt[7:10]
+
 	switch pkt[6] {
+	case PktTypeFinder:
+		return nil, fmt.Errorf("New board %v joined pipe %v", PP2(p.BoardAddr), PP2(p.PipeAddr))
+
 	case PktTypePing:
 		return translatePingPacket(p)
 
