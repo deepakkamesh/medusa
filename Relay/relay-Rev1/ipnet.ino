@@ -56,10 +56,16 @@ void WifiConnect(void) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
+  int retryCnt = 0;
+
   while (WiFi.status() != WL_CONNECTED) {
     Serial.printf(".");
     digitalWrite(LED_ONBOARD, !digitalRead(LED_ONBOARD));
     delay(1000);
+    if (retryCnt > 15) {
+      ESP.restart();
+    }
+    retryCnt ++;
   }
   digitalWrite(LED_ONBOARD, true); // For some reason true turns this off.
 
