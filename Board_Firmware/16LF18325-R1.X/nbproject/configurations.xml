@@ -231,7 +231,7 @@
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
                   value="${programoptions.preservedataflash.ranges}"/>
-        <property key="programoptions.preserveeeprom" value="true"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value="f000-f0ff"/>
         <property key="programoptions.preserveprogram.ranges" value=""/>
         <property key="programoptions.preserveprogramrange" value="false"/>
@@ -241,7 +241,7 @@
         <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
-        <property key="voltagevalue" value="3.5"/>
+        <property key="voltagevalue" value="3.25"/>
       </PICkit3PlatformTool>
       <Simulator>
         <property key="codecoverage.enabled" value="Disable"/>
@@ -770,7 +770,7 @@
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
                   value="${programoptions.preservedataflash.ranges}"/>
-        <property key="programoptions.preserveeeprom" value="true"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value="f000-f0ff"/>
         <property key="programoptions.preserveprogram.ranges" value=""/>
         <property key="programoptions.preserveprogramrange" value="false"/>
@@ -856,7 +856,7 @@
         <property key="usartf1io.output" value="window"/>
         <property key="usartf1io.outputfile" value=""/>
         <property key="usartf1io.uartioenabled" value="false"/>
-        <property key="voltagevalue" value="3.5"/>
+        <property key="voltagevalue" value="3.25"/>
         <property key="warningmessagebreakoptions.W0001_CORE_BITREV_MODULO_EN"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0002_CORE_SECURE_MEMORYACCESS"

@@ -92,7 +92,12 @@
 #define VER_HIGH_BYTE 0x1 // HW Version Major number
 
 // Set Hardware revision here. 
-#define HW_REV_1_5
+#define HW_REV_1_1
+
+#ifdef HW_REV_1_0 // Available Actions for Rev 1_2
+#define DEV_STATUS_LED 
+#define DEV_VOLTS  
+#endif
 
 #ifdef HW_REV_1_1 // Available Actions for Rev 1_1
 #define DEV_STATUS_LED 
