@@ -12,7 +12,7 @@
          "Addr":[0xB6,0x20,0xB6],
          "Channel":0x76,
          "Description":"Wemos D1",
-         "Room":"hallway-down",
+         "Room":"living",
          "Name":"r-1-1"
       },
       {
@@ -47,27 +47,7 @@
       }
    ],
    "Boards":[
-      {
-         "Addr":[0x1,0x1,0x1],
-         "PAddr":[0x4,0x7C,0xB6,0x1F,0x52],
-         "ARD":0xB,
-         "PingInt":0x1E,
-         "Description":"board on r2-1",
-         "Room":"test",
-         "Name":"b1",
-         "Actions":[]
-      },
-      {
-         "Addr":[0x2,0x2,0x2],
-         "PAddr":[0x2,0x7C,0xB6,0x21,0x1F],
-         "ARD":0xB,
-         "PingInt":0x1,
-         "Description":"board on relay1",
-         "Room":"test",
-         "Name":"b2",
-         "Actions":[]
-      },
-      {
+     {
          "Addr":[0x1,0x2,0x1],
          "PAddr":[0x2,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
@@ -79,13 +59,13 @@
       },
       {
          "Addr":[0x1,0x1,0x2],
-         "PAddr":[0x2,0x7C,0xB6,0x20,0xB6],
+         "PAddr":[0x5,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
          "PingInt":0x3C,
-         "Description":"<>hallway-down",
+         "Description":"<>hallway-up",
          "Room":"stairwell",
          "Name":"b1",
-         "Actions":[0x01,0x05,0x11,0x13,0x14,0x16]
+         "Actions":[0x01,0x03,0x05,0x11,0x13,0x14,0x16]
       },
       {
          "Addr":[0xB6,0x20,0xB6],
