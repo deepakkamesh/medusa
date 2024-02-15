@@ -146,6 +146,20 @@ func (mr *MockMedusaCoreMockRecorder) GetBoardByRoom(arg0 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBoardByRoom", reflect.TypeOf((*MockMedusaCore)(nil).GetBoardByRoom), arg0)
 }
 
+// GetRelaybyPAddr mocks base method.
+func (m *MockMedusaCore) GetRelaybyPAddr(arg0 []byte) *core.Relay {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRelaybyPAddr", arg0)
+	ret0, _ := ret[0].(*core.Relay)
+	return ret0
+}
+
+// GetRelaybyPAddr indicates an expected call of GetRelaybyPAddr.
+func (mr *MockMedusaCoreMockRecorder) GetRelaybyPAddr(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRelaybyPAddr", reflect.TypeOf((*MockMedusaCore)(nil).GetRelaybyPAddr), arg0)
+}
+
 // LEDOn mocks base method.
 func (m *MockMedusaCore) LEDOn(arg0 []byte, arg1 bool) error {
 	m.ctrl.T.Helper()

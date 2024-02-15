@@ -26,6 +26,7 @@ type MedusaCore interface {
 	GetBoardByAddr(b []byte) *Board
 	GetBoardByName(name string) *Board
 	GetBoardByRoom(room string) []Board
+	GetRelaybyPAddr(paddr []byte) *Relay
 	CoreConfig() *Config
 }
 
@@ -67,6 +68,10 @@ func (c *Core) GetBoardByAddr(addr []byte) *Board {
 
 func (c *Core) GetBoardByRoom(room string) []Board {
 	return c.conf.getBoardByRoom(room)
+}
+
+func (c *Core) GetRelaybyPAddr(paddr []byte) *Relay {
+	return c.conf.getRelayByPAddr(paddr)
 }
 
 // Event returns the channel for events.
