@@ -76,19 +76,49 @@ func TestEventTrigger(t *testing.T) {
 
 	boards := []core.Board{
 		{
+			Room:    "living",
+			Name:    "b1",
 			Addr:    []byte{1, 2, 3},
+			PAddr:   []byte{1, 5, 5, 5, 5},
 			Actions: []byte{0x02},
 		},
 		{
+			Room:    "dining",
+			Name:    "b1",
 			Addr:    []byte{1, 1, 1},
-			Actions: []byte{1},
+			Actions: []byte{0x01},
 		},
 	}
 
-	m.EXPECT().GetBoardByRoom("all").AnyTimes().Return(boards)
-	m.EXPECT().Temp([]byte{1, 2, 3}).AnyTimes()
-	d := c.SensorDataReq(300 * time.Millisecond)
-	time.Sleep(1 * time.Second)
+	m.EXPECT().GetBoardByRoom("all").MinTimes(1).Return(boards)
+
+	// Test if no availability data does not poll sensors.
+	m.EXPECT().Temp([]byte{1, 2, 3}).Times(0)
+	d := c.SensorDataReq(10 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
+	d <- true
+
+	// Test if board is available, sensors are polled.
+	_ = ev.LogEvent(controller.EventLog{time.Now(), "availability", 1, "living", "b1", []byte{1, 2, 3}})
+	m.EXPECT().Temp([]byte{1, 2, 3}).Times(1)
+	d = c.SensorDataReq(10 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
+	d <- true
+
+	// Test if board is offline, no sensor poll.
+	_ = ev.LogEvent(controller.EventLog{time.Now(), "availability", 0, "living", "b1", []byte{1, 2, 3}})
+	m.EXPECT().Temp([]byte{1, 2, 3}).Times(0)
+	d = c.SensorDataReq(10 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
+	d <- true
+
+	// Test if board is offline after last poll, no sensor poll and relay reset.
+	_ = ev.LogEvent(controller.EventLog{time.Now().Add(5 * time.Millisecond), "availability", 0, "living", "b1", []byte{1, 2, 3}})
+	m.EXPECT().Temp([]byte{1, 2, 3}).Times(0)
+	m.EXPECT().GetRelaybyPAddr([]byte{1, 5, 5, 5, 5}).Return(&core.Relay{Addr: []byte{4, 4, 4}})
+	m.EXPECT().Reset([]byte{4, 4, 4})
+	d = c.SensorDataReq(10 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 	d <- true
 
 }
@@ -135,14 +165,7 @@ func TestCoreMsgHandler(t *testing.T) {
 		Temp:     71.1,
 		Humidity: 50.5,
 	}
-	p4 := core.Ping{
-		PktInfo: core.PktInfo{
-			BoardAddr:    []byte{1, 1, 1},
-			PipeAddr:     []byte{},
-			HardwareAddr: []byte{},
-		},
-	}
-	pkts := []core.Event{p1, p2, p3, p4}
+	pkts := []core.Event{p1, p2, p3}
 
 	go func() {
 		i := 0
@@ -161,7 +184,6 @@ func TestCoreMsgHandler(t *testing.T) {
 	h.EXPECT().SendMotion("living", "b1", true)
 	h.EXPECT().SendMotion("hallway-down", "b1", true)
 	h.EXPECT().SendTemp("hallway-down", "b1", float32(71.1), float32(50.5))
-	h.EXPECT().SendAvail("living", "b1", "online")
 	m.EXPECT().GetBoardByAddr([]byte{1, 1, 1}).AnyTimes().Return(&core.Board{Room: "living", Name: "b1"})
 	m.EXPECT().GetBoardByAddr([]byte{2, 2, 2}).AnyTimes().Return(&core.Board{Room: "hallway-down", Name: "b1"})
 
@@ -177,7 +199,7 @@ func TestEventProcessorPingCheck(t *testing.T) {
 	h := mocks.NewMockHA(ctrl)
 	ev, _ := controller.NewEventDB()
 
-	c, e := controller.NewController(m, h, ev, ":3344", 1, 500*time.Millisecond)
+	c, e := controller.NewController(m, h, ev, ":3344", 1, 50*time.Millisecond)
 	if e != nil {
 		t.Errorf("Failed init Controller %v", e)
 	}
@@ -189,13 +211,52 @@ func TestEventProcessorPingCheck(t *testing.T) {
 		},
 	})
 
-	h.EXPECT().SendAvail("living", "b1", "offline").MinTimes(1)
-
-	// Add a ping event 500ms older to trigger a offline message.
-	ev.LogEvent(controller.EventLog{time.Now().Add(-500 * time.Millisecond), "ping", 0, "living", "b1", []byte{1, 1, 1}})
-
+	// Validate that HA offline message only triggers once.
+	h.EXPECT().SendAvail("living", "b1", "offline").Times(1)
+	ev.LogEvent(controller.EventLog{time.Now(), "ping", 0, "living", "b1", []byte{1, 1, 1}})
 	eventChan := make(chan core.Event)
 	go c.EventProcessorPingCheck(eventChan)
-	time.Sleep(1 * time.Second)
+	// Ping timeout. Send HA offline once.
+	time.Sleep(150 * time.Millisecond)
 	close(eventChan)
+	// Need a delay because close(eventChan) is not guaranteed to be realtime. Flushing DB
+	// before goroutine returns will result in another call to offline, breaking test.
+	time.Sleep(100 * time.Millisecond) // Delay to allow goroutine to finish.
+	ev.PurgeDB()
+
+	// Validate HA online message only triggers once.
+	h.EXPECT().SendAvail("living", "b1", "online").Times(1)
+	eventChan = make(chan core.Event)
+	go c.EventProcessorPingCheck(eventChan)
+	ev.LogEvent(controller.EventLog{time.Now().Add(10 * time.Millisecond), "ping", 0, "living", "b1", []byte{1, 1, 1}})
+	time.Sleep(55 * time.Millisecond)
+	ev.LogEvent(controller.EventLog{time.Now().Add(10 * time.Millisecond), "ping", 0, "living", "b1", []byte{1, 1, 1}})
+	time.Sleep(55 * time.Millisecond)
+	close(eventChan)
+	time.Sleep(100 * time.Millisecond) // Delay to allow goroutine to finish.
+	ev.PurgeDB()
+
+	// Validate one HA online message followed by offline once.
+	fn := h.EXPECT().SendAvail("living", "b1", "online").Times(1)
+	h.EXPECT().SendAvail("living", "b1", "offline").Times(1).After(fn)
+	eventChan = make(chan core.Event)
+	go c.EventProcessorPingCheck(eventChan)
+	ev.LogEvent(controller.EventLog{time.Now().Add(10 * time.Millisecond), "ping", 0, "living", "b1", []byte{1, 1, 1}})
+	time.Sleep(110 * time.Millisecond)
+	close(eventChan)
+	time.Sleep(100 * time.Millisecond) // Delay to allow goroutine to finish.
+	ev.PurgeDB()
+
+	// Validate one HA offline message and followed by online.
+	fn = h.EXPECT().SendAvail("living", "b1", "offline").Times(1)
+	h.EXPECT().SendAvail("living", "b1", "online").Times(1).After(fn)
+	eventChan = make(chan core.Event)
+	go c.EventProcessorPingCheck(eventChan)
+	time.Sleep(150 * time.Millisecond) // timeout exceeded, board offline.
+	ev.LogEvent(controller.EventLog{time.Now().Add(10 * time.Millisecond), "ping", 0, "living", "b1", []byte{1, 1, 1}})
+	time.Sleep(55 * time.Millisecond) // Board recovered. online.
+	close(eventChan)
+	time.Sleep(100 * time.Millisecond) // Delay to allow goroutine to finish.
+	ev.PurgeDB()
+
 }

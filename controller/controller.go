@@ -80,24 +80,50 @@ func (c *Controller) SensorDataReq(dur time.Duration) chan bool {
 			case <-tick.C:
 				for _, brd := range c.core.GetBoardByRoom("all") {
 
+					// Dont request sensor data until the board is online.
+					lastAvail, err := c.eventDB.GetLastEvent("availability", brd.Room, brd.Name, 1)
+					if err != nil {
+						glog.Errorf("Failed to read eventDB: %v", err)
+						continue
+					}
+					// Board status unknown.
+					if len(lastAvail) == 0 {
+						continue
+					}
+					// Board offline.
+					if lastAvail[0].Value == 0 {
+						// If the offline event occured after the last poll, flush TX FIFO
+						// of relay attached to the offline board.
+						if lastAvail[0].Tmstmp.After(time.Now().Add(-dur)) {
+							relay := c.core.GetRelaybyPAddr(brd.PAddr)
+							if relay == nil {
+								glog.Errorf("Relay not found for PAddr %v", brd.PAddr)
+								continue
+							}
+							// Reset relay, rather than flush TX FIFO 'cause of the software FIFO.
+							if err := c.core.Reset(relay.Addr); err != nil {
+								glog.Errorf("Failed to reset relay: %v", err)
+							}
+						}
+						continue
+					}
+
+					// Request sensor data if board is capable per config.
 					if brd.IsActionCapable(core.ActionTemp) {
 						if err := c.core.Temp(brd.Addr); err != nil {
 							glog.Errorf("Failed to get temp %v", err)
 						}
 					}
-
 					if brd.IsActionCapable(core.ActionLight) {
 						if err := c.core.Light(brd.Addr); err != nil {
 							glog.Errorf("Failed to get light %v", err)
 						}
 					}
-
 					if brd.IsActionCapable(core.ActionVolt) {
 						if err := c.core.Volt(brd.Addr); err != nil {
-							glog.Errorf("Failed to get volt%v", err)
+							glog.Errorf("Failed to get volt %v", err)
 						}
 					}
-
 				}
 
 			case <-done:
@@ -142,12 +168,10 @@ func (c *Controller) CoreMsgHandler() {
 		// Log Event.
 		switch f := event.(type) {
 		case core.Ping:
+			// FYI. HA availability is handled by ping event processor.
 			glog.Infof("Event Ping - Addr:%v\n", core.PP2(addr))
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "ping", 0, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
-			}
-			if err := c.ha.SendAvail(board.Room, board.Name, payloadOnline); err != nil {
-				glog.Errorf("Failed to send ping event to HA:%v", err)
 			}
 
 		case core.Temp:
