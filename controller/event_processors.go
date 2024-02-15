@@ -71,17 +71,37 @@ func (c *Controller) EventProcessorPingCheck(in chan core.Event) {
 			cfg := c.core.CoreConfig()
 			for _, b := range cfg.Boards {
 
-				events, err := c.eventDB.GetEvent("ping", b.Room, b.Name, c.pingTimeout)
+				pings, err := c.eventDB.GetEvent("ping", b.Room, b.Name, c.pingTimeout)
 				if err != nil {
 					glog.Errorf("Error reading from events log DB:%v", err)
 					continue
 				}
 
-				if len(events) != 0 {
+				lastAvail, err := c.eventDB.GetLastEvent("availability", b.Room, b.Name, 1)
+				if err != nil {
+					glog.Errorf("Error reading from events log DB:%v", err)
 					continue
 				}
 
-				c.ha.SendAvail(b.Room, b.Name, payloadOffline)
+				switch {
+				// Got Pings, set availability to online if no previous availability event or previous availability was offline.
+				case len(pings) > 0:
+					if len(lastAvail) == 0 || lastAvail[0].Value == 0 {
+						if err := c.eventDB.LogEvent(EventLog{time.Now(), "availability", 1, b.Room, b.Name, b.Addr}); err != nil {
+							glog.Errorf("Failed to log to eventDB:%v", err)
+						}
+						c.ha.SendAvail(b.Room, b.Name, payloadOnline)
+					}
+
+				// No pings received within timeout, set availability to offline if no previous availability event or previous availability was online.
+				case len(pings) == 0:
+					if len(lastAvail) == 0 || lastAvail[0].Value == 1 {
+						if err := c.eventDB.LogEvent(EventLog{time.Now(), "availability", 0, b.Room, b.Name, b.Addr}); err != nil {
+							glog.Errorf("Failed to log to eventDB:%v", err)
+						}
+						c.ha.SendAvail(b.Room, b.Name, payloadOffline)
+					}
+				}
 			}
 		}
 	}
