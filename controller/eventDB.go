@@ -57,7 +57,7 @@ func (e *EventDB) LogEvent(ev EventLog) error {
 	return nil
 }
 
-func (e *EventDB) PurgeEvent(ev EventLog) error {
+func (e *EventDB) PurgeDB() error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	_, err := e.db.Exec("DELETE from events")
@@ -73,6 +73,31 @@ func (e *EventDB) GetEvent(metric string, room string, name string, last time.Du
 	defer e.mu.Unlock()
 	qry := "SELECT * FROM events WHERE metric = ? AND room = ? AND name = ? AND tmstmp > ? ORDER BY tmstmp"
 	rows, err := e.db.Query(qry, metric, room, name, time.Now().Add(-last))
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	evLogs := []EventLog{}
+	id := 0
+	for rows.Next() {
+		i := EventLog{}
+		err = rows.Scan(&id, &i.Tmstmp, &i.Metric, &i.Value, &i.Room, &i.Name, &i.Addr)
+		if err != nil {
+			return nil, err
+		}
+		evLogs = append(evLogs, i)
+	}
+	return evLogs, nil
+}
+
+// GetLastEvent returns last x events of type metric from room,name.
+func (e *EventDB) GetLastEvent(metric string, room string, name string, x int) ([]EventLog, error) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	qry := "SELECT * FROM events WHERE metric = ? AND room = ? AND name = ?  ORDER BY tmstmp DESC LIMIT ?"
+	rows, err := e.db.Query(qry, metric, room, name, x)
 
 	if err != nil {
 		return nil, err
