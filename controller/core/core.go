@@ -236,7 +236,7 @@ func (c *Core) handleRequest(conn net.Conn, hwaddr []byte) {
 			return
 		}
 		buf = buf[:n]
-		glog.Info(PP(buf, "%v - Pkt(%v):", conn.RemoteAddr(), n))
+		glog.V(1).Info(PP(buf, "%v - Pkt(%v):", conn.RemoteAddr(), n))
 
 		// Break buffer into packets.
 		pkts, e := splitPackets(buf)
