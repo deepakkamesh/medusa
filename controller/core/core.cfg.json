@@ -13,7 +13,7 @@
          "Channel":0x76,
          "Description":"Wemos D1",
          "Room":"living",
-         "Name":"r-1-1"
+         "Name":"r1"
       },
       {
          "HWAddr":[0xA4,0xE5,0x7C,0xB6,0x21,0x1F], 
@@ -25,10 +25,10 @@
          "PAddr5":[0x6,0x7C,0xB6,0x21,0x1F],
          "PAddr6":[0x7,0x7C,0xB6,0x21,0x1F],
          "Addr":[0xB6,0x21,0x1F],
-         "Channel":0x35,
+         "Channel":0x30,
          "Description":"Wemos D1",
          "Room":"dining",
-         "Name":"r-1-2"
+         "Name":"r1"
       },
       {
          "HWAddr":[0xA4,0xE5,0x7C,0xB6,0x1F,0x52], 
@@ -43,16 +43,36 @@
          "Channel":0x35,
          "Description":"Wemos D1",
          "Room":"hallway-up",
-         "Name":"r-2-1"
+         "Name":"r1"
       }
    ],
    "Boards":[
+     {
+         "Addr":[0x1,0x3,0x1],
+         "PAddr":[0x2,0x7C,0xB6,0x20,0xB6],
+         "ARD":0xC,
+         "PingInt":0x3C,
+         "Description":"<>living 2",
+         "Room":"laundry",
+         "Name":"b1",
+         "Actions":[0x02,0x03,0x05,0x11,0x13,0x14,0x16]
+     },
+     {
+         "Addr":[0x1,0x4,0x1],
+         "PAddr":[0x2,0x7C,0xB6,0x21,0x1F],
+         "ARD":0xC,
+         "PingInt":0x3C,
+         "Description":"<>dining 2",
+         "Room":"family",
+         "Name":"b1",
+         "Actions":[0x01,0x02,0x03,0x05,0x11,0x13,0x14,0x16]
+     },
      {
          "Addr":[0x1,0x2,0x1],
          "PAddr":[0x2,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
          "PingInt":0x3C,
-         "Description":"<>hallway-up",
+         "Description":"<>hallway-up 2",
          "Room":"master",
          "Name":"b1",
          "Actions":[0x01,0x02,0x03,0x05,0x11,0x13,0x14,0x16]
@@ -62,7 +82,7 @@
          "PAddr":[0x5,0x7C,0xB6,0x1F,0x52],
          "ARD":0xB,
          "PingInt":0x3C,
-         "Description":"<>hallway-up",
+         "Description":"<>hallway-up 5",
          "Room":"stairwell",
          "Name":"b1",
          "Actions":[0x01,0x03,0x05,0x11,0x13,0x14,0x16]
