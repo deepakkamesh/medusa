@@ -83,7 +83,7 @@ func TestHASend(t *testing.T) {
 	ha.SendDoor("living", "b1", true)
 
 	// Test ping events.
-	m.EXPECT().Publish("giant/living/b1/avail", gomock.Any(), false, "offline").Return(tk)
+	m.EXPECT().Publish("giant/living/b1/avail", gomock.Any(), true, "offline").Return(tk)
 	tk.EXPECT().Wait()
 	ha.SendAvail("living", "b1", "offline")
 }

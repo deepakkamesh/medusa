@@ -238,7 +238,7 @@ func (m *HomeAssistant) SendAvail(room string, name string, avail string) error 
 		// Send availability topic to offline for all entities for the device. This topic
 		// is shared between all entities on the device.
 		topic := fmt.Sprintf(templTopicAvail, room, name)
-		return m.sendSensorData(topic, 0, false, avail)
+		return m.sendSensorData(topic, 0, true, avail) // Board availability is retained to persist between HA restarts.
 	}
 	return nil
 }
