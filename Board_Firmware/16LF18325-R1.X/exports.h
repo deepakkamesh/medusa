@@ -92,7 +92,7 @@
 #define VER_HIGH_BYTE 0x1 // HW Version Major number
 
 // Set Hardware revision here. 
-#define HW_REV_1_6
+#define HW_REV_1_5
 
 #ifdef HW_REV_1_0 // Available Actions for Rev 1_2
 #define DEV_STATUS_LED 
@@ -136,9 +136,18 @@
 #define DEV_TEMP_HUMIDITY 
 #endif
 
-#ifdef HW_REV_1_6
+#ifdef HW_REV_1_6 // Light, Temp.
 #define DEV_STATUS_LED 
 #define DEV_VOLTS 
 #define DEV_LIGHT
 #define DEV_TEMP_HUMIDITY 
+#endif
+
+#ifdef HW_REV_1_7 // Light, motion, temp, door.
+#define DEV_STATUS_LED 
+#define DEV_VOLTS 
+#define DEV_LIGHT 
+#define DEV_MOTION
+#define DEV_TEMP_HUMIDITY 
+#define DEV_DOOR 
 #endif
