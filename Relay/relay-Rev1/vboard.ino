@@ -15,7 +15,7 @@ void PingLoop() {
 
 void ProcessVBoardPacket(uint8_t *pkt, uint8_t sz) {
 
-  uint8_t data [32];
+  uint8_t data[32];
   uint8_t actionID;
 
   uint8_t pktType = pkt[0];
@@ -32,7 +32,7 @@ void ProcessVBoardPacket(uint8_t *pkt, uint8_t sz) {
   }
 }
 
-void ProcessAction(uint8_t actionID, uint8_t * data) {
+void ProcessAction(uint8_t actionID, uint8_t *data) {
 
   switch (actionID) {
     case ACTION_RESET_DEVICE:
@@ -40,7 +40,7 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
       break;
 
     case ACTION_STATUS_LED:
-      digitalWrite(LED_ONBOARD, !data[0]); // For some reason 0 turns on LED.
+      digitalWrite(LED_ONBOARD, !data[0]);  // For some reason 0 turns on LED.
       break;
 
     case ACTION_FLUSH_TX_FIFO:
@@ -48,11 +48,39 @@ void ProcessAction(uint8_t actionID, uint8_t * data) {
       break;
 
     case ACTION_TEMP:
-#ifndef DHT11SENSOR
+#ifdef DHT11SENSOR
+      TempHumidity();
+      break;
+#endif
+#ifdef BME680
+      BME680TempHumidity();
+      break;
+#endif
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
+      break;
+
+    case ACTION_GAS:
+#ifndef BME680
       SendError(ERROR_RELAY_NOT_IMPLEMENTED);
       break;
 #endif
-      TempHumidity();
+      BME680Gas();
+      break;
+
+    case ACTION_PRESSURE:
+#ifndef BME680
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
+      break;
+#endif
+      BME680Pressure();
+      break;
+
+    case ACTION_ALTITUDE:
+#ifndef BME680
+      SendError(ERROR_RELAY_NOT_IMPLEMENTED);
+      break;
+#endif
+      BME680Altitude();
       break;
 
     case ACTION_BUZZER:
@@ -151,16 +179,23 @@ bool SendData(uint8_t Action, uint8_t *data, int8_t sz) {
   return NetSend(bufferTX, i);
 }
 
-
-DHT dht(DHTPIN, DHTTYPE);
-void dhtstart() {
-  dht.begin();
-}
-
+// Utility struct for pack and send.
 union val {
   float f;
   uint8_t uc[4];
 };
+
+union valUint32 {
+  uint32_t f;
+  uint8_t uc[4];
+};
+
+
+/***************** DHT Sensor *******************/
+DHT dht(DHTPIN, DHTTYPE);
+void dhtstart() {
+  dht.begin();
+}
 
 void TempHumidity() {
 
@@ -182,10 +217,106 @@ void TempHumidity() {
   buff[7] = humidity.uc[3];
 
   // Check if any reads failed and exit early (to try again).
-  if (isnan( humidity.f) || isnan( temp.f) ) {
+  if (isnan(humidity.f) || isnan(temp.f)) {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
 
   SendData(ACTION_TEMP, buff, 8);
+}
+/***************** BME680 Sensor *******************/
+// comp_gas = log(R_gas[ohm]) + 0.04 log(Ohm)/%rh * hum[%rh] IAQ
+// https://forums.pimoroni.com/t/bme680-observed-gas-ohms-readings/6608/20
+// https://esphome.io/components/sensor/bme680.html#bme680-oversampling
+
+
+Adafruit_BME680 bme;
+int BME680Setup() {
+  if (!bme.begin()) {
+    return 0;
+  }
+  // Set up oversampling and filter initialization
+  bme.setTemperatureOversampling(BME680_OS_8X);
+  bme.setHumidityOversampling(BME680_OS_2X);
+  bme.setPressureOversampling(BME680_OS_4X);
+  bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
+  bme.setGasHeater(320, 150);  // 320*C for 150 ms
+}
+
+void BME680TempHumidity() {
+  union val temp, humidity;
+  uint8_t buff[10];
+  humidity.f = bme.readHumidity();
+  temp.f = bme.readTemperature();
+
+  buff[0] = temp.uc[0];
+  buff[1] = temp.uc[1];
+  buff[2] = temp.uc[2];
+  buff[3] = temp.uc[3];
+  buff[4] = humidity.uc[0];
+  buff[5] = humidity.uc[1];
+  buff[6] = humidity.uc[2];
+  buff[7] = humidity.uc[3];
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(humidity.f) || isnan(temp.f)) {
+    Serial.println(F("Failed to read from BME sensor!"));
+    return;
+  }
+
+  SendData(ACTION_TEMP, buff, 8);
+}
+
+void BME680Pressure() {
+  union val pressure;
+  uint8_t buff[5];
+  pressure.f = bme.readPressure();
+
+  buff[0] = pressure.uc[0];
+  buff[1] = pressure.uc[1];
+  buff[2] = pressure.uc[2];
+  buff[3] = pressure.uc[3];
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(pressure.f)) {
+    Serial.println(F("Failed to read from BME sensor!"));
+    return;
+  }
+  SendData(ACTION_PRESSURE, buff, 4);
+}
+
+void BME680Gas() {
+  union valUint32 gas;
+  uint8_t buff[5];
+  gas.f = bme.readGas();
+
+  buff[0] = gas.uc[0];
+  buff[1] = gas.uc[1];
+  buff[2] = gas.uc[2];
+  buff[3] = gas.uc[3];
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(gas.f)) {
+    Serial.println(F("Failed to read from BME sensor!"));
+    return;
+  }
+  SendData(ACTION_GAS, buff, 4);
+}
+
+void BME680Altitude() {
+  union val alt;
+  uint8_t buff[5];
+  alt.f = bme.readAltitude(SEALEVELPRESSURE_HPA);
+
+  buff[0] = alt.uc[0];
+  buff[1] = alt.uc[1];
+  buff[2] = alt.uc[2];
+  buff[3] = alt.uc[3];
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(alt.f)) {
+    Serial.println(F("Failed to read from BME sensor!"));
+    return;
+  }
+  SendData(ACTION_ALTITUDE, buff, 4);
 }

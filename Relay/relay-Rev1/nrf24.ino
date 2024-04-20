@@ -34,7 +34,7 @@ int RadioSetup() {
   radio.stopListening();
 
   // Set default radio params.
-  radio.setPALevel(RF24_PA_MAX);
+  radio.setPALevel(RF24_PA_MAX,true);
   radio.setAddressWidth(5);
   radio.setDataRate(RF24_250KBPS);
   radio.setCRCLength(RF24_CRC_8);
