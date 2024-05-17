@@ -151,6 +151,10 @@ void ResetFlipCounter(void) {
 // HandleTimeLoop handles any timed events. 
 
 void HandleTimeLoop(void) {
+    uint8_t buff[10];
+    adc_result_t adcRes;
+    union conv temp, humidity;
+
     // Only execute if ticks changes to not run multiple times each tick.
     uint32_t currTicks = Ticks;
     if (currTicks == prevTicks) {
@@ -163,6 +167,37 @@ void HandleTimeLoop(void) {
     // Send Ping every PingInterval.
     if (currTicks % PingInterval == 0) {
         SendPing();
+    }
+
+    // Send Sensor Data.
+    if (currTicks % SENSOR_INT == 0) {
+#ifdef DEV_LIGHT
+        adcRes = zADC_GetConversion(ADC_LIGHT);
+        buff[0] = adcRes & 0x00FF;
+        buff[1] = adcRes >> 8;
+        SendData(ACTION_GET_LIGHT, buff, 2);
+        __delay_ms(10);
+#endif
+#ifdef DEV_VOLTS
+
+        adcRes = zADC_GetConversion(channel_FVR);
+        buff[0] = adcRes & 0x00FF;
+        buff[1] = adcRes >> 8;
+        SendData(ACTION_GET_VOLTS, buff, 2);
+        __delay_ms(10);
+#endif
+#ifdef DEV_TEMP_HUMIDITY
+        AHT10Read(AHT10ADDR, &temp.f, &humidity.f);
+        buff[0] = temp.uc[0];
+        buff[1] = temp.uc[1];
+        buff[2] = temp.uc[2];
+        buff[3] = temp.uc[3];
+        buff[4] = humidity.uc[0];
+        buff[5] = humidity.uc[1];
+        buff[6] = humidity.uc[2];
+        buff[7] = humidity.uc[3];
+        SendData(ACTION_GET_TEMP_HUMIDITY, buff, 8);
+#endif
     }
 
     // Handle relay on time. 
@@ -389,7 +424,7 @@ void HandleActionRequestLoop() {
         case ACTION_GET_VER:
             buff[0] = VER_LOW_BYTE;
             buff[1] = VER_HIGH_BYTE;
-            SendData(ACTION_GET_LIGHT, buff, 2);
+            SendData(ACTION_GET_VER, buff, 2);
             break;
 
         default:

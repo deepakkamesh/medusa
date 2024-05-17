@@ -86,9 +86,10 @@
 #define zDATAEE_ReadByte(a) DATAEE_ReadByte(a)
 #define zDATAEE_WriteByte(a,b) DATAEE_WriteByte(a,b)
 
-// Version:
 // TODO: Update with every major change. 
-#define VER_LOW_BYTE 0x01 // Software version updates. 
+// Version:
+// 1.02 - SendSensor Data on timed loop 
+#define VER_LOW_BYTE 0x02 // Software version updates. 
 #define VER_HIGH_BYTE 0x1 // HW Version Major number
 
 // Set Hardware revision here. 

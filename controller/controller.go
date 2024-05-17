@@ -48,7 +48,7 @@ func (c *Controller) Startup() error {
 	}
 
 	// Startup Event Trigger
-	c.SensorDataReq(c.pollInt)
+	//	c.SensorDataReq(c.pollInt)
 
 	// Startup Handlers.
 	go c.CoreMsgHandler()

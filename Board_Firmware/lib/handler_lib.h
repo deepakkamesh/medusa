@@ -41,6 +41,7 @@
 #define DEFAULT_ARD 0xA // default ARD setting. (val*250 +250)
 #define FAILURE_SAMPLE_RATE 10 // Number of packets to count.
 #define FAILED_PERCENT 0.80 // Percent of failed packets. 
+#define SENSOR_INT 120 // Sensor poll interval in secs.
 
 // Function declarations. 
 void TimerInterruptHandler(void);

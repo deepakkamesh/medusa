@@ -13,6 +13,25 @@ void PingLoop() {
   }
 }
 
+unsigned long prevSensorDataTicks = 0;
+void SensorDataLoop() {
+  unsigned long currTicks = millis();
+
+  if (currTicks - prevSensorDataTicks >= SENSOR_INT*1000) {
+
+#ifdef DHT11SENSOR
+    TempHumidity();
+#endif
+#ifdef BME680
+    BME680TempHumidity();
+    BME680Gas();
+    BME680Pressure();
+    BME680Altitude();
+#endif
+    prevSensorDataTicks = currTicks;
+  }
+}
+
 void ProcessVBoardPacket(uint8_t *pkt, uint8_t sz) {
 
   uint8_t data[32];
