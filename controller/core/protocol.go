@@ -26,6 +26,9 @@ const (
 	ActionDoor        = 0x04
 	ActionVolt        = 0x05
 	ActionVer         = 0x06
+	ActionGas         = 0x07
+	ActionPressure    = 0x08
+	ActionAltitude    = 0x09
 	ActionBuzzer      = 0x10
 	ActionFactoryRst  = 0x11
 	ActionRelay       = 0x12
@@ -61,6 +64,9 @@ func ActionLookup(id byte, str string) (byte, string) {
 		0x04: "door",
 		0x05: "volt",
 		0x06: "ver",
+		0x07: "gas",
+		0x08: "pressure",
+		0x09: "altitude",
 		0x10: "buzzer",
 		0x11: "factoryRst",
 		0x12: "relay",
@@ -258,6 +264,24 @@ func translateActionPacket(p PktInfo, action byte, data []byte) (Event, error) {
 		return Light{
 			PktInfo: p,
 			Light:   3.3 * float32(x) / 1023,
+		}, nil
+
+	case ActionGas:
+		return Gas{
+			PktInfo: p,
+			Gas:     float32(binary.LittleEndian.Uint32(data) / 1000), // Gas resistance in kilo ohms.
+		}, nil
+
+	case ActionPressure:
+		return Pressure{
+			PktInfo:  p,
+			Pressure: float32frombytes(data), // Pressure in pascals.
+		}, nil
+
+	case ActionAltitude:
+		return Altitude{
+			PktInfo:  p,
+			Altitude: float32frombytes(data), // Altitude in meters.
 		}, nil
 
 	default:

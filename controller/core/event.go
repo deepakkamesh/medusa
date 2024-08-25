@@ -48,7 +48,18 @@ type Light struct {
 	PktInfo
 	Light float32
 }
-
+type Gas struct {
+	PktInfo
+	Gas float32
+}
+type Pressure struct {
+	PktInfo
+	Pressure float32
+}
+type Altitude struct {
+	PktInfo
+	Altitude float32
+}
 type Volt struct {
 	PktInfo
 	Volt float32
