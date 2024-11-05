@@ -60,7 +60,7 @@
          "Description":"vboard family relay1",
          "Room":"family",
          "Name":"board1",
-         "Actions":[1,2,3]
+         "Actions":[1,2,3,0x7,0x8]
       }
    ]
 }

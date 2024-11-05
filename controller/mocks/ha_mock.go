@@ -62,6 +62,20 @@ func (mr *MockHAMockRecorder) HAMessage() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HAMessage", reflect.TypeOf((*MockHA)(nil).HAMessage))
 }
 
+// SendAQI mocks base method.
+func (m *MockHA) SendAQI(arg0, arg1 string, arg2 float32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendAQI", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendAQI indicates an expected call of SendAQI.
+func (mr *MockHAMockRecorder) SendAQI(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendAQI", reflect.TypeOf((*MockHA)(nil).SendAQI), arg0, arg1, arg2)
+}
+
 // SendAvail mocks base method.
 func (m *MockHA) SendAvail(arg0, arg1, arg2 string) error {
 	m.ctrl.T.Helper()
@@ -130,6 +144,20 @@ func (m *MockHA) SendMotion(arg0, arg1 string, arg2 bool) error {
 func (mr *MockHAMockRecorder) SendMotion(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMotion", reflect.TypeOf((*MockHA)(nil).SendMotion), arg0, arg1, arg2)
+}
+
+// SendPressure mocks base method.
+func (m *MockHA) SendPressure(arg0, arg1 string, arg2 float32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendPressure", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendPressure indicates an expected call of SendPressure.
+func (mr *MockHAMockRecorder) SendPressure(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendPressure", reflect.TypeOf((*MockHA)(nil).SendPressure), arg0, arg1, arg2)
 }
 
 // SendTemp mocks base method.

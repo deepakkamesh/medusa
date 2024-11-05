@@ -45,6 +45,8 @@ type HA interface {
 	SendMotion(room string, name string, motion bool) error
 	SendTemp(room string, name string, temp, humidity float32) error
 	SendLight(room, name string, light float32) error
+	SendAQI(room, name string, light float32) error
+	SendPressure(room, name string, light float32) error
 	SendDoor(room, name string, open bool) error
 	SendVolt(room, name string, light float32) error
 	SendMQTTDiscoveryConfig(clean bool) error
@@ -319,6 +321,30 @@ func (m *HomeAssistant) SendVolt(room, name string, volt float32) error {
 	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", v))
 }
 
+// SendGas sends the Air quality value in Kilo Ohms HA.
+func (m *HomeAssistant) SendAQI(room, name string, aqi float32) error {
+
+	_, actStr := core.ActionLookup(core.ActionGas, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionGas)
+	}
+
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
+	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", aqi))
+}
+
+// SendPressure sends the atmospheric pressure reading in pascals to HA.
+func (m *HomeAssistant) SendPressure(room, name string, pressure float32) error {
+
+	_, actStr := core.ActionLookup(core.ActionPressure, "")
+	if actStr == "" {
+		return fmt.Errorf("action string not found for action %v", core.ActionPressure)
+	}
+
+	topic := fmt.Sprintf(templTopicState, room, name, actStr)
+	return m.sendSensorData(topic, 0, false, fmt.Sprintf("%v", pressure))
+}
+
 // Sends Data on the specified topic.
 func (m *HomeAssistant) sendSensorData(topic string, pri byte, retain bool, msg string) error {
 	if m.MQTTClient == nil {
@@ -340,7 +366,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 
 	binarySensors := []byte{core.ActionMotion, core.ActionDoor}
 	sirens := []byte{core.ActionBuzzer}
-	sensors := []byte{core.ActionTemp, core.ActionLight, core.ActionVolt}
+	sensors := []byte{core.ActionTemp, core.ActionLight, core.ActionVolt, core.ActionGas, core.ActionPressure}
 	buttons := []byte{core.ActionReset}
 
 	for _, brd := range m.CoreCfg.Boards {
@@ -408,6 +434,12 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 
 				case core.ActionLight:
 					sensorConfig.UnitMeasure = "lx"
+
+				case core.ActionGas:
+					sensorConfig.UnitMeasure = "kOhm"
+
+				case core.ActionPressure:
+					sensorConfig.UnitMeasure = "pa"
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor",
@@ -504,6 +536,8 @@ func DeviceClass(actionID byte) string {
 		0x03: "illuminance",
 		0x04: "door",
 		0x05: "voltage",
+		0x07: "aqi",
+		0x08: "atmospheric_pressure",
 	}
 
 	if v, ok := m[actionID]; ok {

@@ -64,7 +64,7 @@ func ActionLookup(id byte, str string) (byte, string) {
 		0x04: "door",
 		0x05: "volt",
 		0x06: "ver",
-		0x07: "gas",
+		0x07: "aqi",
 		0x08: "pressure",
 		0x09: "altitude",
 		0x10: "buzzer",

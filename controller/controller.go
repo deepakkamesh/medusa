@@ -234,11 +234,13 @@ func (c *Controller) CoreMsgHandler() {
 				glog.Errorf("Failed to send light event to HA:%v", err)
 			}
 
-			// TODO: Send to HomeAssistant.
 		case core.Pressure:
 			glog.Infof("Event Pressure - %v:%v pressure:%v pascals", room, core.PP2(addr), f.Pressure)
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "pressure", f.Pressure, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
+			}
+			if err := c.ha.SendPressure(board.Room, board.Name, f.Pressure); err != nil {
+				glog.Errorf("Failed to send Pressure event to HA:%v", err)
 			}
 
 		case core.Altitude:
@@ -248,10 +250,14 @@ func (c *Controller) CoreMsgHandler() {
 			}
 
 		case core.Gas:
-			glog.Infof("Event Gas - %v:%v gas:%v kohms", room, core.PP2(addr), f.Gas)
+			glog.Infof("Event AQI - %v:%v gas:%v kohms", room, core.PP2(addr), f.Gas)
 			if e := c.eventDB.LogEvent(EventLog{tmstmp, "pressure", f.Gas, room, name, addr}); e != nil {
 				glog.Errorf("Failed to log to eventDB:%v", e)
 			}
+			if err := c.ha.SendAQI(board.Room, board.Name, f.Gas); err != nil {
+				glog.Errorf("Failed to send AQI event to HA:%v", err)
+			}
+
 		}
 
 		// Send event to all rules engines only after logging into eventDB first.

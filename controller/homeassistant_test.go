@@ -77,6 +77,16 @@ func TestHASend(t *testing.T) {
 	tk.EXPECT().Wait()
 	ha.SendLight("living", "b1", 3.23234)
 
+	// Test Gas.
+	m.EXPECT().Publish("giant/living/b1/aqi/state", gomock.Any(), false, "160").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendAQI("living", "b1", 160)
+
+	// Test Pressure.
+	m.EXPECT().Publish("giant/living/b1/pressure/state", gomock.Any(), false, "101000").Return(tk)
+	tk.EXPECT().Wait()
+	ha.SendPressure("living", "b1", 101000)
+
 	// Test Door.
 	m.EXPECT().Publish("giant/living/b1/door/state", gomock.Any(), false, "ON").Return(tk)
 	tk.EXPECT().Wait()

@@ -100,7 +100,7 @@
          "Description":"vboard",
          "Room":"hallway-up",
          "Name":"b1",
-         "Actions":[0x02,0x13,0x14,0x17]
+         "Actions":[0x02,0x07,0x08,0x13,0x14,0x17]
       },
       {
          "Addr":[0xB6,0x1F,0x71],
@@ -110,7 +110,7 @@
          "Description":"vboard",
          "Room":"hallway-down",
          "Name":"b1",
-         "Actions":[0x02,0x13,0x14,0x17]
+         "Actions":[0x02,0x07,0x08,0x13,0x14,0x17]
       }
    ]
 }
