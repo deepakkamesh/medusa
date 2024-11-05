@@ -92,63 +92,12 @@
 #define VER_LOW_BYTE 0x02 // Software version updates. 
 #define VER_HIGH_BYTE 0x1 // HW Version Major number
 
-// Set Hardware revision here. 
-#define HW_REV_1_6
+// Set Available Sensors here.
 
-#ifdef HW_REV_1_0 // Available Actions for Rev 1_2
-#define DEV_STATUS_LED 
-#define DEV_VOLTS  
-#endif
-
-#ifdef HW_REV_1_1 // Available Actions for Rev 1_1
 #define DEV_STATUS_LED 
 #define DEV_VOLTS 
 #define DEV_LIGHT 
 #define DEV_MOTION 
-#define DEV_TEMP_HUMIDITY 
-#define DEV_RELAY 
-#define DEV_DOOR 
-#endif
-
-#ifdef HW_REV_1_2 // Available Actions for Rev 1_2
-#define DEV_STATUS_LED 
-#define DEV_VOLTS 
-#define DEV_LIGHT 
-#define DEV_MOTION 
-#endif
-
-#ifdef HW_REV_1_3 // Available Actions for Rev 1_2
-#define DEV_STATUS_LED 
-#define DEV_VOLTS 
-#define DEV_LIGHT 
-#endif
-
-#ifdef HW_REV_1_4
-#define DEV_STATUS_LED 
-#define DEV_VOLTS 
-#define DEV_MOTION 
-#endif
-
-#ifdef HW_REV_1_5
-#define DEV_STATUS_LED 
-#define DEV_VOLTS 
-#define DEV_LIGHT 
-#define DEV_MOTION
-#define DEV_TEMP_HUMIDITY 
-#endif
-
-#ifdef HW_REV_1_6 // Light, Temp.
-#define DEV_STATUS_LED 
-#define DEV_VOLTS 
-#define DEV_LIGHT
-#define DEV_TEMP_HUMIDITY 
-#endif
-
-#ifdef HW_REV_1_7 // Light, motion, temp, door.
-#define DEV_STATUS_LED 
-#define DEV_VOLTS 
-#define DEV_LIGHT 
-#define DEV_MOTION
 #define DEV_TEMP_HUMIDITY 
 #define DEV_DOOR 
-#endif
+//#define DEV_RELAY 
