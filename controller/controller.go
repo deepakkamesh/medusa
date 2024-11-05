@@ -168,6 +168,9 @@ func (c *Controller) CoreMsgHandler() {
 
 		// Log Event.
 		switch f := event.(type) {
+		case core.NewBoard:
+			glog.Infof("Board %v:%v joined pipe %v\n", room, core.PP2(addr), core.PP2(paddr))
+
 		case core.Ping:
 			// FYI. HA availability is handled by ping event processor.
 			glog.Infof("Event Ping - %v:%v\n", room, core.PP2(addr))

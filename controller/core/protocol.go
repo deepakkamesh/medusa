@@ -179,7 +179,7 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 
 	switch pkt[6] {
 	case PktTypeFinder:
-		return nil, fmt.Errorf("New board %v joined pipe %v", PP2(p.BoardAddr), PP2(p.PipeAddr))
+		return translateFinderPacket(p)
 
 	case PktTypePing:
 		return translatePingPacket(p)
@@ -201,6 +201,12 @@ func translatePacket(pkt []byte, hwaddr []byte) (Event, error) {
 	default:
 		return nil, fmt.Errorf("unknown board packet type %v", pkt[6])
 	}
+}
+
+func translateFinderPacket(p PktInfo) (Event, error) {
+	return NewBoard{
+		PktInfo: p,
+	}, nil
 }
 
 func translatePingPacket(p PktInfo) (Event, error) {

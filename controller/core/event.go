@@ -25,6 +25,10 @@ func (f PktInfo) HWAddr() []byte {
 }
 
 // The following implement the Event Interface.
+type NewBoard struct {
+	PktInfo
+}
+
 type Ping struct {
 	PktInfo
 }
