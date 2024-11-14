@@ -99,5 +99,5 @@
 #define DEV_LIGHT 
 #define DEV_MOTION 
 #define DEV_TEMP_HUMIDITY 
-#define DEV_DOOR 
+//#define DEV_DOOR 
 //#define DEV_RELAY 
