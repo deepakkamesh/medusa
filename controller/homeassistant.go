@@ -121,12 +121,13 @@ type HAMsg struct {
 }
 
 type HomeAssistant struct {
-	mqttHost   string
-	user       string
-	passwd     string
-	MQTTClient mqtt.Client  // MqTT client. Exportable for testing.
-	HAMsg      chan HAMsg   // HA received message. Exportable for testing.
-	CoreCfg    *core.Config // Core Config.
+	mqttHost             string
+	user                 string
+	passwd               string
+	MQTTClient           mqtt.Client  // MqTT client. Exportable for testing.
+	HAMsg                chan HAMsg   // HA received message. Exportable for testing.
+	CoreCfg              *core.Config // Core Config.
+	mqttConnRetryAttempt int          // Number of times connection retried.
 }
 
 func NewHA(mqttHost string, user string, pass string, cfg *core.Config) *HomeAssistant {
@@ -210,6 +211,8 @@ func (m *HomeAssistant) mqttConnectHandler(client mqtt.Client) {
 	glog.Infof("MQTT connected:%v", m.mqttHost)
 }
 
+/*
+// TODO: Remove after new version below is good.
 // mqttConnLostHandler is the callback when connection to mqtt server is lost.
 func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
 	glog.Warningf("MQTT Connection Lost. Retrying: %v", err)
@@ -227,6 +230,29 @@ func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
 	}
 
 	glog.Fatalf("Giving up on MQTT connection. Exiting..")
+}*/
+
+// mqttConnLostHandler is the callback when connection to mqtt server is lost.
+func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
+	if m.mqttConnRetryAttempt == 0 {
+		glog.Warningf("MQTT Connection Lost. Retrying: %v", err)
+		m.MQTTClient = nil
+	}
+
+	time.Sleep(5 * time.Second)
+
+	if err := m.Connect(); err == nil {
+		glog.Infof("MQTT reconnected after %v attempts", m.mqttConnRetryAttempt)
+		return
+	}
+	m.mqttConnRetryAttempt = +1
+
+	// Give up if tried reconnecting for 1 hour.
+	if m.mqttConnRetryAttempt == 720 {
+		glog.Fatalf("Giving up on MQTT connection. Exiting..")
+	}
+
+	glog.Warningf("MQTT Connection Lost. Retrying attempt %v", m.mqttConnRetryAttempt)
 }
 
 // SetAvail sets the availability on all the entities on the dev board.
