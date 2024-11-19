@@ -230,9 +230,13 @@ func translateActionPacket(p PktInfo, action byte, data []byte) (Event, error) {
 		t, h := readTemp(data)
 		// If temp or humdity out of range of sensor measurement throw error.
 		// Sometimes AHT10 is returning very large values.
-		if t > 200 || h > 100 {
-			return nil, fmt.Errorf("Value out of range %v %v", t, h)
+		if t < -40 || t > 185 {
+			return nil, fmt.Errorf("Temp value out of range %v", t)
 		}
+		if h < 0 || h > 100 {
+			return nil, fmt.Errorf("Humidity value out of range %v", h)
+		}
+
 		return Temp{
 			PktInfo:  p,
 			Temp:     t,
