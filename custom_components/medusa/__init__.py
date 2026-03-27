@@ -9,6 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from datetime import timedelta
 
@@ -118,8 +119,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     # Load platforms
     for platform in PLATFORMS:
         hass.async_create_task(
-            hass.helpers.discovery.async_load_platform(
-                platform, DOMAIN, {}, config
+            async_load_platform(
+                hass, platform, DOMAIN, {}, config
             )
         )
 
