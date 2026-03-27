@@ -45,12 +45,18 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         _LOGGER.error("Medusa configuration file %s not found", config_file_path)
         return False
 
+    import re
     with open(config_file_path, "r") as f:
-        try:
-            medusa_config = json.load(f)
-        except json.JSONDecodeError as err:
-            _LOGGER.error("Error parsing Medusa configuration file: %s", err)
-            return False
+        content = f.read()
+        
+    try:
+        # The Go config file uses 0x hex numbers which are not valid in standard Python JSON.
+        # We need to replace them with base-10 integers before parsing payload.
+        content = re.sub(r'0x[0-9a-fA-F]+', lambda match: str(int(match.group(0), 16)), content)
+        medusa_config = json.loads(content)
+    except json.JSONDecodeError as err:
+        _LOGGER.error("Error parsing Medusa configuration file: %s", err)
+        return False
 
     hub = MedusaHub(hass, medusa_config, port)
     
