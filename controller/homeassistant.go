@@ -65,50 +65,50 @@ type MQTempHumidity struct {
 
 // MQBinarySensorConfig represents the HA Binary Sensor.
 type MQBinarySensorConfig struct {
-	Name        string            `json:"name"`
-	ObjectID    string            `json:"object_id"`
-	DeviceClass string            `json:"device_class"`
-	StateTopic  string            `json:"state_topic"`
-	UniqueID    string            `json:"unique_id"`
-	Device      map[string]string `json:"device"`
-	AvailTopic  string            `json:"availability_topic"`
+	Name            string            `json:"name"`
+	DefaultEntityID string            `json:"default_entity_id"`
+	DeviceClass     string            `json:"device_class,omitempty"`
+	StateTopic      string            `json:"state_topic"`
+	UniqueID        string            `json:"unique_id"`
+	Device          map[string]string `json:"device"`
+	AvailTopic      string            `json:"availability_topic"`
 }
 
 // MQSensorConfig represents a HA Sensor.
 type MQSensorConfig struct {
-	Name        string            `json:"name"`
-	ObjectID    string            `json:"object_id"`
-	DeviceClass string            `json:"device_class"`
-	StateTopic  string            `json:"state_topic"`
-	UniqueID    string            `json:"unique_id"`
-	Device      map[string]string `json:"device"`
-	ValueTempl  string            `json:"value_template,omitempty"`
-	UnitMeasure string            `json:"unit_of_measurement,omitempty"`
-	ForceUpdate bool              `json:"force_update"`
-	AvailTopic  string            `json:"availability_topic"`
+	Name            string            `json:"name"`
+	DefaultEntityID string            `json:"default_entity_id"`
+	DeviceClass     string            `json:"device_class,omitempty"`
+	StateTopic      string            `json:"state_topic"`
+	UniqueID        string            `json:"unique_id"`
+	Device          map[string]string `json:"device"`
+	ValueTempl      string            `json:"value_template,omitempty"`
+	UnitMeasure     string            `json:"unit_of_measurement,omitempty"`
+	ForceUpdate     bool              `json:"force_update"`
+	AvailTopic      string            `json:"availability_topic"`
 }
 
 // MQSirenConfig represents the HA Siren.
 type MQSirenConfig struct {
-	Name         string            `json:"name"`
-	ObjectID     string            `json:"object_id"`
-	CommandTopic string            `json:"command_topic"`
-	UniqueID     string            `json:"unique_id"`
-	Device       map[string]string `json:"device"`
-	PayloadOn    string            `json:"payload_on"`
-	PayloadOff   string            `json:"payload_off"`
-	AvailTopic   string            `json:"availability_topic"`
+	Name            string            `json:"name"`
+	DefaultEntityID string            `json:"default_entity_id"`
+	CommandTopic    string            `json:"command_topic"`
+	UniqueID        string            `json:"unique_id"`
+	Device          map[string]string `json:"device"`
+	PayloadOn       string            `json:"payload_on"`
+	PayloadOff      string            `json:"payload_off"`
+	AvailTopic      string            `json:"availability_topic"`
 }
 
 // MQButtonConfig represents the HA Binary Sensor.
 type MQButtonConfig struct {
-	Name         string            `json:"name"`
-	ObjectID     string            `json:"object_id"`
-	CommandTopic string            `json:"command_topic"`
-	DeviceClass  string            `json:"device_class"`
-	UniqueID     string            `json:"unique_id"`
-	Device       map[string]string `json:"device"`
-	AvailTopic   string            `json:"availability_topic"`
+	Name            string            `json:"name"`
+	DefaultEntityID string            `json:"default_entity_id"`
+	CommandTopic    string            `json:"command_topic"`
+	DeviceClass     string            `json:"device_class,omitempty"`
+	UniqueID        string            `json:"unique_id"`
+	Device          map[string]string `json:"device"`
+	AvailTopic      string            `json:"availability_topic"`
 }
 
 // Struct to hold message from HA.
@@ -428,13 +428,13 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 			switch {
 			case slices.Contains(binarySensors, actionID):
 				sensorConfig := MQBinarySensorConfig{
-					Name:        name,
-					ObjectID:    objectID,
-					DeviceClass: DeviceClass(actionID),
-					StateTopic:  stateTopic,
-					AvailTopic:  availTopic,
-					UniqueID:    uniqueID,
-					Device:      device,
+					Name:            name,
+					DefaultEntityID: fmt.Sprintf("binary_sensor.%s", objectID),
+					DeviceClass:     DeviceClass(actionID),
+					StateTopic:      stateTopic,
+					AvailTopic:      availTopic,
+					UniqueID:        uniqueID,
+					Device:          device,
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "binary_sensor",
@@ -444,14 +444,14 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 
 			case slices.Contains(sensors, actionID):
 				sensorConfig := MQSensorConfig{
-					Name:        name,
-					ObjectID:    objectID,
-					DeviceClass: DeviceClass(actionID),
-					StateTopic:  stateTopic,
-					AvailTopic:  availTopic,
-					UniqueID:    uniqueID,
-					Device:      device,
-					ForceUpdate: true,
+					Name:            name,
+					DefaultEntityID: fmt.Sprintf("sensor.%s", objectID),
+					DeviceClass:     DeviceClass(actionID),
+					StateTopic:      stateTopic,
+					AvailTopic:      availTopic,
+					UniqueID:        uniqueID,
+					Device:          device,
+					ForceUpdate:     true,
 				}
 
 				// Any action Specific template changes.
@@ -471,7 +471,7 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 					sensorConfig.UnitMeasure = "kOhm"
 
 				case core.ActionPressure:
-					sensorConfig.UnitMeasure = "pa"
+					sensorConfig.UnitMeasure = "Pa"
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor",
@@ -482,16 +482,16 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 				// Handle special case of humidity entity which needs to be created  in HA for every temperature device in Medusa 'cause  medusa a temperature action retrieves both temp and humidity.
 				if actionID == core.ActionTemp {
 					sensorConfig := MQSensorConfig{
-						Name:        fmt.Sprintf(templEntityName, brd.Room, "humidity"),
-						ObjectID:    fmt.Sprintf(templEntityObjID, brd.Room, brd.Name, "humidity"),
-						DeviceClass: "humidity",
-						StateTopic:  stateTopic, // State topic is shared with temperature entity.
-						AvailTopic:  availTopic,
-						UniqueID:    fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, "humidity"),
-						Device:      device,
-						ValueTempl:  "{{ value_json.humidity }}",
-						UnitMeasure: "%",
-						ForceUpdate: true,
+						Name:            fmt.Sprintf(templEntityName, brd.Room, "humidity"),
+						DefaultEntityID: fmt.Sprintf("sensor.%s", fmt.Sprintf(templEntityObjID, brd.Room, brd.Name, "humidity")),
+						DeviceClass:     "humidity",
+						StateTopic:      stateTopic, // State topic is shared with temperature entity.
+						AvailTopic:      availTopic,
+						UniqueID:        fmt.Sprintf(templEntityUniqID, brd.Room, brd.Name, "humidity"),
+						Device:          device,
+						ValueTempl:      "{{ value_json.humidity }}",
+						UnitMeasure:     "%",
+						ForceUpdate:     true,
 					}
 
 					if err := m.packAndSendEntityDiscovery(clean, sensorConfig, "sensor",
@@ -502,14 +502,14 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 
 			case slices.Contains(sirens, actionID):
 				deviceConfig := MQSirenConfig{
-					Name:         name,
-					ObjectID:     objectID,
-					CommandTopic: commandTopic,
-					AvailTopic:   availTopic,
-					UniqueID:     uniqueID,
-					PayloadOn:    "true",
-					PayloadOff:   "false",
-					Device:       device,
+					Name:            name,
+					DefaultEntityID: fmt.Sprintf("siren.%s", objectID),
+					CommandTopic:    commandTopic,
+					AvailTopic:      availTopic,
+					UniqueID:        uniqueID,
+					PayloadOn:       "true",
+					PayloadOff:      "false",
+					Device:          device,
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, deviceConfig, "siren",
@@ -519,13 +519,13 @@ func (m *HomeAssistant) SendMQTTDiscoveryConfig(clean bool) error {
 
 			case slices.Contains(buttons, actionID):
 				deviceConfig := MQButtonConfig{
-					Name:         name,
-					ObjectID:     objectID,
-					CommandTopic: commandTopic,
-					AvailTopic:   availTopic,
-					UniqueID:     uniqueID,
-					DeviceClass:  "restart",
-					Device:       device,
+					Name:            name,
+					DefaultEntityID: fmt.Sprintf("button.%s", objectID),
+					CommandTopic:    commandTopic,
+					AvailTopic:      availTopic,
+					UniqueID:        uniqueID,
+					DeviceClass:     "restart",
+					Device:          device,
 				}
 
 				if err := m.packAndSendEntityDiscovery(clean, deviceConfig, "button",
@@ -568,7 +568,6 @@ func DeviceClass(actionID byte) string {
 		0x03: "illuminance",
 		0x04: "door",
 		0x05: "voltage",
-		0x07: "aqi",
 		0x08: "atmospheric_pressure",
 	}
 
