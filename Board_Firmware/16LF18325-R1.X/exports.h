@@ -96,8 +96,8 @@
 
 #define DEV_STATUS_LED 
 #define DEV_VOLTS 
-#define DEV_LIGHT 
+//#define DEV_LIGHT 
 #define DEV_MOTION 
-#define DEV_TEMP_HUMIDITY 
+//#define DEV_TEMP_HUMIDITY 
 //#define DEV_DOOR 
 //#define DEV_RELAY 
