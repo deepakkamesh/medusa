@@ -211,54 +211,22 @@ func (m *HomeAssistant) mqttConnectHandler(client mqtt.Client) {
 	glog.Infof("MQTT connected:%v", m.mqttHost)
 }
 
-/*
-// TODO: Remove after new version below is good.
 // mqttConnLostHandler is the callback when connection to mqtt server is lost.
 func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
 	glog.Warningf("MQTT Connection Lost. Retrying: %v", err)
 	m.MQTTClient = nil
-	time.Sleep(1 * time.Second)
 
-	// Try every 5 seconds for 1 hr.
-	for i := 0; i < 720; i++ {
+	// Try reconnecting every 30 seconds for 1 hour (120 attempts).
+	for i := 1; i <= 120; i++ {
+		time.Sleep(30 * time.Second)
 		if err := m.Connect(); err == nil {
 			glog.Infof("MQTT reconnected after %v attempts", i)
 			return
 		}
-		glog.Warningf("MQTT Connection Lost. Retrying attempt #%v:%v", i, err)
-		time.Sleep(5 * time.Second)
+		glog.Warningf("MQTT Connection Lost. Retrying attempt #%v: %v", i, err)
 	}
 
 	glog.Fatalf("Giving up on MQTT connection. Exiting..")
-}*/
-
-// mqttConnLostHandler is the callback when connection to mqtt server is lost.
-func (m *HomeAssistant) mqttConnLostHandler(client mqtt.Client, err error) {
-
-	glog.Fatalf("MQTT connection lost:%v", err)
-	/*
-	   	if m.mqttConnRetryAttempt == 0 {
-	   		glog.Warningf("MQTT Connection Lost. Retrying: %v", err)
-	   		m.MQTTClient = nil
-	   	}
-
-	   time.Sleep(5 * time.Second)
-
-	   	if err := m.Connect(); err == nil {
-	   		glog.Infof("MQTT reconnected after %v attempts", m.mqttConnRetryAttempt)
-	   		return
-	   	}
-
-	   m.mqttConnRetryAttempt = +1
-
-	   // Give up if tried reconnecting for 1 hour.
-
-	   	if m.mqttConnRetryAttempt == 720 {
-	   		glog.Fatalf("Giving up on MQTT connection. Exiting..")
-	   	}
-
-	   glog.Warningf("MQTT Connection Lost. Retrying attempt %v", m.mqttConnRetryAttempt)
-	*/
 }
 
 // SetAvail sets the availability on all the entities on the dev board.
